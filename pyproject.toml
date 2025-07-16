@@ -1,0 +1,31 @@
+[project]
+name = "kafori"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Feel Liao",email = "feelteel@hotmail.com"}
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.13,<4.0"
+dependencies = [
+    "snakemake (>=8.29.2,<10.0.0)",
+    "fastapi[standard] (>=0.116.1,<0.117.0)"
+]
+package-mode = false
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+testpaths = "tests"
+python_files = "tests.py test_*.py *_tests.py"
+
+[tool.pylint.design]
+max-line-length = 120
+
+[[tool.poetry.source]]
+name = "tsinghua"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
