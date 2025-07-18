@@ -1,0 +1,5 @@
+sample,group,read1,read2,extra
+Atreated-2,Atreated,tests/ngs-test-data/Atreated-2_2.fq,tests/ngs-test-data/Atreated-2_1.fq,
+Atreated-1,Atreated,tests/ngs-test-data/Atreated-1_2.fq,tests/ngs-test-data/Atreated-1_1.fq,
+Buntreated-1,Buntreated,tests/ngs-test-data/Buntreated-1_2.fq,tests/ngs-test-data/Buntreated-1_1.fq,
+Buntreated-2,Buntreated,tests/ngs-test-data/Buntreated-2_2.fq,tests/ngs-test-data/Buntreated-2_1.fq,
