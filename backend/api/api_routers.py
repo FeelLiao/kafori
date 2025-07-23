@@ -6,12 +6,13 @@ from .utils import UploadFileProcessor
 
 file_router = APIRouter()
 
-UPLOAD_DIR = Path("uploaded_files")
+UPLOAD_DIR = Path("tests/upstream")
 UPLOAD_DIR.mkdir(exist_ok=True)
-UPLOAD_DATA_DIR = UPLOAD_DIR / "data"
+UPLOAD_DATA_DIR = UPLOAD_DIR / "ngs-test-data"
 UPLOAD_DATA_DIR.mkdir(exist_ok=True)
 
 FILE_PROCESS_STATUS = {}
+LAST_FILENAME = None
 
 
 def process_file(file_path: Path):
@@ -35,6 +36,7 @@ def process_file(file_path: Path):
 
     FILE_PROCESS_STATUS[filename] = {
         "status": "processing", "detail": "Raw date md5 sum checking"}
+    processor = UploadFileProcessor(file_path)
     md5_results = processor.rawdata_validation(UPLOAD_DATA_DIR)
     if md5_results[0]:
         FILE_PROCESS_STATUS[filename] = {
@@ -48,9 +50,7 @@ def process_file(file_path: Path):
 @file_router.post("/pipeline/sample_sheet_upload/")
 async def upload_xlsx(background_tasks: BackgroundTasks,
                       file: UploadFile = File(...)):
-
     global LAST_FILENAME
-    LAST_FILENAME = None
 
     file_path = UPLOAD_DIR / file.filename
     with open(file_path, "wb") as buffer:
