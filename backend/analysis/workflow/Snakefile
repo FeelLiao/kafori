@@ -5,7 +5,7 @@ from snakemake.utils import min_version
 
 min_version("8.25.3")
 
-##### setup report #####
+##### setup config #####
 configfile: "config/config.yaml"
 
 
@@ -17,29 +17,11 @@ include: "rules/ref.smk"
 include: "rules/seq.smk"
 include: "rules/counts.smk"
 include: "rules/align.smk"
-include: "rules/new_gene.smk"
-include: "rules/post.smk"
-include: "rules/downstream.smk"
-
 
 ##### target rules #####
 
 
-rule upstream:
+rule all:
 	input:
 		get_upstream_output(),
 	default_target: True
-
-rule sra:
-	input:
-		directory(config["SRA"]["output_dir"])
-
-rule downstream:
-	input:
-		get_downstream_input(),
-
-rule all:
-	input:
-		get_final_input(),
-
-

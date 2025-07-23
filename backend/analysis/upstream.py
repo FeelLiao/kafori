@@ -1,5 +1,6 @@
 from pathlib import Path
 import pandas as pd
+import copy
 
 from snakemake.api import (
     OutputSettings,
@@ -15,24 +16,79 @@ from data_analysis import DataAnalysis
 
 
 class UpstreamAnalysis(DataAnalysis):
+    """Class for performing upstream analysis in RNA-Seq data processing.
+    This class is responsible for configuring and running the upstream analysis
+    workflow using Snakemake.
+    Attributes:
+        snakefile_path (Path): Path to the Snakemake workflow file.
+        work_dir (Path): Working directory for the analysis.
+        sample (Path): Path to the sample sheet containing metadata for samples.
+        genome (Path): Path to the reference genome file.
+        annotation (Path): Path to the reference annotation file.
+    """
+
+    base_config = {
+        "samples": "path/to/sample_sheet.csv",
+        "ref": {
+            "genome": "path/to/genome.fa",
+            "annotation": "path/to/annotation.gtf"
+        },
+        "featureCounts": {
+            "attribute_type": "gene_id",
+            "feature_type": "exon"
+        }
+    }
+
     def __init__(self, snakefile_path: Path,
-                 config_path: Path,
                  work_dir: Path,
-                 sample: Path) -> None:
-        
+                 sample_sheet: Path,
+                 genome: Path,
+                 annotation: Path) -> None:
+
         self.snakefile_path = snakefile_path
-        self.config_path = config_path
         self.work_dir = work_dir
-        self.sample = sample
+        self.sample = sample_sheet
+        self.genome = genome
+        self.annotation = annotation
+
+        self.config = copy.deepcopy(self.base_config)
+        self.__update_config()
+        self.__check_paths()
+
+    def __check_paths(self) -> None:
+        """
+        Check if the provided paths for sample, genome, and annotation exist.
+        Raises:
+            FileNotFoundError: If any of the paths do not exist.
+        """
+        if not self.snakefile_path.exists():
+            raise FileNotFoundError(
+                f"Snakefile not found: {self.snakefile_path}")
+        if not self.work_dir.exists():
+            Path.mkdir(self.work_dir, parents=False, exist_ok=False)
+        if not self.sample.exists():
+            raise FileNotFoundError(f"Sample sheet not found: {self.sample}")
+        if not self.genome.exists():
+            raise FileNotFoundError(f"Genome file not found: {self.genome}")
+        if not self.annotation.exists():
+            raise FileNotFoundError(
+                f"Annotation file not found: {self.annotation}")
+
+    def __update_config(self) -> None:
+        """
+        Update the configuration according to instance property.
+        """
+        self.config["samples"] = self.sample
+        self.config["ref"]["genome"] = self.genome
+        self.config["ref"]["annotation"] = self.annotation
 
     def sample_file(self) -> Path:
         """
         Transform the sample file to a format suitable for the analysis.
         """
-        
-        sample_df = pd.read_excel(self.sample, sheet_name=["SampleInfo"], 
+
+        sample_df = pd.read_excel(self.sample, sheet_name=["SampleInfo"],
                                   header=None)
-        
 
     def run_analysis(self,
                      dryrun: bool = True,
@@ -50,7 +106,7 @@ class UpstreamAnalysis(DataAnalysis):
 
         storage_settings = StorageSettings()
         resource_settings = ResourceSettings(cores=ncores)
-        config_settings = ConfigSettings(configfiles=[self.config_path])
+        config_settings = ConfigSettings(config=self.config)
         deployment_settings = DeploymentSettings(
             deployment_method=deployment_method,
         )
@@ -73,7 +129,7 @@ class UpstreamAnalysis(DataAnalysis):
                 workflow.dag().execute_workflow(executor=executor_mode)
 
         except Exception as e:
-            self.log(f"Upstream analysis failed: {e}")
+            print(f"Upstream analysis failed: {e}")
             return False
 
         return True
