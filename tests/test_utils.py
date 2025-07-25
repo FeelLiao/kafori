@@ -84,3 +84,51 @@ def test_invalid_sheet_name(tmp_path):
         df.to_excel(writer, sheet_name="WrongSheet", index=False)
     with pytest.raises(RuntimeError):
         UploadFileProcessor(file_path)
+
+        def test_trans_to_smk_samples_basic(tmp_path):
+            # Prepare a minimal DataFrame
+            df = pd.DataFrame({
+                "FileName1": ["A001_R1.fastq", "B002_R1.fastq"],
+                "FileName2": ["A001_R2.fastq", "B002_R2.fastq"],
+                "UniqueID": ["LRX123abc001", "LRX123abc002"]
+            })
+            rawdata_path = tmp_path
+            # Create dummy files
+            for fname in df["FileName1"].tolist() + df["FileName2"].tolist():
+                (rawdata_path / fname).write_text("dummy")
+            result = UploadFileProcessor.trans_to_smk_samples(df, rawdata_path)
+            assert list(result["sample"]) == ["A001", "B002"]
+            assert list(result["sample_id"]) == [
+                "LRX123abc001", "LRX123abc002"]
+            assert all(rawdata_path.name in p for p in result["read1"])
+            assert all(rawdata_path.name in p for p in result["read2"])
+
+        def test_trans_to_smk_samples_to_file(tmp_path):
+            df = pd.DataFrame({
+                "FileName1": ["C003_R1.fastq"],
+                "FileName2": ["C003_R2.fastq"],
+                "UniqueID": ["LRX123abc003"]
+            })
+            rawdata_path = tmp_path
+            for fname in df["FileName1"].tolist() + df["FileName2"].tolist():
+                (rawdata_path / fname).write_text("dummy")
+            output_path = tmp_path / "samples.csv"
+            result = UploadFileProcessor.trans_to_smk_samples(
+                df, rawdata_path, to_file=True, output_path=output_path
+            )
+            assert output_path.exists()
+            loaded = pd.read_csv(output_path)
+            assert list(loaded["sample"]) == ["C003"]
+            assert list(loaded["sample_id"]) == ["LRX123abc003"]
+
+        def test_trans_to_smk_samples_handles_missing_columns():
+            df = pd.DataFrame({
+                "FileName1": ["D004_R1.fastq"],
+                "UniqueID": ["LRX123abc004"]
+                # Missing FileName2
+            })
+            rawdata_path = Path("/tmp")
+            try:
+                UploadFileProcessor.trans_to_smk_samples(df, rawdata_path)
+            except KeyError as e:
+                assert "FileName2" in str(e)

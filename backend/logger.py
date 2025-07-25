@@ -1,25 +1,31 @@
-
-import os
+from pathlib import Path
 import logging
 
-def init_global_logger(log_file='logs/project_analysis.log', level=logging.INFO):
-    logger = logging.getLogger()  # 根 logger，全局唯一
+
+def init_global_logger(log_file: Path,
+                       enable_console=False, enable_file=True,
+                       level=logging.INFO) -> None:
+    logger = logging.getLogger()
     logger.setLevel(level)
+    formatter = logging.Formatter(
+        '[%(asctime)s] [%(levelname)s] [%(name)s] %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S'
+    )
 
-    if not logger.handlers:
-        os.makedirs(os.path.dirname(log_file), exist_ok=True)
+    logging.getLogger("uvicorn").setLevel(level)
+    logging.getLogger("uvicorn.error").setLevel(level)
+    logging.getLogger("uvicorn.access").setLevel(level)
+    logging.getLogger("fastapi").setLevel(level)
 
-        formatter = logging.Formatter(
-            '[%(asctime)s] [%(levelname)s] [%(name)s] %(message)s',
-            datefmt='%Y-%m-%d %H:%M:%S'
-        )
+    # 清除已有 handler，避免重复日志
+    logger.handlers.clear()
 
-        # 控制台输出
+    if enable_console:
         console_handler = logging.StreamHandler()
         console_handler.setFormatter(formatter)
         logger.addHandler(console_handler)
 
-        # 文件输出
+    if enable_file:
         file_handler = logging.FileHandler(log_file)
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)

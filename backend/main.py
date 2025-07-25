@@ -1,7 +1,31 @@
 from fastapi import FastAPI
-from routers import router
+import logging
+from contextlib import asynccontextmanager
+import warnings
 
-app = FastAPI()
+from backend.routers import router
+from backend.logger import init_global_logger
+from backend.settings import LOG_FILE
+from backend.analysis.data_analysis import RProcessor
+
+
+logger = logging.getLogger(__name__)
+warnings.filterwarnings("ignore", category=UserWarning)
+
+# Initialize the global logger
+init_global_logger(LOG_FILE)
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+
+    app.state.r_processor = RProcessor(pool_size=8)
+    logger.info("RProcessor initialized")
+    yield
+    app.state.r_processor.close()
+    logger.info("RProcessor shut down")
+
+app = FastAPI(lifespan=lifespan)
 app.include_router(router)
 
 

@@ -1,6 +1,7 @@
-library(tidyverse)
-library(FactoMineR)
-library(ggrepel)
+
+PCA_SCRIPT = """
+suppressPackageStartupMessages(library(FactoMineR))
+suppressPackageStartupMessages(library(ggrepel))
 
 sample_file <- snakemake@input[[1]]
 pca_pdf <- snakemake@output[["pdf"]]
@@ -69,3 +70,5 @@ ggsave(
 
 write_csv(pca_eig_out, pca_eig_s, col_names = TRUE)
 write_csv(pca_sample, pca_results, col_names = TRUE)
+
+"""

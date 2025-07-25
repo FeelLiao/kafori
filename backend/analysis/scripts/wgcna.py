@@ -1,3 +1,4 @@
+WCGNA_SCRIPT = """
 # 导入数据
 library(tidyverse)
 library(WGCNA)
@@ -100,3 +101,5 @@ cyt <- exportNetworkToCytoscape(
   nodeNames = modProbes,
   nodeAttr = moduleColors[inModule]
 )
+
+"""

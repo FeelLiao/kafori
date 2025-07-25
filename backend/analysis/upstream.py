@@ -1,5 +1,4 @@
 from pathlib import Path
-import pandas as pd
 import copy
 
 from snakemake.api import (
@@ -82,14 +81,6 @@ class UpstreamAnalysis(DataAnalysis):
         self.config["ref"]["genome"] = self.genome
         self.config["ref"]["annotation"] = self.annotation
 
-    def sample_file(self) -> Path:
-        """
-        Transform the sample file to a format suitable for the analysis.
-        """
-
-        sample_df = pd.read_excel(self.sample, sheet_name=["SampleInfo"],
-                                  header=None)
-
     def run_analysis(self,
                      dryrun: bool = True,
                      ncores: int = 1,
@@ -133,3 +124,10 @@ class UpstreamAnalysis(DataAnalysis):
             return False
 
         return True
+    
+    def post_process(self) -> None:
+        """
+        Post-process the results of the upstream analysis.
+        This method can be overridden in subclasses to implement specific post-processing steps.
+        """
+        pass

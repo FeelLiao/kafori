@@ -164,7 +164,11 @@ class UploadFileProcessor:
         df["UniqueID"] = ["LRX" + date_str + hex_id for hex_id in hex_ids]
 
         # Add a unique experiment ID
-        df["UniqueEXID"] = ["TRCRIE" + date_str]
+        experiment_groups = df.groupby("Experiment").ngroup() + 1  # 分组编号从1开始
+        df["UniqueEXID"] = [
+            f"TRCRIE{date_str}{str(idx).zfill(3)}"
+            for idx in experiment_groups
+        ]
 
         return df
 
@@ -188,4 +192,14 @@ class UploadFileProcessor:
         """
 
         sample_sheet = pd.DataFrame()
-        sample_sheet["sample"] = dataframe["FileName"].apply
+        sample_sheet["sample"] = dataframe["FileName1"].apply(
+            lambda x: str(x).split("_")[0])
+        sample_sheet["sample_id"] = dataframe["UniqueID"]
+        sample_sheet["read1"] = dataframe["FileName1"].apply(
+            lambda x: str(Path(rawdata_path, x).absolute()))
+        sample_sheet["read2"] = dataframe["FileName2"].apply(
+            lambda x: str(Path(rawdata_path, x).absolute()))
+
+        if to_file:
+            sample_sheet.to_csv(output_path, index=False)
+        return sample_sheet
