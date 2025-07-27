@@ -6,7 +6,7 @@ import warnings
 from backend.routers import router
 from backend.logger import init_global_logger
 from backend.settings import LOG_FILE
-from backend.analysis.data_analysis import RProcessor
+from backend.analysis.analysis_base import RProcessor
 
 
 logger = logging.getLogger(__name__)

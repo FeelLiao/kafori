@@ -11,7 +11,7 @@ from snakemake.api import (
 )
 
 from snakemake_interface_executor_plugins.settings import DeploymentMethod
-from data_analysis import DataAnalysis
+from backend.analysis.analysis_base import DataAnalysis
 
 
 class UpstreamAnalysis(DataAnalysis):

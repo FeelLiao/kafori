@@ -26,4 +26,3 @@ async def upload_xlsx(file: UploadFile = File(...)):
     sample_sheet = BytesIO(await file.read())
     rel = process_sample_sheet(sample_sheet)
     return {"success": rel[0], "msg": rel[1]}
-
