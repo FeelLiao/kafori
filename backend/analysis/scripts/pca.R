@@ -1,5 +1,5 @@
 
-PCA_SCRIPT = """
+
 suppressPackageStartupMessages(library(FactoMineR))
 suppressPackageStartupMessages(library(ggrepel))
 
@@ -71,4 +71,3 @@ ggsave(
 write_csv(pca_eig_out, pca_eig_s, col_names = TRUE)
 write_csv(pca_sample, pca_results, col_names = TRUE)
 
-"""

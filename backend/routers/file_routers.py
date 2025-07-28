@@ -3,8 +3,6 @@ from typing import Tuple
 import logging
 from io import BytesIO
 
-from backend.api.utils import UploadFileProcessor
-from backend.settings import UPLOAD_DIR, UPLOAD_DATA_DIR
 
 file_router = APIRouter()
 logger = logging.getLogger(__name__)

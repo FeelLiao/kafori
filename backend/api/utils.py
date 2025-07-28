@@ -1,205 +1,244 @@
 import pandas as pd
 from pathlib import Path
-from datetime import datetime
-from hashlib import md5
 import re
-from typing import List, Tuple
+import logging
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import os
+import json
+import shutil
+
+logger = logging.getLogger(__name__)
 
 
-class UploadFileProcessor:
+# Utility function to safely search for metrics in HISAT2 log files
+def extract_hisat2_metrics(hisat2_log: Path) -> dict[str, int]:
+    """Extract metrics from a HISAT2 log file.
+    Args:
+        hisat2_log (Path): Path to the HISAT2 log file.
+    Returns:
+        dict: A dictionary containing total reads, mapped reads, and unique mapping.
+    Raises:
+        RuntimeError: If the expected patterns are not found in the log file.
     """
-    A class to process uploaded xlsx files.
+
+    metrics = {"total_reads": 0, "mapped_reads": 0, "unique_mapping": 0}
+    try:
+        hisat2_file = hisat2_log.read_text(encoding="utf-8")
+
+        def safe_search(pattern, text=hisat2_file):
+            m = re.search(pattern, text)
+            return int(m.group(1))
+
+        # Extract useful statistics from hisat2 run log using regex
+        total_reads = safe_search(r"(\d+) reads;")
+        al_con_e_1 = safe_search(
+            r"(\d+)\s*\([^)]*\) aligned concordantly exactly 1 time")
+        al_con_g_1 = safe_search(
+            r"(\d+)\s*\([^)]*\) aligned concordantly >1 times")
+        al_dis_1 = safe_search(
+            r"(\d+)\s*\([^)]*\) aligned discordantly 1 time")
+        al_ex_1 = safe_search(r"(\d+)\s*\([^)]*\) aligned exactly 1 time")
+        al_g_1 = safe_search(r"(\d+)\s*\([^)]*\) aligned >1 times")
+
+        # Calculate total, mapped, and unique reads
+        total = total_reads * 2
+        mapped = al_con_e_1*2 + al_con_g_1*2 + al_dis_1*2 + al_ex_1 + al_g_1
+        unq_map = al_con_e_1*2 + al_dis_1*2 + al_ex_1
+
+        # Update metrics dictionary
+        metrics["total_reads"] = total
+        metrics["mapped_reads"] = mapped
+        metrics["unique_mapping"] = unq_map
+
+    except Exception as e:
+        logger.error(
+            f"Error extracting HISAT2 metrics from {hisat2_log.name}: {e} "
+            "This may indicate that the expected patterns were not found in the log file.", exc_info=True)
+        raise RuntimeError(
+            f"Failed to extract metrics from {hisat2_log}") from e
+    return metrics
+
+
+# process the HISAT2 log report
+# Format percentage safely
+def format_rate(numerator: int, denominator: int) -> str:
+    try:
+        rate = numerator / denominator * 100
+        return f"{rate:.2f}%"
+    except ZeroDivisionError:
+        return "0.00%"
+
+
+# Main function to process a directory of HISAT2 logs
+def align_report(hisat2_log_dir: Path) -> tuple[bool, pd.DataFrame, list[str]]:
     """
+    Process HISAT2 log files in a directory and return a DataFrame with alignment statistics.
+    Args:
+        hisat2_log_dir (Path): Directory containing HISAT2 log files.
+    Returns:
+        tuple: A tuple containing:
+            - bool: True if processing was successful, False if at least one log were error.
+            - pd.DataFrame: DataFrame with alignment statistics.
+            - list[str]: List of log files that failed to process.
+    Raises:
+        RuntimeError: If no valid HISAT2 log files were processed successfully.
+    """
+    hisat2_logs = list(hisat2_log_dir.glob("*.log"))
+    alignment_results: dict[str, dict[str, int]] = {}
+    failed_logs: list[str] = []
 
-    def __init__(self, file: str | Path):
-        """
-        Initialize the UploadFileProcessor with a file path.
-        Args:
-            file (str | Path): The path to the xlsx file.
-        Raises:
-            FileNotFoundError: If the file does not exist.
-            ValueError: If the file is not an xlsx file.
-            RuntimeError: If there is an error reading or parsing the file.
-        """
-        if isinstance(file, str):
-            file = Path(file)
-        self.file = file
-        self.valid_dataframe = self.__file_validation()
-        self.modified_timestamp = self.file.stat().st_mtime
-        self.modified_time = self.__timestamp_to_str(self.modified_timestamp)
-        self.experiment_categories = self.__experiment_category()
-        self.experiments = self.__experiment()
-        self.collection_parts = self.__collection_part()
-
-    def __timestamp_to_str(self, timestamp: float) -> str:
-        """
-        Convert a timestamp to a formatted string.
-        Args:
-            timestamp (float): The timestamp to convert.
-        Returns:
-            str: The formatted date string.
-        """
-        return datetime.fromtimestamp(timestamp).strftime("%Y-%m-%d %H:%M:%S")
-
-    def __file_validation(self) -> pd.DataFrame:
-        """
-        Validate the uploaded file.
-        Checks if the xlsx file is created according to
-        the standard list in the "Explain" sheet.
-        Returns:
-            bool: True if valid, False otherwise.
-        """
-
-        # Check if the file exists and is an xlsx file
-        if not self.file.exists():
-            raise FileNotFoundError(f"File {self.file} does not exist.")
-        if self.file.suffix.lower() != ".xlsx":
-            raise ValueError("File must be an xlsx file.")
-
-        # Read the "SampleInfo" sheet.
+    def process_log(log_file: Path) -> tuple[str, dict[str, int]]:
         try:
-            df = pd.read_excel(self.file, sheet_name="SampleInfo", header=0,
-                               dtype={"CollectionTime": str},
-                               na_values=["", "NA", "null", "None", "999"])
+            sample = log_file.stem
+            metrics = extract_hisat2_metrics(log_file)
+            return sample, metrics
+        except Exception:
+            return None
 
-            # Check if CollectionTime and SampleAge is in the correct format
-            df["CollectionTime"] = pd.to_datetime(df["CollectionTime"])
-            df["SampleAge"] = pd.to_numeric(df["SampleAge"]).astype("Int64")
+    max_workers = min(8, os.cpu_count() or 1)
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = {executor.submit(process_log, log_file): log_file.name for log_file in hisat2_logs}
+        for future in as_completed(futures):
+            results = future.result()
+            if results is not None:
+                sample, metrics = results
+                alignment_results[sample] = metrics
+            else:
+                log_name = futures[future]
+                failed_logs.append(log_name)
+
+    if not alignment_results:
+        raise RuntimeError(
+            "No valid HISAT2 log files were processed successfully.")
+
+    # Construct DataFrame
+    df = pd.DataFrame.from_dict(alignment_results, orient='index')
+    df.index.name = "Sample"
+    df.reset_index(inplace=True)
+
+    # Add formatted rate columns
+    df["Mapped Rate"] = df.apply(lambda x: format_rate(
+        x["mapped_reads"], x["total_reads"]), axis=1)
+    df["Unique Mapped Rate"] = df.apply(lambda x: format_rate(
+        x["unique_mapping"], x["total_reads"]), axis=1)
+
+    # Rename columns for clarity
+    df = df.rename(columns={
+        "total_reads": "Total Reads",
+        "mapped_reads": "Reads Mapped",
+        "unique_mapping": "Unique Mapped"
+    })
+
+    # Define final column order
+    final_columns = [
+        "Sample", "Total Reads", "Reads Mapped", "Mapped Rate",
+        "Unique Mapped", "Unique Mapped Rate"
+    ]
+    df = df[[col for col in final_columns if col in df.columns]]
+    df = df.sort_values(by="Sample")
+    if failed_logs:
+        logger.warning(
+            f"Some logs failed to process: {', '.join(failed_logs)}. "
+            "Check the logs for more details.")
+        return False, df, failed_logs
+
+    return True, df, failed_logs
+
+
+def trim_report(fastp_json_dir: Path) -> tuple[bool, pd.DataFrame, list[str]]:
+    """
+    Parse a list of fastp JSON report files and return a summary DataFrame (multi-threaded).
+    Args:
+        fastp_json_dir (Path): Directory containing fastp JSON files.
+    Returns:
+        tuple: A tuple containing:
+            - bool: True if processing was successful, False if at least one file failed.
+            - pd.DataFrame: DataFrame with summary statistics.
+            - list[str]: List of JSON files that failed to process.
+    Raises:
+        RuntimeError: If no valid fastp JSON files were processed successfully.
+    """
+    report_json_files = list(fastp_json_dir.glob("*.json"))
+    report_all: dict[str, dict[str, int | str]] = {}
+    report_errors: list[str] = []
+
+    def process_json(report: Path):
+        try:
+            with open(report, 'r') as f:
+                data = json.load(f)
+                before = data["summary"]["before_filtering"]
+                after = data["summary"]["after_filtering"]
+                data_out = {
+                    "total_reads": before["total_reads"],
+                    "after_filtering": after["total_reads"],
+                    "GC_content": after["gc_content"]
+                }
+                sample = report.stem
+                return sample, data_out
         except Exception as e:
-            raise RuntimeError(
-                f"Error reading or parsing file {self.file}: {e}"
-            ) from e
+            logger.error(f"Error processing {report}: {e}", exc_info=True)
+            return None
 
-        # Check if SampleID is in the correct format
-        invalid_ids_index = df["SampleID"].apply(lambda x: not re.match(
-            r"^[A-Za-z][A-Za-z0-9]*-\d{1,2}$", str(x)))
-        invalid_ids = df.loc[invalid_ids_index, "SampleID"]
-        if not invalid_ids.empty:
-            raise ValueError(
-                f"SampleID contains invalid characters: {invalid_ids.tolist()}\n"
-                "SampleID must follow the format: start with a letter (A-Z or a-z), "
-                "followed by any number of letters or digits, then a hyphen '-', "
-                "and end with 1 or 2 digits. Example: 'A-1', 'SBA23-11'.")
+    max_workers = min(8, os.cpu_count() or 1)
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = {executor.submit(process_json, log_file): log_file.name for log_file in report_json_files}
+        for future in as_completed(futures):
+            results = future.result()
+            if results is not None:
+                sample, data = results
+                report_all[sample] = data
+            else:
+                log_name = futures[future]
+                report_errors.append(log_name)
 
-        duplicated_ids = df.loc[df["SampleID"].duplicated(), "SampleID"]
-        if not duplicated_ids.empty:
-            raise ValueError(
-                f"SampleID contains duplicate values: {duplicated_ids.tolist()}\n"
-                "Each SampleID must be unique.")
+    if not report_all:
+        raise RuntimeError(
+            "No valid fastp json files were processed successfully.")
 
-        return df
+    trim_report = pd.DataFrame.from_dict(report_all, orient='index')
+    trim_report.index.name = "Sample"
+    trim_report.reset_index(inplace=True)
 
-    def __experiment_category(self) -> List:
-        """
-        Get the unique experiment categories from the DataFrame.
-        Returns:
-            List: A list of unique experiment categories.
-        """
-        return self.valid_dataframe["ExperimentCategory"].unique().tolist()
+    trim_report["PassRate"] = trim_report["after_filtering"] / \
+        trim_report["total_reads"] * 100
+    trim_report["PassRate"] = trim_report["PassRate"].round(2)
+    trim_report["GC_content"] = trim_report["GC_content"].round(2)
+    trim_report["PassRate"] = trim_report["PassRate"].astype(str) + "%"
+    trim_report["GC_content"] = trim_report["GC_content"].astype(str) + "%"
 
-    def __experiment(self) -> List:
-        """
-        Get the unique experiments from the DataFrame.
-        Returns:
-            List: A list of unique experiments.
-        """
-        return self.valid_dataframe["Experiment"].unique().tolist()
+    trim_report = trim_report.rename(
+        columns={
+            "total_reads": "Total Reads",
+            "after_filtering": "After Filtering",
+            "GC_content": "GC Content",
+            "PassRate": "Pass Rate"
+        }
+    )
 
-    def __collection_part(self) -> List:
-        """
-        Get the unique collection parts from the DataFrame.
-        Returns:
-            List: A list of unique collection parts.
-        """
-        return self.valid_dataframe["CollectionPart"].unique().tolist()
+    trim_report = trim_report.sort_values(by=["Sample"], ascending=True)
+    if report_errors:
+        logger.warning(
+            f"Some fastp JSON files failed to process: {', '.join(report_errors)}. "
+            "Check the logs for more details.")
+        return False, trim_report, report_errors
+    return True, trim_report, report_errors
 
-    def rawdata_validation(self, rawdata_path: Path) -> Tuple[bool, List[str]]:
-        """
-        Validate the md5 of raw data.
-        Args:
-            rawdata_path (Path): The path to the raw data directory.
-        Returns:
-            bool: True if valid, False otherwise.
-        """
-        if not rawdata_path.exists():
-            raise FileNotFoundError(
-                f"Raw data path {rawdata_path} does not exist.")
 
-        files1 = self.valid_dataframe[["FileName1", "MD5checksum1"]]
-        files2 = self.valid_dataframe[["FileName2", "MD5checksum2"]]
-        files1_dict = dict(zip(files1["FileName1"], files1["MD5checksum1"]))
-        files2_dict = dict(zip(files2["FileName2"], files2["MD5checksum2"]))
-        files_dict = {**files1_dict, **files2_dict}
-        md5_result = {}
-        for file_name, md5_checksum in files_dict.items():
-            file_path = rawdata_path / file_name
-            if not file_path.exists():
-                raise FileNotFoundError(f"File {file_name} does not exist in "
-                                        f"raw data path {rawdata_path}.")
+def cleanup_directories(directories: list[Path]) -> None:
+    """
+    Clean up specified directories by removing them if they exist.
 
-            with open(file_path, "rb") as f:
-                file_md5 = md5(f.read()).hexdigest()
-
-            if file_md5 != md5_checksum:
-                md5_result[file_name] = False
-
-        if not md5_result:
-            return True, []
+    Args:
+        directories (list[Path]): List of Path objects representing directories to clean up.
+    """
+    for dir_path in directories:
+        if dir_path.exists():
+            try:
+                shutil.rmtree(dir_path)
+                logger.info(f"Removed directory: {dir_path}")
+            except Exception as e:
+                logger.error(
+                    f"Error removing directory {dir_path}: {e}", exc_info=True)
         else:
-            return False, list(md5_result.keys())
-
-    def database_wrapper(self) -> pd.DataFrame:
-        """
-        Wrap the valid DataFrame with "UniqueID" and "UniqueEXID" columns
-        for database insertion.
-        Returns:
-            pd.DataFrame: The DataFrame with additional columns.
-        """
-        df = self.valid_dataframe.copy()
-        timestamp_int = int(self.modified_timestamp)
-        date_str = format(timestamp_int, "x").zfill(8)
-
-        # Add a unique identifier for each sample
-        hex_ids = [format(i+1, "x").zfill(3) for i in range(len(df))]
-        df["UniqueID"] = ["LRX" + date_str + hex_id for hex_id in hex_ids]
-
-        # Add a unique experiment ID
-        experiment_groups = df.groupby("Experiment").ngroup() + 1  # 分组编号从1开始
-        df["UniqueEXID"] = [
-            f"TRCRIE{date_str}{str(idx).zfill(3)}"
-            for idx in experiment_groups
-        ]
-
-        return df
-
-    @staticmethod
-    def trans_to_smk_samples(dataframe: pd.DataFrame,
-                             rawdata_path: Path,
-                             to_file: bool = False,
-                             output_path: Path | None = None) -> pd.DataFrame:
-        """
-        Convert the DataFrame to snakemake samples format.
-        Args:
-            dataframe (pd.DataFrame): The DataFrame to convert. The dataframe
-                should be the processed dataframe from the UploadFileProcessor
-                class (the dataframe to write into mysql).
-            rawdata_path (Path): The path to the raw data directory.
-            to_file (bool): Whether to save the converted DataFrame to a file.
-            output_path (Path | None): The path to save the converted DataFrame.
-                If None, the DataFrame will not be saved to a file.
-        Returns:
-            pd.DataFrame: The converted DataFrame.
-        """
-
-        sample_sheet = pd.DataFrame()
-        sample_sheet["sample"] = dataframe["FileName1"].apply(
-            lambda x: str(x).split("_")[0])
-        sample_sheet["sample_id"] = dataframe["UniqueID"]
-        sample_sheet["read1"] = dataframe["FileName1"].apply(
-            lambda x: str(Path(rawdata_path, x).absolute()))
-        sample_sheet["read2"] = dataframe["FileName2"].apply(
-            lambda x: str(Path(rawdata_path, x).absolute()))
-
-        if to_file:
-            sample_sheet.to_csv(output_path, index=False)
-        return sample_sheet
+            logger.warning(f"Directory does not exist: {dir_path}")

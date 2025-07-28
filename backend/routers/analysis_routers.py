@@ -20,4 +20,3 @@ async def ex_class():
 async def tpm_viz(request: Request):
     result = await tpm(request)
     return {"result": str(result)}
-    

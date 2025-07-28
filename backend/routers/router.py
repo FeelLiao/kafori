@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from backend.api.file_routers import file_router
-from backend.db.db_routers import db_router
+from backend.routers.file_routers import file_router
+from backend.routers.db_routers import db_router
 
 router = APIRouter()
 router.include_router(file_router)

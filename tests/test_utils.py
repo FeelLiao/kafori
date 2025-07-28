@@ -1,134 +1,208 @@
 import pytest
-import pandas as pd
-from backend.api.utils import UploadFileProcessor
+from backend.api import utils
+
+hisat2_log_content = (
+    """
+      14832983 reads; of these:
+        14832983 (100.00%) were paired; of these:
+          1131460 (7.63%) aligned concordantly 0 times
+          7155488 (48.24%) aligned concordantly exactly 1 time
+          6546035 (44.13%) aligned concordantly >1 times
+          ----
+          1131460 pairs aligned concordantly 0 times; of these:
+            99429 (8.79%) aligned discordantly 1 time
+          ----
+          1032031 pairs aligned 0 times concordantly or discordantly; of these:
+            2064062 mates make up the pairs; of these:
+              627387 (30.40%) aligned 0 times
+              582845 (28.24%) aligned exactly 1 time
+              853830 (41.37%) aligned >1 times
+      97.89% overall alignment rate
+      [bam_sort_core] merging from 2 files and 8 in-memory blocks...
+"""
+)
+
+fastp_json_content = (
+    """
+{
+    "summary": {
+        "fastp_version": "0.23.4",
+        "sequencing": "paired end (151 cycles + 151 cycles)",
+        "before_filtering": {
+            "total_reads":30550358,
+            "total_bases":4575072545,
+            "q20_bases":4456108328,
+            "q30_bases":4258564656,
+            "q20_rate":0.973997,
+            "q30_rate":0.930819,
+            "read1_mean_length":149,
+            "read2_mean_length":149,
+            "gc_content":0.521848
+        },
+        "after_filtering": {
+            "total_reads":29665966,
+            "total_bases":4441892767,
+            "q20_bases":4345773040,
+            "q30_bases":4158820875,
+            "q20_rate":0.978361,
+            "q30_rate":0.936272,
+            "read1_mean_length":149,
+            "read2_mean_length":149,
+            "gc_content":0.521226
+        }
+    }
+}
+    """
+)
 
 
 @pytest.fixture
-def valid_xlsx(tmp_path):
-    # Create a valid DataFrame
-    df = pd.DataFrame({
-        "SampleID": ["A001", "B002"],
-        "CollectionTime": ["2024/01/01", "2024/01/02"],
-        "SampleAge": [10, 20]
-    })
-    file_path = tmp_path / "valid.xlsx"
-    with pd.ExcelWriter(file_path) as writer:
-        df.to_excel(writer, sheet_name="SampleInfo", index=False)
-    return file_path
+def hisat2_log_path(tmp_path, content=hisat2_log_content):
+    names = [f"sample{i+1}.log" for i in range(100)]
+    log_path1 = tmp_path / "hisat2_logs1"
+    log_path1.mkdir(parents=True, exist_ok=True)
+    for name in names:
+        log = log_path1 / name
+        log.write_text(content, encoding="utf-8")
+
+    log_path0 = tmp_path / "hisat2_logs0"
+    log_path0.mkdir(parents=True, exist_ok=True)
+    for name in names:
+        log = log_path0 / name
+        log.write_text(content, encoding="utf-8")
+    hisat2_error = log_path0 / "hisat2_error.log"
+    hisat2_error.write_text("test for error!!", encoding="utf-8")
+    return log_path0, log_path1
 
 
 @pytest.fixture
-def invalid_sampleid_xlsx(tmp_path):
-    df = pd.DataFrame({
-        # First SampleID does not start with a letter
-        "SampleID": ["001A", "B002"],
-        "CollectionTime": ["2024/01/01", "2024/01/02"],
-        "SampleAge": [10, 20]
-    })
-    file_path = tmp_path / "invalid_sampleid.xlsx"
-    with pd.ExcelWriter(file_path) as writer:
-        df.to_excel(writer, sheet_name="SampleInfo", index=False)
-    return file_path
+def fastp_json_path(tmp_path, content=fastp_json_content):
+    names = [f"sample{i+1}.json" for i in range(100)]
+    log_path1 = tmp_path / "fastp_json1"
+    log_path1.mkdir(parents=True, exist_ok=True)
+    for name in names:
+        log = log_path1 / name
+        log.write_text(content, encoding="utf-8")
+
+    log_path0 = tmp_path / "fastp_json0"
+    log_path0.mkdir(parents=True, exist_ok=True)
+    for name in names:
+        log = log_path0 / name
+        log.write_text(content, encoding="utf-8")
+    hisat2_error = log_path0 / "fastp_json_error.json"
+    hisat2_error.write_text("test for error!!", encoding="utf-8")
+    return log_path0, log_path1
 
 
-@pytest.fixture
-def wrong_extension_file(tmp_path):
-    file_path = tmp_path / "file.txt"
-    file_path.write_text("Not an xlsx file")
-    return file_path
+def test_extract_hisat2_metrics_success(hisat2_log_path):
+    log_path = hisat2_log_path[1] / "sample1.log"
+    metrics = utils.extract_hisat2_metrics(log_path)
+    assert metrics["total_reads"] == 29665966
+    assert metrics["mapped_reads"] == 29038579
+    assert metrics["unique_mapping"] == 15092679
 
 
-def test_valid_file_processing(valid_xlsx):
-    processor = UploadFileProcessor(valid_xlsx)
-    df = processor.valid_dataframe
-    assert isinstance(df, pd.DataFrame)
-    assert list(df["SampleID"]) == ["A001", "B002"]
-    assert pd.api.types.is_datetime64_any_dtype(df["CollectionTime"])
-    assert pd.api.types.is_integer_dtype(df["SampleAge"])
+def test_extract_hisat2_metrics_missing_pattern(hisat2_log_path, caplog):
+    log_path = hisat2_log_path[0] / "hisat2_error.log"
+    with caplog.at_level("ERROR"):
+        with pytest.raises(RuntimeError):
+            utils.extract_hisat2_metrics(log_path)
+    assert "Error extracting HISAT2 metrics" in caplog.text
 
 
-def test_unique_sample_ids(valid_xlsx):
-    processor = UploadFileProcessor(valid_xlsx)
-    df = processor.unique_sample_ids()
-    assert "UniqueID" in df.columns
-    # Check that UniqueID is a 32-character hex string
-    assert all(df["UniqueID"].str.match(r"^[a-f0-9]{32}$"))
+@pytest.mark.parametrize("numerator,denominator,expected", [
+    (50, 100, "50.00%"),
+    (0, 100, "0.00%"),
+    (1, 3, "33.33%"),
+    (0, 0, "0.00%"),
+])
+def test_format_rate(numerator, denominator, expected):
+    assert utils.format_rate(numerator, denominator) == expected
 
 
-def test_file_not_found(tmp_path):
-    missing_file = tmp_path / "missing.xlsx"
-    with pytest.raises(FileNotFoundError):
-        UploadFileProcessor(missing_file)
+def test_align_report(hisat2_log_path):
+    status, df, failed_logs = utils.align_report(hisat2_log_path[1])
+    assert status is True
+    assert not failed_logs
+    assert not df.empty
+    assert set(df["Sample"]) == set([
+        name.stem for name in list(hisat2_log_path[1].glob("*.log"))])
+    assert all(df["Mapped Rate"] == "97.89%")
+    assert all(df["Unique Mapped Rate"] == "50.88%")
+    assert all(df["Total Reads"] == 29665966)
+    assert all(df["Reads Mapped"] == 29038579)
+    assert all(df["Unique Mapped"] == 15092679)
 
 
-def test_wrong_extension(wrong_extension_file):
-    with pytest.raises(ValueError, match="File must be an xlsx file."):
-        UploadFileProcessor(wrong_extension_file)
+def test_align_report_error_files(hisat2_log_path, caplog):
+    with caplog.at_level("WARNING"):
+        status, df, failed_logs = utils.align_report(hisat2_log_path[0])
+
+    assert "Some logs failed to process" in caplog.text
+    assert "Error extracting HISAT2 metrics from" in caplog.text
+    assert status is False
+    assert failed_logs == ["hisat2_error.log"]
+    assert not df.empty
+    assert set(df["Sample"]) == set([
+        name.stem for name in list(hisat2_log_path[1].glob("*.log"))])
+    assert all(df["Mapped Rate"] == "97.89%")
+    assert all(df["Unique Mapped Rate"] == "50.88%")
+    assert all(df["Total Reads"] == 29665966)
+    assert all(df["Reads Mapped"] == 29038579)
+    assert all(df["Unique Mapped"] == 15092679)
 
 
-def test_invalid_sampleid(invalid_sampleid_xlsx):
-    with pytest.raises(ValueError,
-                       match="SampleID contains invalid characters"):
-        UploadFileProcessor(invalid_sampleid_xlsx)
-
-
-def test_invalid_sheet_name(tmp_path):
-    # Create xlsx with wrong sheet name
-    df = pd.DataFrame({
-        "SampleID": ["A001"],
-        "CollectionTime": ["2024/01/01"],
-        "SampleAge": [10]
-    })
-    file_path = tmp_path / "wrong_sheet.xlsx"
-    with pd.ExcelWriter(file_path) as writer:
-        df.to_excel(writer, sheet_name="WrongSheet", index=False)
+def test_align_report_no_logs(tmp_path):
     with pytest.raises(RuntimeError):
-        UploadFileProcessor(file_path)
+        utils.align_report(tmp_path)
 
-        def test_trans_to_smk_samples_basic(tmp_path):
-            # Prepare a minimal DataFrame
-            df = pd.DataFrame({
-                "FileName1": ["A001_R1.fastq", "B002_R1.fastq"],
-                "FileName2": ["A001_R2.fastq", "B002_R2.fastq"],
-                "UniqueID": ["LRX123abc001", "LRX123abc002"]
-            })
-            rawdata_path = tmp_path
-            # Create dummy files
-            for fname in df["FileName1"].tolist() + df["FileName2"].tolist():
-                (rawdata_path / fname).write_text("dummy")
-            result = UploadFileProcessor.trans_to_smk_samples(df, rawdata_path)
-            assert list(result["sample"]) == ["A001", "B002"]
-            assert list(result["sample_id"]) == [
-                "LRX123abc001", "LRX123abc002"]
-            assert all(rawdata_path.name in p for p in result["read1"])
-            assert all(rawdata_path.name in p for p in result["read2"])
 
-        def test_trans_to_smk_samples_to_file(tmp_path):
-            df = pd.DataFrame({
-                "FileName1": ["C003_R1.fastq"],
-                "FileName2": ["C003_R2.fastq"],
-                "UniqueID": ["LRX123abc003"]
-            })
-            rawdata_path = tmp_path
-            for fname in df["FileName1"].tolist() + df["FileName2"].tolist():
-                (rawdata_path / fname).write_text("dummy")
-            output_path = tmp_path / "samples.csv"
-            result = UploadFileProcessor.trans_to_smk_samples(
-                df, rawdata_path, to_file=True, output_path=output_path
-            )
-            assert output_path.exists()
-            loaded = pd.read_csv(output_path)
-            assert list(loaded["sample"]) == ["C003"]
-            assert list(loaded["sample_id"]) == ["LRX123abc003"]
+def test_trim_report(fastp_json_path):
+    status, df, failed_logs = utils.trim_report(fastp_json_path[1])
+    assert status is True
+    assert not failed_logs
+    assert not df.empty
+    assert set(df["Sample"]) == set([
+        name.stem for name in list(fastp_json_path[1].glob("*.json"))])
+    assert all(df["Total Reads"] == 30550358)
+    assert all(df["After Filtering"] == 29665966)
+    assert all(df["Pass Rate"] == "97.11%")
+    assert all(df["GC Content"] == "0.52%")
 
-        def test_trans_to_smk_samples_handles_missing_columns():
-            df = pd.DataFrame({
-                "FileName1": ["D004_R1.fastq"],
-                "UniqueID": ["LRX123abc004"]
-                # Missing FileName2
-            })
-            rawdata_path = Path("/tmp")
-            try:
-                UploadFileProcessor.trans_to_smk_samples(df, rawdata_path)
-            except KeyError as e:
-                assert "FileName2" in str(e)
+
+def test_trim_report_error_files(fastp_json_path, caplog):
+    with caplog.at_level("WARNING"):
+        status, df, failed_logs = utils.trim_report(fastp_json_path[0])
+
+    assert "Some fastp JSON files failed to process" in caplog.text
+    assert "Error processing" in caplog.text
+    assert status is False
+    assert failed_logs == ["fastp_json_error.json"]
+    assert not df.empty
+    assert set(df["Sample"]) == set([
+        name.stem for name in list(fastp_json_path[1].glob("*.json"))])
+    assert all(df["Total Reads"] == 30550358)
+    assert all(df["After Filtering"] == 29665966)
+    assert all(df["Pass Rate"] == "97.11%")
+    assert all(df["GC Content"] == "0.52%")
+
+
+def test_trim_report_empty(tmp_path):
+    with pytest.raises(RuntimeError):
+        utils.trim_report(tmp_path)
+
+
+def test_cleanup_directories(tmp_path, caplog):
+    d1 = tmp_path / "dir1"
+    d2 = tmp_path / "dir2"
+    d1.mkdir()
+    d2.mkdir()
+    file1 = d1 / "file.txt"
+    file1.write_text("test")
+    utils.cleanup_directories([d1, d2])
+    assert not d1.exists()
+    assert not d2.exists()
+    # Test non-existent directory
+    with caplog.at_level("WARNING"):
+        utils.cleanup_directories([d1])
+    assert "Directory does not exist" in caplog.text

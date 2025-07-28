@@ -1,5 +1,5 @@
 
-DEG_SCRIPT = """
+
 library(edgeR)
 
 count_matrix <-snakemake@input[[1]]
@@ -55,4 +55,4 @@ output <- p_deg_edger |>
 
 write_csv(output, deg_table)
 
-"""
+

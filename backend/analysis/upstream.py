@@ -124,10 +124,9 @@ class UpstreamAnalysis(DataAnalysis):
             return False
 
         return True
-    
+
     def post_process(self) -> None:
         """
         Post-process the results of the upstream analysis.
-        This method can be overridden in subclasses to implement specific post-processing steps.
         """
-        pass
+        
