@@ -6,7 +6,7 @@ from snakemake.utils import min_version
 min_version("8.25.3")
 
 ##### setup config #####
-configfile: "config/config.yaml"
+# configfile: "config/config.yaml"
 
 
 ##### load rules #####

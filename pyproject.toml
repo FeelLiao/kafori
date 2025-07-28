@@ -16,7 +16,8 @@ dependencies = [
     "openpyxl (>=3.1.5,<4.0.0)",
     "python-multipart (>=0.0.20,<0.0.21)",
     "rpy2 (>=3.6.1,<4.0.0)",
-    "pyyaml (>=6.0.2,<7.0.0)"
+    "pyyaml (>=6.0.2,<7.0.0)",
+    "pytest-asyncio (>=1.1.0,<2.0.0)"
 ]
 package-mode = false
 

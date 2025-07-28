@@ -1,0 +1,47 @@
+Detecting adapter sequence for read1...
+TCATCATCAT
+
+Detecting adapter sequence for read2...
+ACACACACAC
+
+Read1 before filtering:
+total reads: 10000
+total bases: 1000000
+Q20 bases: 995754(99.5754%)
+Q30 bases: 947030(94.703%)
+
+Read2 before filtering:
+total reads: 10000
+total bases: 1000000
+Q20 bases: 995731(99.5731%)
+Q30 bases: 947148(94.7148%)
+
+Read1 after filtering:
+total reads: 9949
+total bases: 990170
+Q20 bases: 985991(99.578%)
+Q30 bases: 937954(94.7266%)
+
+Read2 after filtering:
+total reads: 9949
+total bases: 993778
+Q20 bases: 989540(99.5735%)
+Q30 bases: 941279(94.7172%)
+
+Filtering result:
+reads passed filter: 19898
+reads failed due to low quality: 0
+reads failed due to too many N: 0
+reads failed due to too short: 102
+reads with adapter trimmed: 210
+bases trimmed due to adapters: 9331
+
+Duplication rate: 0%
+
+Insert size peak (evaluated by paired-end reads): 53
+
+JSON report: out/reports/json/Buntreated-1.json
+HTML report: out/reports/fastp_reports_html/Buntreated-1.html
+
+fastp --thread 2 --detect_adapter_for_pe --in1 /home/feelliao/project/kafori/tests/upstream/ngs-test-data/Buntreated-1_2.fq --in2 /home/feelliao/project/kafori/tests/upstream/ngs-test-data/Buntreated-1_1.fq --out1 out/trimmed/Buntreated-1_1.fq --out2 out/trimmed/Buntreated-1_2.fq --json out/reports/json/Buntreated-1.json --html out/reports/fastp_reports_html/Buntreated-1.html 
+fastp v0.24.0, time used: 1 seconds

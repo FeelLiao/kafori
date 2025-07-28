@@ -1,5 +1,6 @@
 from pathlib import Path
 import copy
+import logging
 
 from snakemake.api import (
     OutputSettings,
@@ -9,9 +10,12 @@ from snakemake.api import (
     ConfigSettings,
     DeploymentSettings
 )
-
 from snakemake_interface_executor_plugins.settings import DeploymentMethod
+
 from backend.analysis.analysis_base import DataAnalysis
+from backend.api.utils import align_report, trim_report, cleanup_directories
+
+logger = logging.getLogger(__name__)
 
 
 class UpstreamAnalysis(DataAnalysis):
@@ -80,6 +84,7 @@ class UpstreamAnalysis(DataAnalysis):
         self.config["samples"] = self.sample
         self.config["ref"]["genome"] = self.genome
         self.config["ref"]["annotation"] = self.annotation
+        logger.info(f"Config updated: {self.config}")
 
     def run_analysis(self,
                      dryrun: bool = True,
@@ -97,7 +102,8 @@ class UpstreamAnalysis(DataAnalysis):
 
         storage_settings = StorageSettings()
         resource_settings = ResourceSettings(cores=ncores)
-        config_settings = ConfigSettings(config=self.config)
+        config_settings = ConfigSettings(config=self.config,
+                                         replace_workflow_config=True)
         deployment_settings = DeploymentSettings(
             deployment_method=deployment_method,
         )
@@ -106,6 +112,8 @@ class UpstreamAnalysis(DataAnalysis):
             executor_mode = "dryrun"
         else:
             executor_mode = "local"
+
+        run_status = True
 
         try:
             with SnakemakeApi(output_settings) as snakemake_api:
@@ -117,16 +125,27 @@ class UpstreamAnalysis(DataAnalysis):
                     snakefile=self.snakefile_path,
                     workdir=self.work_dir
                 )
+                logger.info("Running upstream workflow")
                 workflow.dag().execute_workflow(executor=executor_mode)
 
         except Exception as e:
-            print(f"Upstream analysis failed: {e}")
-            return False
+            logger.error(f"Upstream analysis failed: {e}", exc_info=True)
+            run_status = False
+            raise RuntimeError(
+                f"Upstream analysis failed: {e}") from e
 
-        return True
+        return run_status
 
     def post_process(self) -> None:
         """
         Post-process the results of the upstream analysis.
         """
-        
+        # Process HISAT2 alignment reports
+        hisat2_log_dir = self.work_dir/"out"/"logs"/"hisat2_align"
+        success, alignment_df, failed_logs = align_report(hisat2_log_dir)
+
+        if not success:
+            print(f"Failed to process some HISAT2 logs: {failed_logs}")
+
+        # Cleanup directories
+        cleanup_directories(self.work_dir)

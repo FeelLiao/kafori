@@ -4,11 +4,20 @@ from datetime import datetime
 from hashlib import md5
 import re
 from typing import List, Tuple
+import logging
+from concurrent.futures import ProcessPoolExecutor, as_completed
+import os
+
+logger = logging.getLogger(__name__)
 
 
 class UploadFileProcessor:
     """
     A class to process uploaded xlsx files.
+    Raises:
+        FileNotFoundError: If the file does not exist.
+        ValueError: If the file is not an xlsx file.
+        RuntimeError: If there is an error reading or parsing the file.
     """
 
     def __init__(self, file: str | Path):
@@ -16,10 +25,6 @@ class UploadFileProcessor:
         Initialize the UploadFileProcessor with a file path.
         Args:
             file (str | Path): The path to the xlsx file.
-        Raises:
-            FileNotFoundError: If the file does not exist.
-            ValueError: If the file is not an xlsx file.
-            RuntimeError: If there is an error reading or parsing the file.
         """
         if isinstance(file, str):
             file = Path(file)
@@ -52,8 +57,10 @@ class UploadFileProcessor:
 
         # Check if the file exists and is an xlsx file
         if not self.file.exists():
-            raise FileNotFoundError(f"File {self.file} does not exist.")
+            logger.error("uploaded sample sheet does not exist")
+            raise FileNotFoundError(f"File {self.file.name} does not exist.")
         if self.file.suffix.lower() != ".xlsx":
+            logger.error("sample sheet file must be xlsx format")
             raise ValueError("File must be an xlsx file.")
 
         # Read the "SampleInfo" sheet.
@@ -61,13 +68,16 @@ class UploadFileProcessor:
             df = pd.read_excel(self.file, sheet_name="SampleInfo", header=0,
                                dtype={"CollectionTime": str},
                                na_values=["", "NA", "null", "None", "999"])
-
+            logger.info(f"sample sheet file successfully read: {self.file.name}")
             # Check if CollectionTime and SampleAge is in the correct format
             df["CollectionTime"] = pd.to_datetime(df["CollectionTime"])
+            logger.info("CollectionTime column successfully converted to datetime")
             df["SampleAge"] = pd.to_numeric(df["SampleAge"]).astype("Int64")
+            logger.info("SampleAge column successfully converted to numeric")
         except Exception as e:
+            logger.error(f"Error reading sample sheet file: {self.file.name}")
             raise RuntimeError(
-                f"Error reading or parsing file {self.file}: {e}"
+                f"Error reading or parsing file {self.file.name}: {e}"
             ) from e
 
         # Check if SampleID is in the correct format
@@ -75,6 +85,7 @@ class UploadFileProcessor:
             r"^[A-Za-z][A-Za-z0-9]*-\d{1,2}$", str(x)))
         invalid_ids = df.loc[invalid_ids_index, "SampleID"]
         if not invalid_ids.empty:
+            logger.error(f"{self.file.name} SampleID contains invalid characters: {invalid_ids.to_list()}")
             raise ValueError(
                 f"SampleID contains invalid characters: {invalid_ids.tolist()}\n"
                 "SampleID must follow the format: start with a letter (A-Z or a-z), "
@@ -83,6 +94,7 @@ class UploadFileProcessor:
 
         duplicated_ids = df.loc[df["SampleID"].duplicated(), "SampleID"]
         if not duplicated_ids.empty:
+            logger.error(f"{self.file} SampleID contains duplicate values: {duplicated_ids.tolist()}")
             raise ValueError(
                 f"SampleID contains duplicate values: {duplicated_ids.tolist()}\n"
                 "Each SampleID must be unique.")
@@ -113,15 +125,29 @@ class UploadFileProcessor:
         """
         return self.valid_dataframe["CollectionPart"].unique().tolist()
 
+    @staticmethod
+    def check_md5(file_path: Path, expected_md5: str) -> Tuple[str, bool]:
+        if not file_path.exists():
+            logger.error(f"file {file_path.name} does not exist.")
+            raise FileNotFoundError(f"File {file_path.name} does not exist in raw data path.")
+        with open(file_path, "rb") as f:
+            logger.info(f"{file_path.name} is checking md5 value")
+            file_md5 = md5(f.read()).hexdigest()
+        return file_path.name, file_md5 == expected_md5
+
     def rawdata_validation(self, rawdata_path: Path) -> Tuple[bool, List[str]]:
         """
         Validate the md5 of raw data.
         Args:
             rawdata_path (Path): The path to the raw data directory.
         Returns:
-            bool: True if valid, False otherwise.
+            Tuple[bool, List[str]]: A tuple containing a boolean indicating
+            whether the validation passed and a list of failed files.
+        Raises:
+            FileNotFoundError: If the raw data path does not exist.
         """
         if not rawdata_path.exists():
+            logger.error(f"Rawdata path {rawdata_path} does not exist.")
             raise FileNotFoundError(
                 f"Raw data path {rawdata_path} does not exist.")
 
@@ -130,23 +156,28 @@ class UploadFileProcessor:
         files1_dict = dict(zip(files1["FileName1"], files1["MD5checksum1"]))
         files2_dict = dict(zip(files2["FileName2"], files2["MD5checksum2"]))
         files_dict = {**files1_dict, **files2_dict}
-        md5_result = {}
-        for file_name, md5_checksum in files_dict.items():
-            file_path = rawdata_path / file_name
-            if not file_path.exists():
-                raise FileNotFoundError(f"File {file_name} does not exist in "
-                                        f"raw data path {rawdata_path}.")
 
-            with open(file_path, "rb") as f:
-                file_md5 = md5(f.read()).hexdigest()
+        failed_files = []
+        max_workers = min(8, os.cpu_count() or 1)
+        with ProcessPoolExecutor(max_workers=max_workers) as executor:
+            futures = {
+                executor.submit(self.check_md5, rawdata_path / file_name, md5_checksum): file_name
+                for file_name, md5_checksum in files_dict.items()
+            }
+            for future in as_completed(futures):
+                try:
+                    file_name, is_valid = future.result()
+                    if not is_valid:
+                        logger.error(f"{file_name} md5 value check failed")
+                        failed_files.append(file_name)
+                except Exception as e:
+                    logger.error(f"Error checking {futures[future]}: {e}")
+                    failed_files.append(futures[future])
 
-            if file_md5 != md5_checksum:
-                md5_result[file_name] = False
-
-        if not md5_result:
+        if not failed_files:
             return True, []
         else:
-            return False, list(md5_result.keys())
+            return False, failed_files
 
     def database_wrapper(self) -> pd.DataFrame:
         """
