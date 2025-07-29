@@ -3,4 +3,5 @@ __pycache__/
 .snakemake/
 .vscode/
 .pytest_cache/
-uploaded_files/
+.coverage
+tests/upstream/out/

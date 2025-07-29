@@ -1,117 +1,97 @@
 import pytest
-import types
+import asyncio
+from backend.analysis.analysis_base import RProcessorPoolCPPE, RProcessorPoolMP
 
-import backend.analysis.analysis_base as analysis_base
+TEST_R_CODE1 = """
+list(a = 1, b = 2)
+"""
 
+TEST_R_CODE2 = """
+list(a = 3, b = 4)
+"""
 
-@pytest.fixture
-def rprocessor_mp(monkeypatch):
-    # Patch Pool to avoid creating real processes
-    class DummyPool:
-        def apply(self, func, args, kwargs):
-            return func(*args, **kwargs)
-
-        def close(self): pass
-        def join(self): pass
-    monkeypatch.setattr(analysis_base, "Pool", lambda *a, **kw: DummyPool())
-    # Patch R initialization
-    monkeypatch.setattr(analysis_base.RProcessorPoolMP,
-                        "_init_r", staticmethod(lambda: None))
-    # Patch rpy2.robjects
-
-    class DummyR:
-        def __call__(self, code):
-            return f"executed: {code}"
-
-        def setenv(self, env): pass
-        def __getitem__(self, key): return None
-    monkeypatch.setattr(analysis_base, "ro", types.SimpleNamespace(
-        r=DummyR(),
-        globalenv={},
-        Environment=lambda: {},
-        RObject=str
-    ))
-    return analysis_base.RProcessorPoolMP(pool_size=2)
-
-
-def test_run_analysis_basic(rprocessor_mp):
-    result = rprocessor_mp.run_analysis("1+1")
-    assert result == "executed: 1+1"
-
-
-def test_run_analysis_with_kwargs(rprocessor_mp):
-    result = rprocessor_mp.run_analysis("x+1", x=5)
-    assert result == "executed: x+1"
-    assert rprocessor_mp.pool is not None
-
-
-def test_close_pool(rprocessor_mp):
-    rprocessor_mp.close()
-    assert rprocessor_mp.pool is None
+test_r_with_parm = "list(a,b)"
 
 
 @pytest.mark.asyncio
-async def test_async_run_analysis_success(rprocessor_mp):
-    result = await rprocessor_mp.async_run_analysis("2+2")
-    assert result == "executed: 2+2"
-
-
-def test_isolated_r_environment(monkeypatch):
-    # Patch rpy2.robjects
-    monkeypatch.setattr(analysis_base, "ro", types.SimpleNamespace(
-        globalenv={},
-        Environment=lambda: {},
-        r=types.SimpleNamespace(setenv=lambda env: None,
-                                __call__=lambda code: None)
-    ))
-    with analysis_base.RProcessorPoolMP._isolated_r_environment() as env:
-        assert isinstance(env, dict)
-
-
-@pytest.fixture
-def rprocessor_cppe(monkeypatch):
-    # Patch ProcessPoolExecutor to avoid creating real processes
-    class DummyExecutor:
-        def submit(self, func, *args, **kwargs):
-            class DummyFuture:
-                def result(self, timeout=None): return func(*args, **kwargs)
-            return DummyFuture()
-
-        def shutdown(self, wait=True): pass
-    monkeypatch.setattr(analysis_base, "ProcessPoolExecutor",
-                        lambda *a, **kw: DummyExecutor())
-    # Patch R initialization
-    monkeypatch.setattr(analysis_base.RProcessorPoolCPPE,
-                        "_init_r", staticmethod(lambda: None))
-    # Patch rpy2.robjects
-
-    class DummyR:
-        def __call__(self, code):
-            return f"executed: {code}"
-
-        def setenv(self, env): pass
-    monkeypatch.setattr(analysis_base, "ro", types.SimpleNamespace(
-        r=DummyR(),
-        globalenv={},
-        Environment=lambda: {},
-        RObject=str
-    ))
-    return analysis_base.RProcessorPoolCPPE(pool_maxsize=2)
+async def test_async_run_analysis_success_mp(code: str = TEST_R_CODE1):
+    processor = RProcessorPoolMP(pool_maxsize=2)
+    try:
+        result = await processor.run_analysis(code)
+        assert result.rx2('a')[0] == 1
+        assert result.rx2('b')[0] == 2
+    finally:
+        processor.close()
 
 
 @pytest.mark.asyncio
-async def test_cppe_async_run_analysis_success(rprocessor_cppe):
-    result = await rprocessor_cppe.async_run_analysis("3+3")
-    assert result == "executed: 3+3"
+async def test_async_run_analysis_with_parm_mp(code: str = test_r_with_parm):
+    processor = RProcessorPoolMP(pool_maxsize=2)
+    try:
+        result = await processor.run_analysis(code, a=1, b=2)
+        assert result.rx2(1)[0] == 1
+        assert result.rx2(2)[0] == 2
+    finally:
+        processor.close()
 
 
-def test_cppe_close_executor(rprocessor_cppe):
-    rprocessor_cppe.close()
-    assert rprocessor_cppe.executor is None
+@pytest.mark.asyncio
+async def test_async_run_analysis_mp_multi(code1: str = TEST_R_CODE1,
+                                           code2: str = TEST_R_CODE2):
+    processor = RProcessorPoolMP(pool_maxsize=2)
+    try:
+        # 并发提交多个任务
+        tasks = [
+            processor.run_analysis(code1),
+            processor.run_analysis(code2)
+        ]
+        results = await asyncio.gather(*tasks)
+        # 断言每个结果
+        assert results[0].rx2('a')[0] == 1
+        assert results[0].rx2('b')[0] == 2
+        assert results[1].rx2('a')[0] == 3
+        assert results[1].rx2('b')[0] == 4
+    finally:
+        processor.close()
 
 
-def test_data_analysis_abstract():
-    class DummyAnalysis(analysis_base.DataAnalysis):
-        def run_analysis(self): return "ok"
-    da = DummyAnalysis()
-    assert da.run_analysis() == "ok"
+@pytest.mark.asyncio
+async def test_async_run_analysis_success_cppe(code: str = TEST_R_CODE1):
+    processor = RProcessorPoolCPPE(pool_maxsize=2)
+    try:
+        result = await processor.run_analysis(code)
+        assert result.rx2('a')[0] == 1
+        assert result.rx2('b')[0] == 2
+    finally:
+        processor.close()
+
+
+@pytest.mark.asyncio
+async def test_async_run_analysis_with_parm_cppe(code: str = test_r_with_parm):
+    processor = RProcessorPoolCPPE(pool_maxsize=2)
+    try:
+        result = await processor.run_analysis(code, a=1, b=2)
+        assert result.rx2(1)[0] == 1
+        assert result.rx2(2)[0] == 2
+    finally:
+        processor.close()
+
+
+@pytest.mark.asyncio
+async def test_async_run_analysis_cppe_multi(code1: str = TEST_R_CODE1,
+                                             code2: str = TEST_R_CODE2):
+    processor = RProcessorPoolCPPE(pool_maxsize=2)
+    try:
+        # 并发提交多个任务
+        tasks = [
+            processor.run_analysis(code1),
+            processor.run_analysis(code2)
+        ]
+        results = await asyncio.gather(*tasks)
+        # 断言每个结果
+        assert results[0].rx2('a')[0] == 1
+        assert results[0].rx2('b')[0] == 2
+        assert results[1].rx2('a')[0] == 3
+        assert results[1].rx2('b')[0] == 4
+    finally:
+        processor.close()

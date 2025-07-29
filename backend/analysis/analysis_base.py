@@ -7,6 +7,7 @@ import asyncio
 from contextlib import contextmanager
 import logging
 import functools
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -20,6 +21,44 @@ class DataAnalysis(ABC):
         pass
 
 
+@contextmanager
+def isolated_r_environment():
+    """
+    Create an isolated R environment for each task.
+    This ensures that each task runs in a clean R environment.
+    """
+    try:
+        new_env = ro.globalenv
+        yield new_env
+    finally:
+        ro.r('rm(list=ls())')
+        logger.info("R environment cleaned up")
+
+
+def run_analysis(r_code: str, kwargs: dict) -> ro.RObject:
+    """
+    run the R analysis code with the provided arguments.
+    Args:
+        r_code: R code to execute.
+        kwargs: Arguments to pass to the R code.
+    Returns:
+        RObject (rpy2.robjects): Result of the R code execution.
+    Raises:
+        Exception: If there is an error during R code execution.
+    """
+    try:
+        with isolated_r_environment():
+            for key, value in kwargs.items():
+                ro.globalenv[key] = value
+            result = ro.r(r_code)
+            return result
+    except RRuntimeError as e:
+        logger.error(f"R runtime error: {str(e)}")
+        raise Exception(f"R error: {str(e)}")
+    except Exception as e:
+        logger.error(f"Unexpected error in R task: {str(e)}")
+
+
 class RProcessorPoolMP(DataAnalysis):
     """Processor for running R code in a separate process pool.
     This class initialize `pool_size` R environment when you create an instance
@@ -29,17 +68,18 @@ class RProcessorPoolMP(DataAnalysis):
         pool_size (int): Number of worker processes in the pool.
     """
 
-    def __init__(self, pool_size=4):
-        self.pool_size = pool_size
+    def __init__(self, pool_maxsize=4):
         self.pool = None
+        self.max_pool_size: int = min(pool_maxsize, os.cpu_count(), 2)
         self._initialize_pool()
 
     def _initialize_pool(self):
         """
         Initialize a process pool for R tasks.
         """
-        self.pool = Pool(processes=self.pool_size, initializer=self._init_r)
-        logger.info(f"Initialized process pool with {self.pool_size} workers")
+
+        self.pool = Pool(processes=self.max_pool_size, initializer=self._init_r)
+        logger.info(f"Initialized process pool with {self.max_pool_size} workers")
 
     @staticmethod
     def _init_r():
@@ -51,51 +91,11 @@ class RProcessorPoolMP(DataAnalysis):
                  suppressPackageStartupMessages(library(tidyverse))
                  suppressPackageStartupMessages(library(Cairo))
                  """)
-            logger.debug("R environment initialized in process")
+            logger.info("R environment initialized in process")
         except Exception as e:
             logger.error(f"Failed to initialize R: {str(e)}")
 
-    @staticmethod
-    @contextmanager
-    def _isolated_r_environment():
-        """
-        Create an isolated R environment for each task.
-        This ensures that each task runs in a clean R environment.
-        """
-        original_env = ro.globalenv.copy()
-        try:
-            new_env = ro.Environment()
-            ro.r.setenv(new_env)
-            yield new_env
-        finally:
-            ro.r.setenv(original_env)
-            ro.r('rm(list=ls())')
-            logger.debug("R environment cleaned up")
-
-    def run_analysis(self, r_code: str, **kwargs) -> ro.RObject:
-        """
-        run the R analysis code with the provided arguments.
-        Args:
-            r_code: R code to execute.
-            kwargs: Arguments to pass to the R code.
-        Returns:
-            RObject (rpy2.robjects): Result of the R code execution.
-        Raises:
-            Exception: If there is an error during R code execution.
-        """
-        try:
-            with self._isolated_r_environment():
-                for key, value in kwargs.items():
-                    ro.globalenv[key] = value
-                result = ro.r(r_code)
-                return result
-        except RRuntimeError as e:
-            logger.error(f"R runtime error: {str(e)}")
-            raise Exception(f"R error: {str(e)}")
-        except Exception as e:
-            logger.error(f"Unexpected error in R task: {str(e)}")
-
-    async def async_run_analysis(self, r_code: str, **kwargs) -> ro.RObject:
+    async def run_analysis(self, r_code: str, **kwargs) -> ro.RObject:
         """
         Asynchronously run the R analysis code with the provided arguments.
         The result should be a list with named elements in R.
@@ -113,7 +113,7 @@ class RProcessorPoolMP(DataAnalysis):
             try:
                 result = await asyncio.wait_for(
                     loop.run_in_executor(None, lambda: self.pool.apply(
-                        self.run_analysis, (r_code,), kwargs)),
+                        run_analysis, (r_code, kwargs))),
                     timeout=60
                 )
                 return result
@@ -148,7 +148,7 @@ class RProcessorPoolCPPE(RProcessorPoolMP):
     """
 
     def __init__(self, pool_maxsize=4):
-        self.pool_maxsize = pool_maxsize
+        self.max_pool_size: int = min(pool_maxsize, os.cpu_count(), 2)
         self.executor = None
         self._initialize_executor()
 
@@ -157,14 +157,14 @@ class RProcessorPoolCPPE(RProcessorPoolMP):
         Initialize a process pool for R tasks.
         """
         self.executor = ProcessPoolExecutor(
-            max_workers=self.pool_maxsize, initializer=self._init_r)
+            max_workers=self.max_pool_size, initializer=self._init_r)
         logger.info("Initialized R process pool executor")
 
-    async def async_run_analysis(self, r_code: str, **kwargs) -> ro.RObject:
+    async def run_analysis(self, r_code: str, **kwargs) -> ro.RObject:
         loop = asyncio.get_running_loop()
         for attempt in range(2):
             try:
-                func = functools.partial(self.run_analysis, r_code, **kwargs)
+                func = functools.partial(run_analysis, r_code, kwargs)
                 result = await asyncio.wait_for(
                     loop.run_in_executor(self.executor, func),
                     timeout=60
