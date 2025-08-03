@@ -40,7 +40,8 @@ logger = logging.getLogger(__name__)
 async def upload_xlsx(file: UploadFile = File(...)):
     sample_sheet = BytesIO(await file.read())
     # rel = sample_sheet_validation(sample_sheet)
-    rel = (True, "Sample sheet uploaded successfully.")  # Placeholder for actual processing logic
+    # Placeholder for actual processing logic
+    rel = (True, "Sample sheet uploaded successfully.")
     return {"success": rel[0], "msg": rel[1]}
 
 
@@ -58,3 +59,6 @@ async def upload_xlsx(file: UploadFile = File(...)):
 
 #     rel = process_rawdata(metadata)
 #     return {"success": rel[0], "msg": rel[1]}
+
+
+li = {"tk0011": "position effect", "tk0012": "shes"}
