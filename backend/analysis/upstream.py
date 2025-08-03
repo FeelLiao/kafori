@@ -21,6 +21,8 @@ from backend.api.utils import align_report, trim_report, cleanup_directories
 
 logger = logging.getLogger(__name__)
 
+# TODO: Add a snakemake logger to capture the snakemake execution log
+
 
 class UpstreamAnalysis(DataAnalysis):
     """Class for performing upstream analysis in RNA-Seq data processing.

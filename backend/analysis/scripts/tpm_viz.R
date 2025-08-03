@@ -1,10 +1,7 @@
-gene_tpm_file <- "/home/feelliao/project/tree_position_trans/V3-annotated-japan/upstream/gene_tpm.csv"
-samples <- c(
-  "gene_id", "1Y-A", "2Y-A",
-  "5Y-A", "10Y-A-1", "10Y-A-2", "25Y-A", "50Y-A"
-)
-gene_tpm <- read_csv(gene_tpm_file) |>
-  select(all_of(samples))
+library(ComplexHeatmap)
+
+## 用ComplexHeatmap包实现绘制热图
+
 tpm_aver <- gene_tpm |>
   gather(key = "sample", value = "tpm", -gene_id) |>
   mutate(sample = str_replace_all(sample, "\\-.*", "")) |>
@@ -12,10 +9,6 @@ tpm_aver <- gene_tpm |>
   summarise(tpm = mean(tpm)) |>
   ungroup() |>
   pivot_wider(names_from = sample, values_from = tpm) |>
-  relocate(c("1Y", "2Y", "5Y", "10Y", "25Y", "50Y"), .after = "gene_id")
-
-inter <- tpm_aver |>
-  filter(gene_id %in% inter) |>
   column_to_rownames(var = "gene_id")
 
 scale_rows <- function(data) {

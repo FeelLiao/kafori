@@ -78,8 +78,10 @@ class RProcessorPoolMP(DataAnalysis):
         Initialize a process pool for R tasks.
         """
 
-        self.pool = Pool(processes=self.max_pool_size, initializer=self._init_r)
-        logger.info(f"Initialized process pool with {self.max_pool_size} workers")
+        self.pool = Pool(processes=self.max_pool_size,
+                         initializer=self._init_r)
+        logger.info(
+            f"Initialized process pool with {self.max_pool_size} workers")
 
     @staticmethod
     def _init_r():
@@ -88,8 +90,18 @@ class RProcessorPoolMP(DataAnalysis):
         """
         try:
             ro.r("""
-                 suppressPackageStartupMessages(library(tidyverse))
-                 suppressPackageStartupMessages(library(Cairo))
+                suppressPackageStartupMessages(library(tidyverse))
+                suppressPackageStartupMessages(library(svglite))
+
+                plot_to_raw <- function(plot_obj, width=800, height=600) {
+                tf <- tempfile(fileext = ".svg")
+                svglite(file = tf, width = width /72 , height = height /72)
+                print(plot_obj)
+                dev.off()
+                img_raw <- readChar(tf, nchars=file.info(tf)$size, useBytes=TRUE)
+                unlink(tf)
+                return(img_raw)
+              }
                  """)
             logger.info("R environment initialized in process")
         except Exception as e:

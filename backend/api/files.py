@@ -29,12 +29,8 @@ class UploadFileProcessor:
         if isinstance(file, str):
             file = Path(file)
         self.file = file
-        self.valid_dataframe = self.__file_validation()
         self.modified_timestamp = self.file.stat().st_mtime
         self.modified_time = self.__timestamp_to_str(self.modified_timestamp)
-        self.experiment_categories = self.__experiment_category()
-        self.experiments = self.__experiment()
-        self.collection_parts = self.__collection_part()
 
     def __timestamp_to_str(self, timestamp: float) -> str:
         """
@@ -46,7 +42,7 @@ class UploadFileProcessor:
         """
         return datetime.fromtimestamp(timestamp).strftime("%Y-%m-%d %H:%M:%S")
 
-    def __file_validation(self) -> pd.DataFrame:
+    def file_validation(self) -> bool:
         """
         Validate the uploaded file.
         Checks if the xlsx file is created according to
@@ -99,9 +95,9 @@ class UploadFileProcessor:
                 f"SampleID contains duplicate values: {duplicated_ids.tolist()}\n"
                 "Each SampleID must be unique.")
 
-        return df
+        return True
 
-    def __experiment_category(self) -> List:
+    def experiment_category(self) -> List:
         """
         Get the unique experiment categories from the DataFrame.
         Returns:
