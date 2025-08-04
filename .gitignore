@@ -5,3 +5,6 @@ __pycache__/
 .pytest_cache/
 .coverage
 tests/upstream/out/
+
+backend/db/tests.ipynb
+backend/db/基因表达量表-counts.csv
