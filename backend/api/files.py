@@ -8,55 +8,63 @@ import logging
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import os
 from io import BytesIO
+from enum import StrEnum, auto
 
 logger = logging.getLogger(__name__)
 
 
+class FileType(StrEnum):
+    xlsx = auto()
+    csv = auto()
+    parquet = auto()
+
+
+class GeneDataType(StrEnum):
+    tpm = auto()
+    counts = auto()
+
+
 class UploadFileProcessor:
     """
-    A class to process uploaded xlsx files.
+    A class to process uploaded files `sample_sheet`, `gene_expression_tpm`,
+    `gene_expression_counts`, `rawdata`.
     Raises:
         FileNotFoundError: If the file does not exist.
         ValueError: If the file is not an xlsx file.
         RuntimeError: If there is an error reading or parsing the file.
     """
 
-    def __init__(self, file: BytesIO, name: str):
+    def read_file(file: BytesIO, file_type: FileType) -> pd.DataFrame:
         """
-        Initialize the UploadFileProcessor with a file path.
-        Args:
-            file (BytesIO): The uploaded file in memory.
-            name (str): The name of the file.
-        """
-        self.file = file
-        self.name = name
-        self.timestamp = time.time()
-
-    def read_xlsx(self) -> pd.DataFrame:
-        """
-        Read the xlsx file and return a DataFrame.
+        Read file and return a DataFrame.
         Returns:
             pd.DataFrame: The DataFrame containing the file data.
         Raises:
             RuntimeError: If there is an error reading or parsing the file.
         """
         try:
-            df = pd.read_excel(self.file, sheet_name="SampleInfo", header=0,
-                               dtype={"CollectionTime": str},
-                               na_values=["", "NA", "null", "None", "999"])
+            match file_type:
+                case FileType.xlsx:
+                    df = pd.read_excel(file, sheet_name="SampleInfo", header=0,
+                                       dtype={"CollectionTime": str},
+                                       na_values=["", "NA", "null", "None", "999"])
+                case FileType.csv:
+                    df = pd.read_csv(file, header=0)
+                case FileType.parquet:
+                    df = pd.read_parquet(file)
             logger.info(
-                f"sample sheet file successfully read: {self.name}")
+                f"{file_type} file successfully read")
             return df
         except Exception as e:
             logger.error(
-                f"Error reading sample sheet file: {self.name}", exc_info=True)
+                f"Error reading {file_type} file", exc_info=True)
             raise RuntimeError(
-                f"Error reading or parsing file {self.name}: {e}"
+                f"Error reading or parsing {file_type} file: {e}"
             )
 
-    def data_validation(self, dataframe: pd.DataFrame) -> bool:
+    def sample_data_validation(name: str, dataframe: pd.DataFrame) -> bool:
         """
-        Validate the uploaded file. Checks if the xlsx file is created according to the 
+        Validate the uploaded file. Checks if the xlsx file is created according to the
         standard list in the 'Explain' sheet.
 
         Returns:
@@ -76,9 +84,9 @@ class UploadFileProcessor:
             logger.info("SampleAge column successfully converted to numeric")
         except Exception as e:
             logger.error(
-                f"Error transfer collection time or sample age to standard format: {self.name}", exc_info=True)
+                f"Error transfer collection time or sample age to standard format: {name}", exc_info=True)
             raise RuntimeError(
-                f"Error parsing file {self.name}: {e}")
+                f"Error parsing file {name}: {e}")
 
         # Check if SampleID is in the correct format
         invalid_ids_index = df["SampleID"].apply(lambda x: not re.match(
@@ -86,24 +94,24 @@ class UploadFileProcessor:
         invalid_ids = df.loc[invalid_ids_index, "SampleID"]
         if not invalid_ids.empty:
             logger.error(
-                f"{self.name} SampleID contains invalid characters: {invalid_ids.to_list()}")
+                f"{name} SampleID contains invalid characters: {invalid_ids.to_list()}")
             raise ValueError(
                 f"SampleID contains invalid characters: {invalid_ids.tolist()}\n"
                 "SampleID must follow the format: start with a letter (A-Z or a-z), "
                 "followed by any number of letters or digits, then a hyphen '-', "
                 "and end with 1 or 2 digits. Example: 'A-1', 'SBA23-11'.")
         else:
-            logger.info(f"{self.name} SampleID format is valid.")
+            logger.info(f"{name} SampleID format is valid.")
 
         duplicated_ids = df.loc[df["SampleID"].duplicated(), "SampleID"]
         if not duplicated_ids.empty:
             logger.error(
-                f"{self.name} SampleID contains duplicate values: {duplicated_ids.tolist()}")
+                f"{name} SampleID contains duplicate values: {duplicated_ids.tolist()}")
             raise ValueError(
                 f"SampleID contains duplicate values: {duplicated_ids.tolist()}\n"
                 "Each SampleID must be unique.")
         else:
-            logger.info(f"{self.name} SampleID is unique.")
+            logger.info(f"{name} SampleID is unique.")
 
         return True
 
@@ -134,6 +142,27 @@ class UploadFileProcessor:
             file_md5 = md5(f.read()).hexdigest()
         return file_path.name, file_md5 == expected_md5
 
+    def gene_ex_validation(sample_sheet: pd.DataFrame, ex: pd.DataFrame) -> bool:
+        """
+        Validate the gene expression file.
+        Args:
+            df (pd.DataFrame): The DataFrame containing the gene expression data.
+        Returns:
+            bool: True if the gene expression file is valid, False otherwise.
+        """
+        sample_ids = set(sample_sheet["SampleID"].tolist())
+        ex_sample_ids = ex.columns.tolist()
+        ex_sample_ids.remove("gene_id")
+
+        if sample_ids != set(ex_sample_ids):
+            logger.error(
+                "Sample IDs in the gene expression file do not match the sample sheet.")
+            raise ValueError(
+                "Sample IDs in the gene expression file do not match the sample sheet.")
+        else:
+            logger.info("Gene expression file validation passed.")
+            return True
+
     def rawdata_validation(self, df: pd.DataFrame, rawdata_path: Path) -> Tuple[bool, List[str]]:
         """
         Validate the md5 of raw data.
@@ -160,7 +189,7 @@ class UploadFileProcessor:
         max_workers = min(8, os.cpu_count() or 1)
         with ProcessPoolExecutor(max_workers=max_workers) as executor:
             futures = {
-                executor.submit(self.check_md5, rawdata_path / file_name, md5_checksum): file_name
+                executor.submit(UploadFileProcessor.check_md5, rawdata_path / file_name, md5_checksum): file_name
                 for file_name, md5_checksum in files_dict.items()
             }
             for future in as_completed(futures):
@@ -185,7 +214,7 @@ class UploadFileProcessor:
         Returns:
             pd.DataFrame: The DataFrame with additional columns.
         """
-        timestamp_int = int(self.timestamp)
+        timestamp_int = int(time.time())
         date_str = format(timestamp_int, "x").zfill(8)
 
         # Add a unique identifier for each sample

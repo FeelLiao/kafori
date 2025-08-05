@@ -14,7 +14,7 @@ def build_redis_pool():
     kwargs = {
         "db": cfg.db,
         "password": cfg.password or None,
-        "decode_responses": True,
+        "decode_responses": False,
         "max_connections": cfg.max_connections,
     }
 
