@@ -163,10 +163,11 @@ class UploadFileProcessor:
             logger.info("Gene expression file validation passed.")
             return True
 
-    def rawdata_validation(self, df: pd.DataFrame, rawdata_path: Path) -> Tuple[bool, List[str]]:
+    def rawdata_validation(df: pd.DataFrame, rawdata_path: Path) -> Tuple[bool, List[str]]:
         """
         Validate the md5 of raw data.
         Args:
+            df (pd.DataFrame): The DataFrame containing the sample sheet data.
             rawdata_path (Path): The path to the raw data directory.
         Returns:
             Tuple[bool, List[str]]: A tuple containing a boolean indicating
