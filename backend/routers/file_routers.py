@@ -111,7 +111,8 @@ async def upload_gene_ex_tpm(request: Request,
 async def upload_gene_ex_counts(request: Request,
                                 current_user: Annotated[User, Depends(get_current_active_user)],
                                 file: UploadFile = File(...,
-                                                        description="Upload gene expression file standard by counts method")):
+                                                        description="Upload gene expression file standard by "
+                                                        "counts method")):
     user = current_user.username
     gene_counts_name = file.filename
     gene_counts = BytesIO(await file.read())
