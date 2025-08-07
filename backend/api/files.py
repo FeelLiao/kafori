@@ -3,7 +3,7 @@ import pandas as pd
 from pathlib import Path
 from hashlib import md5
 import re
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 import logging
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import os
@@ -115,22 +115,6 @@ class UploadFileProcessor:
 
         return True
 
-    # def experiment_category(self) -> List:
-    #     """
-    #     Get the unique experiment categories from the DataFrame.
-    #     Returns:
-    #         List: A list of unique experiment categories.
-    #     """
-    #     return self.valid_dataframe["ExperimentCategory"].unique().tolist()
-
-    # def experiment(self) -> List:
-    #     """
-    #     Get the unique experiments from the DataFrame.
-    #     Returns:
-    #         List: A list of unique experiments.
-    #     """
-    #     return self.valid_dataframe["Experiment"].unique().tolist()
-
     @staticmethod
     def check_md5(file_path: Path, expected_md5: str) -> Tuple[str, bool]:
         if not file_path.exists():
@@ -208,29 +192,6 @@ class UploadFileProcessor:
         else:
             return False, failed_files
 
-    def database_wrapper(self, df: pd.DataFrame) -> pd.DataFrame:
-        """
-        Wrap the valid DataFrame with "UniqueID" and "UniqueEXID" columns
-        for database insertion.
-        Returns:
-            pd.DataFrame: The DataFrame with additional columns.
-        """
-        timestamp_int = int(time.time())
-        date_str = format(timestamp_int, "x").zfill(8)
-
-        # Add a unique identifier for each sample
-        hex_ids = [format(i+1, "x").zfill(3) for i in range(len(df))]
-        df["UniqueID"] = ["LRX" + date_str + hex_id for hex_id in hex_ids]
-
-        # Add a unique experiment ID
-        experiment_groups = df.groupby("Experiment").ngroup() + 1  # 分组编号从1开始
-        df["UniqueEXID"] = [
-            f"TRCRIE{date_str}{str(idx).zfill(3)}"
-            for idx in experiment_groups
-        ]
-
-        return df
-
     @staticmethod
     def trans_to_smk_samples(dataframe: pd.DataFrame,
                              rawdata_path: Path,
@@ -258,7 +219,100 @@ class UploadFileProcessor:
             lambda x: str(Path(rawdata_path, x).absolute()))
         sample_sheet["read2"] = dataframe["FileName2"].apply(
             lambda x: str(Path(rawdata_path, x).absolute()))
+        
+        logger.info("Sample sheet converted to snakemake samples format successfully.")
 
         if to_file:
             sample_sheet.to_csv(output_path, index=False)
+            logger.info(f"Sample sheet saved to {output_path} successfully.")
         return sample_sheet
+
+
+class PutDataBaseWrapper:
+    """
+    A wrapper class for add data to the database.
+    This class provides methods to insert experimental class, experiment,
+    sample, gene expression data in TPM and counts format into the database.
+    """
+
+    def __init__(self,
+                 sample_sheet: pd.DataFrame,
+                 gene_expression_tpm: pd.DataFrame,
+                 gene_expression_counts: pd.DataFrame):
+        self.sample_sheet = sample_sheet
+        self.gene_expression_tpm = gene_expression_tpm
+        self.gene_expression_counts = gene_expression_counts
+        self.sample_sheet_wrapped = self.__database_wrapper()
+
+    def __database_wrapper(self) -> pd.DataFrame:
+        """
+        Wrap the valid DataFrame with "UniqueID", "UniqueEXID" and "ExpClass" columns
+        for database insertion.
+        Returns:
+            pd.DataFrame: The DataFrame with additional columns.
+        """
+        df = self.sample_sheet.copy()
+        timestamp_int = int(time.time())
+        date_str = format(timestamp_int, "x").zfill(8)
+
+        # Add a unique identifier for each sample
+        hex_ids = [format(i+1, "x").zfill(3) for i in range(len(df))]
+        df["UniqueID"] = ["LRX" + date_str + hex_id for hex_id in hex_ids]
+        logger.info("UniqueID column added to sample sheet.")
+
+        # Add a unique experiment ID
+        experiment_groups = df.groupby("Experiment").ngroup() + 1  # 分组编号从1开始
+        df["UniqueEXID"] = [
+            f"TRCRIE{date_str}{str(idx).zfill(3)}"
+            for idx in experiment_groups
+        ]
+        logger.info("UniqueEXID column added to sample sheet.")
+        exp_class_grp = df.groupby("ExpClass").ngroup() + 1
+        df["ExpClass"] = [
+            f"EXPC{date_str}{str(idx).zfill(3)}" for idx in exp_class_grp]
+        logger.info("ExpClass column added to sample sheet.")
+
+        return df
+
+    def communicate_id_in_db(self) -> list[dict[str, str]]:
+        """
+        Parsing the experiment class and experiment category from the sample_sheet to communicate
+        with the database if the class ID is duplicated.
+        Returns:
+            list[dict[str, str]]: A list of dictionaries containing the experiment class
+            and experiment category.
+        """
+        sample_sheet_wrapped = self.sample_sheet_wrapped
+        exclass = sample_sheet_wrapped[[
+            "ExpClass", "ExperimentCategory"]].drop_duplicates().to_dict(orient="records")
+        logger.info("Experiment class and category extracted for database communication.")
+        return exclass
+
+    def db_insert(self, exclass: Tuple[bool, List[Dict[str, str]]]) -> Tuple[pd.DataFrame]:
+        """
+        Parsing exp_sheet and sample_sheet from the sample_sheet_wrapped based on the communicated exclass.
+
+        Args:
+            exclass: Tuple[bool, List[Dict[str, str]]]: A tuple containing a boolean indicating
+            whether the exclass need to be replaced. True for not to replace and False for replacing,
+            and a list of dictionaries containing the experiment class and experiment category.
+
+        Returns:
+            Tuple[pd.DataFrame]: A tuple containing two DataFrames:
+                exp_sheet: experiment category DataFrame
+                sample_sheet: sample sheet DataFrame
+        """
+        if not exclass[0]:
+            new_exclass = pd.DataFrame.from_records(exclass[1])
+            self.sample_sheet_wrapped = self.sample_sheet_wrapped.drop(columns=["ExpClass"]).merge(
+                new_exclass, on="ExperimentCategory", how="left")
+            logger.info("Exclass replaced in sample sheet.")
+
+        exp_sheet = self.sample_sheet_wrapped[[
+            "ExpClass", "UniqueEXID", "Experiment"]]
+        logger.info("Experiment sheet extracted from original sample sheet.")
+        sample_sheet = self.sample_sheet_wrapped.drop(
+            columns=["ExpClass", "ExperimentCategory", "Experiment"])
+        logger.info("Sample sheet extracted from original sample sheet.")
+
+        return exp_sheet, sample_sheet
