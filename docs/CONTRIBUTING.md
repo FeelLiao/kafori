@@ -41,7 +41,7 @@ You can find more information about these tools in their respective documentatio
 - [Conda Documentation](https://docs.conda.io/projects/conda/en/latest/)
 - [Poetry Documentation](https://python-poetry.org/docs/)
 
-We recommend using the third-party distribution of `conda` called [miniforge](https://conda-forge.org/download/) to manage your environments and dependencies. After installing miniforge, you can set a mirror to faster download packages. Please refer to the [tsinghua mirror for anaconda]https://mirrors.tuna.tsinghua.edu.cn/help/anaconda/ for instructions on how to set up a mirror.
+We recommend using the third-party distribution of `conda` called [miniforge](https://conda-forge.org/download/) to manage your environments and dependencies. After installing miniforge, you can set a mirror to faster download packages. Please refer to the [tsinghua mirror for anaconda](https://mirrors.tuna.tsinghua.edu.cn/help/anaconda/) for instructions on how to set up a mirror.
 
 To set up a development environment for kafori, follow these steps:
 
