@@ -44,4 +44,4 @@ max-line-length = 120
 
 [[tool.poetry.source]]
 name = "tsinghua"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+url = "https://mirrors.ustc.edu.cn/pypi/simple"
