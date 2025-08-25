@@ -79,5 +79,15 @@ class SampleRepository(ABC, BaseRepository[Sample]):
     ) -> list[dict]:
         ...
 
+    @abstractmethod
+    async def get_sample_by_unique_ex_id_and_part_time(
+            self,
+            unique_ex_id: tuple[str],
+            collection_part: Optional[tuple[str]] = None,
+            start_time: Optional[date] = None,
+            end_time: Optional[date] = None,
+    ) -> list[dict]:
+        ...
+
 # 单例
 # sample_repo = SampleRepository()

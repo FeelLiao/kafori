@@ -61,13 +61,13 @@ class ExpClassRepositoryImpl(ExpClassRepository):
             )
             return ExpClassDTO.from_orm(new_exp)
 
-    async def getExpClss(self, start_page: int | None = None, size: int | None = None) -> list[dict]:
+    async def getExpClass(self, start_page: int | None = None, size: int | None = None) -> list[dict]:
         conn = Tortoise.get_connection("default")
         if start_page is None or size is None:
             sql_all = """
                 SELECT exp_class as ExpClass, experiment_category as ExperimentCategory
                 FROM exp_class
-                FORCE INDEX (PRIMARY);
+                FORCE INDEX (`PRIMARY`);
             """
             return await conn.execute_query_dict(sql_all)
         if size <= 0 or start_page < 0:
@@ -76,7 +76,7 @@ class ExpClassRepositoryImpl(ExpClassRepository):
         sql_page = """
                 SELECT exp_class as ExpClass, experiment_category as ExperimentCategory
                 FROM exp_class
-                FORCE INDEX (PRIMARY)
+                FORCE INDEX (`PRIMARY`)
                 LIMIT %s, %s;
             """
         return await conn.execute_query_dict(sql_page, [start_page, size])

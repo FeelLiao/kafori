@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 from dataclasses import dataclass
 from datetime import date
 from typing import List, Tuple, Dict
@@ -9,6 +9,20 @@ from backend.db.repositories.impl.ExperimentRepositoryImpl import ExperimentRepo
 from backend.db.repositories.impl.SampleRepositoryImpl import SampleRepositoryImpl
 from backend.db.repositories.impl.GeneExpressTpmRepositoryImpl import GeneExpressTpmRepositoryImpl
 from backend.db.repositories.impl.GeneExpressCountsRepositoryImpl import GeneExpressCountsRepositoryImpl
+
+
+class DataBase:
+    """统一入口，所有表的操作封装在这里"""
+
+    def __init__(self):
+        self.exp_class = ExpClassRepositoryImpl()
+        self.experiment = ExperimentRepositoryImpl()
+        self.sample = SampleRepositoryImpl()
+        self.gene_tpm = GeneExpressTpmRepositoryImpl()
+        self.gene_counts = GeneExpressCountsRepositoryImpl()
+
+
+db = DataBase()
 
 
 @dataclass
@@ -22,9 +36,8 @@ class GetDataBaseInterface(ABC):
     Database interface for all get repository operations.
     """
 
-    @abstractmethod
     @staticmethod
-    def get_exp_class() -> pd.DataFrame:
+    async def get_exp_class() -> pd.DataFrame:
         """
         Get experimental class data.
 
@@ -33,11 +46,11 @@ class GetDataBaseInterface(ABC):
                 ExpClass: Unique identifier for the experimental class.
                 ExperimentCategory: Name of the experimental class.
         """
-        pass
+        data = await db.exp_class.getExpClass()
+        return pd.DataFrame(data)
 
-    @abstractmethod
     @staticmethod
-    def get_experiment(exp_class: tuple) -> pd.DataFrame:
+    async def get_experiment(exp_class: tuple) -> pd.DataFrame:
         """
         Get experiment data for a specific experimental class.
 
@@ -51,13 +64,15 @@ class GetDataBaseInterface(ABC):
                 ExpClass: Experimental class identifier.
                 Experiment: Name of the experiment.
         """
-        pass
+        data = []
+        for exp in exp_class:
+            data += await db.experiment.model.filter(ExpClass=exp).values()
+        return pd.DataFrame(data)
 
-    @abstractmethod
     @staticmethod
-    def get_sample(unique_ex_id: tuple[str],
-                   collection_time: CollectionDate = None,
-                   collection_part: tuple[str] = None) -> pd.DataFrame:
+    async def get_sample(unique_ex_id: tuple[str],
+                         collection_time: CollectionDate = None,
+                         collection_part: tuple[str] = None) -> pd.DataFrame:
         """
         Get sample data for a specific filter. `unique_ex_id` is required and should be first implemented,
         while `collection_time` and `collection_part` are optional and should be further discussed.
@@ -80,11 +95,12 @@ class GetDataBaseInterface(ABC):
                 Accession: Accession number for the sample.
                 Origin: Origin of the sample.
         """
-        pass
 
-    @abstractmethod
+        res = await db.sample.get_sample_by_unique_ex_id_and_part_time(unique_ex_id=unique_ex_id, collection_part=collection_part, start_time=collection_time.starttime, end_time=collection_time.endtime)
+        return pd.DataFrame(res)
+
     @staticmethod
-    def get_gene_tpm(gene_id: tuple[str], unique_id: tuple[str]) -> pd.DataFrame:
+    async def get_gene_tpm(gene_id: tuple[str], unique_id: tuple[str]) -> pd.DataFrame:
         """
         Get gene expression data in TPM (Transcripts Per Million) format. This method should implement the filtering
         based on `gene_id` and `unique_id`.
@@ -101,9 +117,8 @@ class GetDataBaseInterface(ABC):
         """
         pass
 
-    @abstractmethod
     @staticmethod
-    def get_gene_counts(gene_id: tuple[str], unique_id: tuple[str]) -> pd.DataFrame:
+    async def get_gene_counts(gene_id: tuple[str], unique_id: tuple[str]) -> pd.DataFrame:
         """
         Get gene expression data in counts format. This method should implement the filtering
         based on `gene_id` and `unique_id`.
@@ -128,7 +143,6 @@ class PutDataBaseInterface(ABC):
     Database interface for all put repository operations.
     """
 
-    @abstractmethod
     @staticmethod
     def put_exp_class(data: pd.DataFrame) -> bool:
         """
@@ -144,7 +158,6 @@ class PutDataBaseInterface(ABC):
         """
         pass
 
-    @abstractmethod
     @staticmethod
     def put_experiment(data: pd.DataFrame) -> bool:
         """
@@ -161,7 +174,6 @@ class PutDataBaseInterface(ABC):
         """
         pass
 
-    @abstractmethod
     @staticmethod
     def put_sample(data: pd.DataFrame) -> bool:
         """
@@ -183,7 +195,6 @@ class PutDataBaseInterface(ABC):
         """
         pass
 
-    @abstractmethod
     @staticmethod
     def put_gene_tpm(data: pd.DataFrame) -> bool:
         """
@@ -201,7 +212,6 @@ class PutDataBaseInterface(ABC):
         """
         pass
 
-    @abstractmethod
     @staticmethod
     def put_gene_counts(data: pd.DataFrame) -> bool:
         """
@@ -219,7 +229,6 @@ class PutDataBaseInterface(ABC):
         """
         pass
 
-    @abstractmethod
     @staticmethod
     def exclass_processing(
             exclass: list[dict[str, str]]) -> Tuple[bool, List[Dict[str, str]]]:
@@ -238,14 +247,3 @@ class PutDataBaseInterface(ABC):
             Each dictionary should have the keys 'ExpClass' and 'ExperimentCategory'.
         """
         pass
-
-
-class DataBase:
-    """统一入口，所有表的操作封装在这里"""
-
-    def __init__(self):
-        self.exp_class = ExpClassRepositoryImpl()
-        self.experiment = ExperimentRepositoryImpl()
-        self.sample = SampleRepositoryImpl()
-        self.gene_tpm = GeneExpressTpmRepositoryImpl()
-        self.gene_counts = GeneExpressCountsRepositoryImpl()

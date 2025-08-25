@@ -1,7 +1,7 @@
 from backend.db.models.entity.Experiment import Experiment
 from backend.db.models.dto.ExperimentDTO import ExperimentDTO
 from .base import BaseRepository
-from abc import ABC,abstractmethod
+from abc import ABC, abstractmethod
 
 class ExperimentRepository(ABC, BaseRepository[Experiment]):
     def __init__(self):

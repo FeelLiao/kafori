@@ -43,9 +43,9 @@ class ExpClassRepository(ABC, BaseRepository[ExpClass]):
     :param end_page:   结束行号（不包含）；None 表示查全部
     :return: 字典列表
     """
-    @abstractmethod
-    async def getExpClss(self, start_page: int, size: int) -> list[dict]:
-        ...
+    # @abstractmethod
+    # async def getExpClss(self, start_page: int, size: int) -> list[dict]:
+    #     ...
 
 
 # 单例

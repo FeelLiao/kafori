@@ -7,7 +7,7 @@ redis:
   host: 127.0.0.1
   port: 6379
   db: 0
-  password: "redis_ezDtRP"
+  password: ""
   max_connections: 50
   # 哨兵专用
   sentinel_nodes:

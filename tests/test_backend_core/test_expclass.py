@@ -1,9 +1,9 @@
 import pytest
 from backend.db.repositories.impl.ExpClassRepositoryImpl import ExpClassRepositoryImpl
-
+from backend.db.interface import GetDataBaseInterface
 
 expclass = ExpClassRepositoryImpl()
-
+database = GetDataBaseInterface()
 
 # ---------- 5. 测试函数 ----------
 
@@ -20,3 +20,8 @@ async def test_getOneByCategory():
 
     dto = await expclass.getOneByCategory("DH4")
     print(dto.ExpClass)
+
+@pytest.mark.asyncio
+async def test_get_exp_class():
+    data = await database.get_exp_class()
+    print(data)
