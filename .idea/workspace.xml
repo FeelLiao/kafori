@@ -5,231 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0d2b8e7c-5000-4f2a-92a3-76e621242948" name="更改" comment="">
-      <change afterPath="$PROJECT_DIR$/tests/test_backend_core/test_experiment.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.github/workflows/test.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/test.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/LICENSE" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/analysis/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/analysis/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/analysis/analysis_base.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/analysis/analysis_base.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/analysis/scripts/deg.R" beforeDir="false" afterPath="$PROJECT_DIR$/backend/analysis/scripts/deg.R" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/analysis/scripts/pca.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/analysis/scripts/pca.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/analysis/scripts/tpm_viz.R" beforeDir="false" afterPath="$PROJECT_DIR$/backend/analysis/scripts/tpm_viz.R" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/analysis/scripts/wgcna.R" beforeDir="false" afterPath="$PROJECT_DIR$/backend/analysis/scripts/wgcna.R" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/analysis/tpm_analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/analysis/tpm_analysis.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/analysis/upstream.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/analysis/upstream.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/analysis/workflow/Snakefile" beforeDir="false" afterPath="$PROJECT_DIR$/backend/analysis/workflow/Snakefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/analysis/workflow/envs/fastp.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/analysis/workflow/envs/fastp.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/analysis/workflow/envs/featurecounts.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/analysis/workflow/envs/featurecounts.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/analysis/workflow/envs/hisat2.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/analysis/workflow/envs/hisat2.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/analysis/workflow/rules/align.smk" beforeDir="false" afterPath="$PROJECT_DIR$/backend/analysis/workflow/rules/align.smk" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/analysis/workflow/rules/common.smk" beforeDir="false" afterPath="$PROJECT_DIR$/backend/analysis/workflow/rules/common.smk" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/analysis/workflow/rules/counts.smk" beforeDir="false" afterPath="$PROJECT_DIR$/backend/analysis/workflow/rules/counts.smk" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/analysis/workflow/rules/ref.smk" beforeDir="false" afterPath="$PROJECT_DIR$/backend/analysis/workflow/rules/ref.smk" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/analysis/workflow/rules/seq.smk" beforeDir="false" afterPath="$PROJECT_DIR$/backend/analysis/workflow/rules/seq.smk" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/analysis/workflow/scripts/fastp.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/analysis/workflow/scripts/fastp.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/analysis/workflow/scripts/hisat2_align.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/analysis/workflow/scripts/hisat2_align.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/analysis/workflow/scripts/hisat2_index.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/analysis/workflow/scripts/hisat2_index.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/analysis/workflow/scripts/merge_matrix.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/analysis/workflow/scripts/merge_matrix.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api/files.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api/files.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/banner.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/banner.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/banner.txt" beforeDir="false" afterPath="$PROJECT_DIR$/backend/banner.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/config/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/config/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/config/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/config/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/config/redis_conf.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/config/redis_conf.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/config/tortoise_conf.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/config/tortoise_conf.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/exceptions/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/exceptions/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/exceptions/handlers.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/exceptions/handlers.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/test_backend_core/test_counts.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/test_backend_core/test_tpm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/db/interface.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/interface.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/models/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/models/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/models/dto/ExpClassDTO.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/models/dto/ExpClassDTO.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/models/dto/ExperimentDTO.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/models/dto/ExperimentDTO.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/models/dto/GeneExpressCountsDTO.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/models/dto/GeneExpressCountsDTO.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/models/dto/GeneExpressTpmDTO.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/models/dto/GeneExpressTpmDTO.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/models/dto/SampleDTO.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/models/dto/SampleDTO.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/models/dto/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/models/dto/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/models/entity/ExpClass.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/models/entity/ExpClass.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/models/entity/Experiment.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/models/entity/Experiment.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/models/entity/GeneExpressCounts.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/models/entity/GeneExpressCounts.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/models/entity/GeneExpressTpm.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/models/entity/GeneExpressTpm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/models/entity/Sample.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/models/entity/Sample.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/models/entity/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/models/entity/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/models/vo/ExpClassVO.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/models/vo/ExpClassVO.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/models/vo/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/models/vo/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/repositories/ExpClassRepository.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/repositories/ExpClassRepository.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/repositories/ExperimentRepository.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/repositories/ExperimentRepository.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/repositories/GeneExpressCountsRepository.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/repositories/GeneExpressCountsRepository.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/repositories/GeneExpressTpmRepository.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/repositories/GeneExpressTpmRepository.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/repositories/SampleRepository.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/repositories/SampleRepository.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/repositories/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/repositories/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/repositories/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/repositories/base.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/repositories/impl/ExpClassRepositoryImpl.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/repositories/impl/ExpClassRepositoryImpl.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/repositories/impl/ExperimentRepositoryImpl.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/repositories/impl/ExperimentRepositoryImpl.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/repositories/impl/GeneExpressCountsRepositoryImpl.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/repositories/impl/GeneExpressCountsRepositoryImpl.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/repositories/impl/GeneExpressTpmRepositoryImpl.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/repositories/impl/GeneExpressTpmRepositoryImpl.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/repositories/impl/SampleRepositoryImpl.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/repositories/impl/SampleRepositoryImpl.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/repositories/impl/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/repositories/impl/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/result/JsonResult.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/result/JsonResult.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/result/Result.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/result/Result.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/result/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/result/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/router/ExpClass.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/router/ExpClass.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/router/Experiment.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/router/Experiment.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/router/Sample.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/router/Sample.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/db/router/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/router/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/logger.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/logger.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/routers/analysis_routers.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routers/analysis_routers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/routers/db_routers.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routers/db_routers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/routers/file_routers.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routers/file_routers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/routers/router.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routers/router.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/routers/validation.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routers/validation.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/settings.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/settings.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/CONTRIBUTING.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/CONTRIBUTING.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/.env.development" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/.env.development" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/.env.production" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/.env.production" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/pnpm-lock.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pnpm-lock.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/public/vite.svg" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/public/vite.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/api/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/api/interface.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/interface.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/api/system.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/system.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/assets/cover.png" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/assets/cover.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/assets/css/global.scss" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/assets/css/global.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/assets/css/index.scss" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/assets/css/index.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/assets/css/sign.scss" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/assets/css/sign.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/assets/css/var.scss" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/assets/css/var.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/assets/css/yin-current-play.scss" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/assets/css/yin-current-play.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/assets/css/yin-play-bar.scss" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/assets/css/yin-play-bar.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/assets/default_album.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/assets/default_album.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/assets/logo.svg" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/assets/logo.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/assets/song.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/assets/song.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/assets/user.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/assets/user.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/assets/vinyl.png" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/assets/vinyl.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/assets/vue.svg" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/assets/vue.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Artplayer.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Artplayer.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Auth/AuthGuard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Auth/AuthGuard.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Auth/AuthTabs.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Auth/AuthTabs.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Auth/LoginForm.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Auth/LoginForm.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Auth/RegisterForm.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Auth/RegisterForm.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Auth/ResetPasswordForm.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Auth/ResetPasswordForm.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Common/FeedbackDialog.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Common/FeedbackDialog.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/DrawerMusic/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/DrawerMusic/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/DrawerMusic/left.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/DrawerMusic/left.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/DrawerMusic/right.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/DrawerMusic/right.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/DrawerMusic/right_bak.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/DrawerMusic/right_bak.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/HelloWorld.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/HelloWorld.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Table.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Table.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Table.vue.gz" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Table.vue.gz" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/config/nprogress.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/config/nprogress.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/layout/components/aside/data.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/layout/components/aside/data.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/layout/components/aside/data.ts.gz" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/layout/components/aside/data.ts.gz" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/layout/components/aside/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/layout/components/aside/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/layout/components/aside/index.vue.gz" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/layout/components/aside/index.vue.gz" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/layout/components/bg/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/layout/components/bg/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/layout/components/bg/index.vue.gz" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/layout/components/bg/index.vue.gz" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/layout/components/footer/components/center.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/layout/components/footer/components/center.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/layout/components/footer/components/center.vue.gz" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/layout/components/footer/components/center.vue.gz" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/layout/components/footer/components/left.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/layout/components/footer/components/left.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/layout/components/footer/components/left.vue.gz" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/layout/components/footer/components/left.vue.gz" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/layout/components/footer/components/recently.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/layout/components/footer/components/recently.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/layout/components/footer/components/recently.vue.gz" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/layout/components/footer/components/recently.vue.gz" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/layout/components/footer/components/right.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/layout/components/footer/components/right.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/layout/components/footer/components/right.vue.gz" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/layout/components/footer/components/right.vue.gz" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/layout/components/footer/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/layout/components/footer/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/layout/components/footer/index.vue.gz" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/layout/components/footer/index.vue.gz" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/layout/components/header/components/avatar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/layout/components/header/components/avatar.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/layout/components/header/components/avatar.vue.gz" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/layout/components/header/components/avatar.vue.gz" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/layout/components/header/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/layout/components/header/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/layout/components/header/index.vue.gz" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/layout/components/header/index.vue.gz" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/layout/components/main/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/layout/components/main/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/layout/components/main/index.vue.gz" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/layout/components/main/index.vue.gz" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/layout/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/layout/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/main.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/artist/[id].vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/artist/[id].vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/artist/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/artist/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/download/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/download/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/library/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/library/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/library/vip_library.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/library/vip_library.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/like/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/like/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/like/index.vue.gz" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/like/index.vue.gz" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/table/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/table/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/user/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/user/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/user/index.vue.gz" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/user/index.vue.gz" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/user/vip.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/user/vip.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/user/vip.vue.gz" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/user/vip.vue.gz" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/routers/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/routers/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/shims-vue.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/shims-vue.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/stores/helper/persist.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/stores/helper/persist.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/stores/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/stores/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/stores/interface/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/stores/interface/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/stores/modules/artist.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/stores/modules/artist.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/stores/modules/audio.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/stores/modules/audio.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/stores/modules/favorite.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/stores/modules/favorite.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/stores/modules/library.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/stores/modules/library.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/stores/modules/menu.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/stores/modules/menu.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/stores/modules/playlist.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/stores/modules/playlist.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/stores/modules/setting.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/stores/modules/setting.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/stores/modules/theme.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/stores/modules/theme.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/stores/modules/user.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/stores/modules/user.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/style/base.scss" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/style/base.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/style/element-plus.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/style/element-plus.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/style/fonts.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/style/fonts.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/style/hanyi.ttf" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/style/hanyi.ttf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/style/index.scss" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/style/index.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/style/tailwind.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/style/tailwind.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/utils/dateUtils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/utils/dateUtils.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/utils/enum.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/utils/enum.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/utils/http.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/utils/http.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/utils/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/utils/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/utils/parsedLyrics.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/utils/parsedLyrics.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/utils/themeTools.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/utils/themeTools.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/vite-env.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/vite-env.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/tsconfig.app.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/tsconfig.app.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/tsconfig.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/tsconfig.node.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/tsconfig.node.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/vite.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite.config.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kafori_conda.yml" beforeDir="false" afterPath="$PROJECT_DIR$/kafori_conda.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/poetry.lock" beforeDir="false" afterPath="$PROJECT_DIR$/poetry.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_backend_core/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_backend_core/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_backend_core/conftest.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_backend_core/conftest.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_backend_core/test_analysis_base.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_backend_core/test_analysis_base.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_backend_core/test_config.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_backend_core/test_config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_backend_core/test_expclass.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_backend_core/test_expclass.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_backend_core/test_files.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_backend_core/test_files.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_backend_core/test_logger.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_backend_core/test_logger.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_backend_core/test_sample.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_backend_core/test_sample.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/kafori_running.log" beforeDir="false" afterPath="$PROJECT_DIR$/backend/kafori_running.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/test_backend_core/test_upstream.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_backend_core/test_upstream.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_backend_core/test_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_backend_core/test_utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_backend_router/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_backend_router/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_backend_router/test_file_routers.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_backend_router/test_file_routers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/upstream/ngs-test-data/Atreated-1_1.fq" beforeDir="false" afterPath="$PROJECT_DIR$/tests/upstream/ngs-test-data/Atreated-1_1.fq" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/upstream/ngs-test-data/Atreated-1_2.fq" beforeDir="false" afterPath="$PROJECT_DIR$/tests/upstream/ngs-test-data/Atreated-1_2.fq" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/upstream/ngs-test-data/Atreated-2_1.fq" beforeDir="false" afterPath="$PROJECT_DIR$/tests/upstream/ngs-test-data/Atreated-2_1.fq" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/upstream/ngs-test-data/Atreated-2_2.fq" beforeDir="false" afterPath="$PROJECT_DIR$/tests/upstream/ngs-test-data/Atreated-2_2.fq" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/upstream/ngs-test-data/Buntreated-1_1.fq" beforeDir="false" afterPath="$PROJECT_DIR$/tests/upstream/ngs-test-data/Buntreated-1_1.fq" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/upstream/ngs-test-data/Buntreated-1_2.fq" beforeDir="false" afterPath="$PROJECT_DIR$/tests/upstream/ngs-test-data/Buntreated-1_2.fq" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/upstream/ngs-test-data/Buntreated-2_1.fq" beforeDir="false" afterPath="$PROJECT_DIR$/tests/upstream/ngs-test-data/Buntreated-2_1.fq" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/upstream/ngs-test-data/Buntreated-2_2.fq" beforeDir="false" afterPath="$PROJECT_DIR$/tests/upstream/ngs-test-data/Buntreated-2_2.fq" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/upstream/ref/Saccharomyces_cerevisiae.fa" beforeDir="false" afterPath="$PROJECT_DIR$/tests/upstream/ref/Saccharomyces_cerevisiae.fa" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/upstream/ref/Saccharomyces_cerevisiae.gtf" beforeDir="false" afterPath="$PROJECT_DIR$/tests/upstream/ref/Saccharomyces_cerevisiae.gtf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/upstream/sample_sheet.csv" beforeDir="false" afterPath="$PROJECT_DIR$/tests/upstream/sample_sheet.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/upstream/samples_merged_counts.csv" beforeDir="false" afterPath="$PROJECT_DIR$/tests/upstream/samples_merged_counts.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/upstream/samples_merged_tpm.csv" beforeDir="false" afterPath="$PROJECT_DIR$/tests/upstream/samples_merged_tpm.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/upstream/test.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/tests/upstream/test.xlsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -255,37 +36,37 @@
     <option name="openDirectoriesWithSingleClick" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;FastAPI.kafori.executor&quot;: &quot;Run&quot;,
-    &quot;Python 测试.pytest (test_backend_core 内).executor&quot;: &quot;Run&quot;,
-    &quot;Python 测试.pytest (test_expclass.py 内).executor&quot;: &quot;Run&quot;,
-    &quot;Python 测试.pytest (test_sample.py 内).executor&quot;: &quot;Run&quot;,
-    &quot;Python 测试.test_backend_core.executor&quot;: &quot;Run&quot;,
-    &quot;Python 测试.test_backend_router.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;//wsl.localhost/Ubuntu-22.04/home/zhoujunjie/pythonproject/kafori&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;项目&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.43936878&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "FastAPI.kafori.executor": "Run",
+    "Python 测试.pytest (test_backend_core 内).executor": "Run",
+    "Python 测试.pytest (test_expclass.py 内).executor": "Run",
+    "Python 测试.pytest (test_sample.py 内).executor": "Run",
+    "Python 测试.test_backend_core.executor": "Run",
+    "Python 测试.test_backend_router.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "db__interface",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "//wsl.localhost/Ubuntu-22.04/home/zhoujunjie/pythonproject/kafori",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "项目",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.43936878",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;mysql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql"
     ]
   }
-}</component>
-  <component name="RunManager" selected="Python 测试.pytest (test_sample.py 内)">
+}]]></component>
+  <component name="RunManager" selected="FastAPI.kafori">
     <configuration name="kafori" type="Python.FastAPI">
       <option name="additionalOptions" value="--reload --host 0.0.0.0 " />
       <option name="file" value="\\wsl.localhost\Ubuntu-22.04\home\zhoujunjie\pythonproject\kafori\backend\main.py" />
@@ -428,7 +209,7 @@
       <workItem from="1755881676219" duration="44000" />
       <workItem from="1755881730956" duration="9325000" />
       <workItem from="1756123456282" duration="10706000" />
-      <workItem from="1756134592676" duration="1011000" />
+      <workItem from="1756134592676" duration="5749000" />
     </task>
     <servers />
   </component>
@@ -437,9 +218,10 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/kafori$pytest__test_expclass_py__.coverage" NAME="pytest (test_expclass.py 内) 覆盖结果" MODIFIED="1756128132126" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="\\wsl.localhost\Ubuntu-22.04\home\zhoujunjie\pythonproject\kafori" />
-    <SUITE FILE_PATH="coverage/kafori$kafori.coverage" NAME="kafori 覆盖结果" MODIFIED="1756123861872" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/kafori$kafori.coverage" NAME="kafori 覆盖结果" MODIFIED="1756145571474" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/kafori$test_backend_router.coverage" NAME="test_backend_router 覆盖结果" MODIFIED="1756124612367" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="\\wsl.localhost\Ubuntu-22.04\home\zhoujunjie\pythonproject\kafori" />
     <SUITE FILE_PATH="coverage/kafori$pytest__test_backend_core__.coverage" NAME="test_backend_core 覆盖结果" MODIFIED="1756132669677" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="\\wsl.localhost\Ubuntu-22.04\home\zhoujunjie\pythonproject\kafori" />
-    <SUITE FILE_PATH="coverage/kafori$pytest__test_sample_py__.coverage" NAME="pytest (test_sample.py 内) 覆盖结果" MODIFIED="1756140891149" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="\\wsl.localhost\Ubuntu-22.04\home\zhoujunjie\pythonproject\kafori" />
+    <SUITE FILE_PATH="coverage/kafori$test_backend_core.coverage" NAME="test_backend_core 覆盖结果" MODIFIED="1756145557848" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="\\wsl.localhost\Ubuntu-22.04\home\zhoujunjie\pythonproject\kafori" />
+    <SUITE FILE_PATH="coverage/kafori$pytest__test_sample_py__.coverage" NAME="pytest (test_sample.py 内) 覆盖结果" MODIFIED="1756141953265" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="\\wsl.localhost\Ubuntu-22.04\home\zhoujunjie\pythonproject\kafori" />
   </component>
 </project>

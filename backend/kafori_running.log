@@ -323,3 +323,8 @@ ValueError: time data "2023098" doesn't match format "%Y-%m-%d %H:%M:%S", at pos
 [2025-08-25 20:23:30] [INFO] [backend.main] Redis connection pool closed
 [2025-08-25 20:23:30] [INFO] [tortoise] Tortoise-ORM shutdown
 [2025-08-25 20:23:30] [INFO] [rpy2.rinterface_lib.embedded] Embedded R ended.
+[2025-08-26 02:12:52] [INFO] [tortoise] Tortoise-ORM started, {'default': <tortoise.backends.mysql.client.MySQLClient object at 0x7fae9dcd34d0>}, {'models': {'ExpClass': <class 'backend.db.models.entity.ExpClass.ExpClass'>, 'Experiment': <class 'backend.db.models.entity.Experiment.Experiment'>, 'GeneExpressCounts': <class 'backend.db.models.entity.GeneExpressCounts.GeneExpressCounts'>, 'GeneExpressTpm': <class 'backend.db.models.entity.GeneExpressTpm.GeneExpressTpm'>, 'Sample': <class 'backend.db.models.entity.Sample.Sample'>}}
+[2025-08-26 02:12:52] [INFO] [backend.analysis.analysis_base] Initialized process pool with 2 workers
+[2025-08-26 02:12:52] [INFO] [backend.main] RProcessor initialized
+[2025-08-26 02:12:52] [INFO] [backend.main] Redis connection pool initialized
+[2025-08-26 02:13:06] [INFO] [tortoise] Tortoise-ORM shutdown

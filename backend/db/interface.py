@@ -115,7 +115,8 @@ class GetDataBaseInterface(ABC):
                 GeneID: Name of the gene.
                 GeneTPM: Expression level of the gene in TPM.
         """
-        pass
+        data = await db.gene_tpm.model.filter(SampleID__in=unique_id, GeneID__in=gene_id).values()
+        return pd.DataFrame(data)
 
     @staticmethod
     async def get_gene_counts(gene_id: tuple[str], unique_id: tuple[str]) -> pd.DataFrame:
@@ -135,7 +136,8 @@ class GetDataBaseInterface(ABC):
                 GeneID: Name of the gene.
                 GeneCounts: Expression level of the gene in counts.
         """
-        pass
+        data = await db.gene_counts.model.filter(SampleID__in=unique_id, GeneID__in=gene_id).values()
+        return pd.DataFrame(data)
 
 
 class PutDataBaseInterface(ABC):
