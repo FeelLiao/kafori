@@ -31,7 +31,7 @@ class CollectionDate:
     endtime: date
 
 
-class GetDataBaseInterface(ABC):
+class GetDataBaseInterface():
     """
     Database interface for all get repository operations.
     """
@@ -96,7 +96,10 @@ class GetDataBaseInterface(ABC):
                 Origin: Origin of the sample.
         """
 
-        res = await db.sample.get_sample_by_unique_ex_id_and_part_time(unique_ex_id=unique_ex_id, collection_part=collection_part, start_time=collection_time.starttime, end_time=collection_time.endtime)
+        res = await db.sample.get_sample_by_unique_ex_id_and_part_time(unique_ex_id=unique_ex_id,
+                                                                       collection_part=collection_part,
+                                                                       start_time=collection_time.starttime,
+                                                                       end_time=collection_time.endtime)
         return pd.DataFrame(res)
 
     @staticmethod
