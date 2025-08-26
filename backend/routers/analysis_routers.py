@@ -5,6 +5,7 @@ from pydantic import BaseModel, Field, field_validator
 import re
 
 from backend.analysis.tpm_analysis import GeneDataAnalysis, AnalysisType
+from backend.db.interface import GetDataBaseInterface
 
 
 import pandas as pd
@@ -25,7 +26,17 @@ def db_extract_gene_data(unique_ids: set[str], gene_name: set[str], type: Analys
         A pandas DataFrame containing the filtered gene data.
     """
 
-    pass
+    db = GetDataBaseInterface()
+    logger.info(f"Extracting gene data for unique_ids: {unique_ids}, gene_name: {gene_name}, type: {type}")
+    # Placeholder: Replace with actual database query
+    match type:
+        case AnalysisType.deg:
+            data = db.get_gene_counts(unique_id=unique_ids, gene_id=gene_name)
+        case AnalysisType.pca:
+            data = db.get_gene_tpm(unique_id=unique_ids, gene_id=gene_name)
+        case AnalysisType.tpm_heatmap:
+            data = db.get_gene_tpm(unique_id=unique_ids, gene_id=gene_name)
+    return data
 
 
 class PlotParameter(BaseModel):

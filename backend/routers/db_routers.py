@@ -1,7 +1,10 @@
-from fastapi import APIRouter, Request, Body
+from fastapi import APIRouter, Body, HTTPException
 import logging
 from typing import Annotated
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
+from enum import StrEnum, auto
+from pandas import DataFrame
+from typing import Any
 
 from backend.db.interface import GetDataBaseInterface
 
@@ -9,28 +12,67 @@ logger = logging.getLogger(__name__)
 db_router = APIRouter()
 
 
+class QueryType(StrEnum):
+    exp_class = auto()
+    exp_name = auto()
+    sample_id = auto()
+
+
+class DataFrameResponse(BaseModel):
+    success: bool
+    query_type: QueryType
+    count: int
+    columns: list[str]
+    data: list[dict[str, Any]]
+
+
 class TranscriptQuery(BaseModel):
-    query_type: str = Field(...,
-                            description="Type of query, e.g., 'by_id', 'by_name'")
-    query_value: str = Field(...,
-                             description="Value to query, e.g., transcript ID or name")
+    query_type: QueryType = Field(...,
+                                  description="Type of query")
+    query_value: tuple | None = Field(default=None,
+                                      description="Values for the query. "
+                                      "Optional for exp_class; required for exp_name / sample_id.")
 
-# @db_router.post("/transcripts/query")
-# async def query_transcripts(request: Request, query: Annotated[TranscriptQuery, Body(embed=True,
-#     description="A comma-separated list of transcript IDs to query.", example="ENST00000335137,ENST00000423372")]):
-#     """
-#     Query the database for specific transcript IDs.
-#     Args:
-#         request (Request): The FastAPI request object.
-#         query (str): A comma-separated list of transcript IDs.
-#     Returns:
-#         dict: A dictionary containing the query results.
-#     """
-#     try:
-#         db = request.app.state.db
-#         transcript_ids = [tid.strip() for tid in query.split(",") if tid.strip()]
-#         if not transcript_ids:
-#             return {"error": "No valid transcript IDs provided."}
+    @model_validator(mode="before")
+    def require_query_value_when_needed(cls, values):
+        qt = values.get("query_type")
+        qv = values.get("query_value")
+        if qt in {QueryType.exp_name, QueryType.sample_id} and (not qv):
+            raise ValueError(
+                "query_value is required when query_type is exp_name or sample_id")
+        return values
 
-#         logger.info(f"Querying database for transcript IDs: {transcript_ids}")
-#         results = await db
+
+async def get_db_data(query_type: QueryType, query_value: tuple | None) -> DataFrame | None:
+    db = GetDataBaseInterface()
+    match query_type:
+        case QueryType.exp_class:
+            logger.info("Fetching all experiment classes from the database.")
+            return await db.get_exp_class()
+        case QueryType.exp_name:
+            logger.info(f"Fetching experiment with name: {query_value}")
+            return await db.get_experiment(query_value)
+        case QueryType.sample_id:
+            logger.info(f"Fetching sample with ID: {query_value}")
+            return await db.get_sample(query_value)
+        case _:
+            return None
+
+
+@db_router.post("/transcripts/query", response_model=DataFrameResponse)
+async def query_transcripts(query: Annotated[TranscriptQuery, Body(...)]) -> DataFrameResponse:
+    results = await get_db_data(query.query_type, query.query_value)
+    if results is None or results.empty:
+        logger.warning(f"No data found for query: {query}")
+        raise HTTPException(status_code=404, detail="No data found")
+    # 序列化
+    payload = DataFrameResponse(
+        success=True,
+        query_type=query.query_type,
+        count=len(results),
+        columns=list(results.columns),
+        data=results.to_dict(orient="records")
+    )
+    logger.info(
+        f"Successfully fetched {payload.count} rows for query: {query}")
+    return payload
