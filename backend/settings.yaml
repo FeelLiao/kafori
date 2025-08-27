@@ -23,8 +23,8 @@ redis:
 mysql:
   host: 127.0.0.1
   port: 3306
-  user: root
-  password: "mysql_zxtASb"
+  user: admin
+  password: "123456"
   database: kafori
   charset: utf8mb4
   pool_size: 10            # 最小连接数
