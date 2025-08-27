@@ -1,10 +1,12 @@
 from datetime import date
 
+import pandas as pd
 import pytest
 from backend.db.repositories.impl.SampleRepositoryImpl import SampleRepositoryImpl
 
 sample = SampleRepositoryImpl()
 from backend.db.interface import GetDataBaseInterface
+from backend.db.interface import PutDataBaseInterface as put_db
 
 database = GetDataBaseInterface()
 
@@ -44,3 +46,53 @@ async def test_get_sample():
 
     res = await database.get_sample(unique_ex_id, collect_time, collection_part)
     print(res)
+
+@pytest.mark.asyncio
+async def test_put_sample():
+    test_data = {
+        'UniqueID': ['s1000000', 's1000001'],
+        'UniqueEXID': ['p1', 'p2'],
+        'Sample': ['s1', 's2'],
+        'SampleID': ['E-1', 'E-2'],
+        'SampleAge': ['20', '30'],
+        'SampleDetail': ['H1', 'H2'],
+        'FileName': [None, None],
+        'CollectionPart': ['main stem', 'main stem2'],
+        'CollectionTime': ['2020-01-30', '2020-01-30'],
+        'DepositDatabase': ['p1', 'p2'],
+        'Accession': ['A1', 'A2'],
+        'Origin': ['O1', 'O2'],
+    }
+
+    res = await put_db.put_sample(pd.DataFrame.from_dict(test_data))
+    print(res)
+
+
+@pytest.mark.asyncio
+async def test_put_tpm():
+    test_data = {
+        'UniqueID': ['s1000000', 's1000001'],
+        'GeneID': ['s1', 's2'],
+        'SampleID': ['E-1', 'E-2'],
+        'Tpm': ['445', '226'],
+
+    }
+
+    res = await put_db.put_gene_tpm(pd.DataFrame.from_dict(test_data))
+    print(res)
+
+@pytest.mark.asyncio
+async def test_put_counts():
+    test_data = {
+        'UniqueID': ['s1000000', 's1000001'],
+        'GeneID': ['s1', 's2'],
+        'SampleID': ['E-1', 'E-2'],
+        'Counts': ['445', '226'],
+
+    }
+
+    res = await put_db.put_gene_counts(pd.DataFrame.from_dict(test_data))
+    print(res)
+
+
+

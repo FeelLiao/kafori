@@ -5,12 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0d2b8e7c-5000-4f2a-92a3-76e621242948" name="更改" comment="">
-      <change afterPath="$PROJECT_DIR$/tests/test_backend_core/test_counts.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/test_backend_core/test_tpm.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/db/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/db/interface.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/interface.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/kafori_running.log" beforeDir="false" afterPath="$PROJECT_DIR$/backend/kafori_running.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_backend_core/test_upstream.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_backend_core/test_upstream.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_backend_core/test_expclass.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_backend_core/test_expclass.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_backend_core/test_experiment.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_backend_core/test_experiment.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_backend_core/test_sample.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_backend_core/test_sample.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,6 +28,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="PerforceDirect.Settings">
+    <option name="CHARSET" value="无" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
 }</component>
@@ -41,6 +45,7 @@
     &quot;FastAPI.kafori.executor&quot;: &quot;Run&quot;,
     &quot;Python 测试.pytest (test_backend_core 内).executor&quot;: &quot;Run&quot;,
     &quot;Python 测试.pytest (test_expclass.py 内).executor&quot;: &quot;Run&quot;,
+    &quot;Python 测试.pytest (test_experiment.py 内).executor&quot;: &quot;Run&quot;,
     &quot;Python 测试.pytest (test_sample.py 内).executor&quot;: &quot;Run&quot;,
     &quot;Python 测试.test_backend_core.executor&quot;: &quot;Run&quot;,
     &quot;Python 测试.test_backend_router.executor&quot;: &quot;Run&quot;,
@@ -48,7 +53,7 @@
     &quot;git-widget-placeholder&quot;: &quot;db__interface&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;//wsl.localhost/Ubuntu-22.04/home/zhoujunjie/pythonproject/kafori&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/pycharm/pythonProject/kafori&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -66,7 +71,7 @@
     ]
   }
 }</component>
-  <component name="RunManager" selected="Python 测试.test_backend_core">
+  <component name="RunManager" selected="Python 测试.pytest (test_sample.py 内)">
     <configuration name="kafori" type="Python.FastAPI">
       <option name="additionalOptions" value="--reload --host 0.0.0.0 " />
       <option name="file" value="\\wsl.localhost\Ubuntu-22.04\home\zhoujunjie\pythonproject\kafori\backend\main.py" />
@@ -106,6 +111,28 @@
       <option name="_new_parameters" value="&quot;&quot;" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
       <option name="_new_target" value="&quot;\\\\wsl.localhost\\Ubuntu-22.04\\home\\zhoujunjie\\pythonproject\\kafori\\tests\\test_backend_core\\test_expclass.py&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="pytest (test_experiment.py 内)" type="tests" factoryName="py.test" nameIsGenerated="true">
+      <module name="kafori" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="R_HOME" value="/home/zhoujunjie/miniforge3/envs/kafori/lib/R" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="3.13 @ Ubuntu-22.04" />
+      <option name="WORKING_DIRECTORY" value="\\wsl.localhost\Ubuntu-22.04\home\zhoujunjie\pythonproject\kafori" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;\\\\wsl.localhost\\Ubuntu-22.04\\home\\zhoujunjie\\pythonproject\\kafori\\tests\\test_backend_core\\test_experiment.py&quot;" />
       <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
@@ -180,6 +207,7 @@
       <item itemvalue="Python 测试.test_backend_router" />
       <item itemvalue="Python 测试.test_backend_core" />
       <item itemvalue="Python 测试.pytest (test_expclass.py 内)" />
+      <item itemvalue="Python 测试.pytest (test_experiment.py 内)" />
       <item itemvalue="Python 测试.pytest (test_sample.py 内)" />
     </list>
   </component>
@@ -217,11 +245,12 @@
     <option name="version" value="3" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/kafori$pytest__test_expclass_py__.coverage" NAME="pytest (test_expclass.py 内) 覆盖结果" MODIFIED="1756128132126" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="\\wsl.localhost\Ubuntu-22.04\home\zhoujunjie\pythonproject\kafori" />
-    <SUITE FILE_PATH="coverage/kafori$kafori.coverage" NAME="kafori 覆盖结果" MODIFIED="1756145571474" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/kafori$pytest__test_expclass_py__.coverage" NAME="pytest (test_expclass.py 内) 覆盖结果" MODIFIED="1756308695060" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="\\wsl.localhost\Ubuntu-22.04\home\zhoujunjie\pythonproject\kafori" />
+    <SUITE FILE_PATH="coverage/kafori$kafori.coverage" NAME="kafori 覆盖结果" MODIFIED="1756298274049" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/kafori$test_backend_router.coverage" NAME="test_backend_router 覆盖结果" MODIFIED="1756124612367" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="\\wsl.localhost\Ubuntu-22.04\home\zhoujunjie\pythonproject\kafori" />
     <SUITE FILE_PATH="coverage/kafori$pytest__test_backend_core__.coverage" NAME="test_backend_core 覆盖结果" MODIFIED="1756132669677" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="\\wsl.localhost\Ubuntu-22.04\home\zhoujunjie\pythonproject\kafori" />
-    <SUITE FILE_PATH="coverage/kafori$test_backend_core.coverage" NAME="test_backend_core 覆盖结果" MODIFIED="1756145557848" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="\\wsl.localhost\Ubuntu-22.04\home\zhoujunjie\pythonproject\kafori" />
-    <SUITE FILE_PATH="coverage/kafori$pytest__test_sample_py__.coverage" NAME="pytest (test_sample.py 内) 覆盖结果" MODIFIED="1756141953265" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="\\wsl.localhost\Ubuntu-22.04\home\zhoujunjie\pythonproject\kafori" />
+    <SUITE FILE_PATH="coverage/kafori$test_backend_core.coverage" NAME="test_backend_core 覆盖结果" MODIFIED="1756305865607" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="\\wsl.localhost\Ubuntu-22.04\home\zhoujunjie\pythonproject\kafori" />
+    <SUITE FILE_PATH="coverage/kafori$pytest__test_experiment_py__.coverage" NAME="pytest (test_experiment.py 内) 覆盖结果" MODIFIED="1756312898654" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="\\wsl.localhost\Ubuntu-22.04\home\zhoujunjie\pythonproject\kafori" />
+    <SUITE FILE_PATH="coverage/kafori$pytest__test_sample_py__.coverage" NAME="pytest (test_sample.py 内) 覆盖结果" MODIFIED="1756314299126" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="\\wsl.localhost\Ubuntu-22.04\home\zhoujunjie\pythonproject\kafori" />
   </component>
 </project>
