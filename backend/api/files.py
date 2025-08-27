@@ -288,7 +288,7 @@ class PutDataBaseWrapper:
         logger.info("Experiment class and category extracted for database communication.")
         return exclass
 
-    def db_insert(self, exclass: Tuple[bool, List[Dict[str, str]]]) -> Tuple[pd.DataFrame]:
+    def db_insert(self, exclass: list[list[bool], List[Dict[str, str]]]) -> Tuple[pd.DataFrame]:
         """
         Parsing exp_sheet and sample_sheet from the sample_sheet_wrapped based on the communicated exclass.
 
@@ -302,6 +302,7 @@ class PutDataBaseWrapper:
                 exp_sheet: experiment category DataFrame
                 sample_sheet: sample sheet DataFrame
         """
+        # TODO: CHANGE
         if not exclass[0]:
             new_exclass = pd.DataFrame.from_records(exclass[1])
             self.sample_sheet_wrapped = self.sample_sheet_wrapped.drop(columns=["ExpClass"]).merge(

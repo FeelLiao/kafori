@@ -4,9 +4,9 @@ from typing import Annotated
 from pydantic import BaseModel, Field, model_validator
 from enum import StrEnum, auto
 from pandas import DataFrame
-from typing import Any
 
 from backend.db.interface import GetDataBaseInterface
+from backend.db.result.Result import Result
 
 logger = logging.getLogger(__name__)
 db_router = APIRouter()
@@ -16,14 +16,6 @@ class QueryType(StrEnum):
     exp_class = auto()
     exp_name = auto()
     sample_id = auto()
-
-
-class DataFrameResponse(BaseModel):
-    success: bool
-    query_type: QueryType
-    count: int
-    columns: list[str]
-    data: list[dict[str, Any]]
 
 
 class TranscriptQuery(BaseModel):
@@ -59,20 +51,14 @@ async def get_db_data(query_type: QueryType, query_value: tuple | None) -> DataF
             return None
 
 
-@db_router.post("/transcripts/query", response_model=DataFrameResponse)
-async def query_transcripts(query: Annotated[TranscriptQuery, Body(...)]) -> DataFrameResponse:
+@db_router.post("/transcripts/query")
+async def query_transcripts(query: Annotated[TranscriptQuery, Body(...)]) -> Result:
     results = await get_db_data(query.query_type, query.query_value)
     if results is None or results.empty:
         logger.warning(f"No data found for query: {query}")
         raise HTTPException(status_code=404, detail="No data found")
     # 序列化
-    payload = DataFrameResponse(
-        success=True,
-        query_type=query.query_type,
-        count=len(results),
-        columns=list(results.columns),
-        data=results.to_dict(orient="records")
-    )
+    payload = Result.success(data=results.to_dict(orient="records"))
     logger.info(
-        f"Successfully fetched {payload.count} rows for query: {query}")
+        f"Successfully fetched query: {query}")
     return payload

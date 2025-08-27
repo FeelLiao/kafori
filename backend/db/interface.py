@@ -149,21 +149,6 @@ class PutDataBaseInterface(ABC):
     """
 
     @staticmethod
-    def put_exp_class(data: pd.DataFrame) -> bool:
-        """
-        Insert experimental class data into the database.
-
-        Args:
-            data (pd.DataFrame): DataFrame containing experimental class data.
-            The DataFrame should have the following columns:
-                ExpClass: Unique identifier for the experimental class.
-                ExperimentCategory: Name of the experimental class.
-        Returns:
-            bool: True if the operation was successful, False otherwise.
-        """
-        pass
-
-    @staticmethod
     def put_experiment(data: pd.DataFrame) -> bool:
         """
         Insert experiment data into the database.
@@ -236,7 +221,7 @@ class PutDataBaseInterface(ABC):
 
     @staticmethod
     def exclass_processing(
-            exclass: list[dict[str, str]]) -> Tuple[bool, List[Dict[str, str]]]:
+            exclass: list[dict[str, str]]) -> list[list[bool], List[Dict[str, str]]]:
         """
         Process experimental class data for database insertion. This method should convert a list of dictionaries
 
@@ -245,10 +230,17 @@ class PutDataBaseInterface(ABC):
                 Each dictionary should have the keys 'ExpClass' and 'ExperimentCategory'.
 
         Returns:
-            Tuple[bool, List[Dict[str, str]]]: A tuple where the first element is a boolean indicating
+            list[bool, List[Dict[str, str]]]: A list where the first element is a boolean indicating
             whether the experiment category already exists in the database, True for new (direct insertion)
             and False for existing (the database do not need to be inserted again),
             and the second element is a list of dictionaries with processed experimental class data.
             Each dictionary should have the keys 'ExpClass' and 'ExperimentCategory'.
         """
         pass
+
+
+a = [{"ExpClass": "e2", "ExperimentCategory": "dormant"},
+     {"ExpClass": "e1", "ExperimentCategory": "dormant"}]
+
+b = [[True, False], [{"ExpClass": "e2", "ExperimentCategory": "dormant"}, {
+    "ExpClass": "e3", "ExperimentCategory": "dormant"}]]
