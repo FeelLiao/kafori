@@ -65,9 +65,8 @@ class GetDataBaseInterface:
                 ExpClass: Experimental class identifier.
                 Experiment: Name of the experiment.
         """
-        data = []
-        for exp in exp_class:
-            data += await db.experiment.model.filter(ExpClass=exp).values()
+
+        data = await db.experiment.model.filter(ExpClass__in=exp_class).values()
         return pd.DataFrame(data)
 
     @staticmethod

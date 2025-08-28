@@ -26,23 +26,25 @@ class ExpClassRepository(ABC, BaseRepository[ExpClass]):
         """
         查询实验类别表里面实验类别为category的数据，如果有则返回，没有就创建并返回
         Args:
-           category: 实验类别
+           exp_class: 实验类别
         Returns:
-            ExpClassDTO
+            ExpClass: 实验类别
         """
 
         pass
 
     @abstractmethod
     async def getOneByCategory(self, category: str) -> ExpClassDTO:
-        ...
+        """
+        分页查询实验类别
+        Args:
+            category: 实验类别
+        Return:
+            ExpClassDTO
+        """
+        pass
 
-    """
-    分页查询实验类别
-    :param start_page: 起始行号（从 0 开始）；None 表示查全部
-    :param end_page:   结束行号（不包含）；None 表示查全部
-    :return: 字典列表
-    """
+
     # @abstractmethod
     # async def getExpClss(self, start_page: int, size: int) -> list[dict]:
     #     ...
