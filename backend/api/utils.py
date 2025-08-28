@@ -6,6 +6,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import os
 import json
 import shutil
+import modin.pandas as mpd
 
 logger = logging.getLogger(__name__)
 
@@ -182,7 +183,8 @@ def trim_report(fastp_json_dir: Path) -> tuple[bool, pd.DataFrame, list[str]]:
     max_workers = min(8, os.cpu_count() or 1)
     from concurrent.futures import ThreadPoolExecutor, as_completed
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        futures = {executor.submit(process_json, log_file): log_file.name for log_file in report_json_files}
+        futures = {executor.submit(
+            process_json, log_file): log_file.name for log_file in report_json_files}
         for future in as_completed(futures):
             results = future.result()
             if results is not None:
@@ -242,3 +244,33 @@ def cleanup_directories(directories: list[Path]) -> None:
                     f"Error removing directory {dir_path}: {e}", exc_info=True)
         else:
             logger.warning(f"Directory does not exist: {dir_path}")
+
+
+def dataframe_t(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Transpose the DataFrame and set the first row as the header.
+
+    Returns:
+        pd.DataFrame: The transposed DataFrame.
+    """
+    data_T = df.T
+    data_T.columns = data_T.iloc[0]      # 第一行作为新的列名
+    data_T = data_T.iloc[1:]             # 去掉第一行
+    data = data_T.reset_index(inplace=False)      # 把原来的 index 变成一列
+    results = data.rename(columns={'index': 'SampleID'}, inplace=False)
+    return results
+
+
+def dataframe_wide2long(df: mpd.DataFrame, type: str) -> mpd.DataFrame:
+    """
+        Wrap the DataFrame from wide to long format.
+        Args:
+            df (mpd.DataFrame): The DataFrame to reshape.
+            type (str): The name of the value column ("Counts" or "Tpm").
+        Returns:
+            pd.DataFrame: The DataFrame with additional columns.
+    """
+    df_long = mpd.melt(
+        df, id_vars=['SampleID', "UniqueID"], var_name='GeneID', value_name=type)
+
+    return df_long

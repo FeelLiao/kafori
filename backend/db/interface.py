@@ -267,7 +267,7 @@ class PutDataBaseInterface:
 
     @staticmethod
     async def exclass_processing(
-            exclass: list[dict[str, str]]) -> list[list[bool], List[Dict[str, str]]]:
+            exclass: list[dict[str, str]]) -> tuple[list[bool], List[Dict[str, str]]]:
         """
         Process experimental class data for database insertion. This method should convert a list of dictionaries
 
@@ -289,11 +289,4 @@ class PutDataBaseInterface:
             if not exists:
                 await db.exp_class.model.create(**exp_class)
             results_bool.append(not exists)  # 如果不存在，返回 True；否则返回 False
-        return list[results_bool, exclass]
-
-
-a = [{"ExpClass": "e2", "ExperimentCategory": "dormant1"},
-     {"ExpClass": "e1", "ExperimentCategory": "dormant2"}]
-
-b = [[True, False], [{"ExpClass": "e2", "ExperimentCategory": "dormant"}, {
-    "ExpClass": "e3", "ExperimentCategory": "dormant"}]]
+        return results_bool, exclass
