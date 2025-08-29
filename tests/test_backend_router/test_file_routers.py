@@ -4,7 +4,11 @@ import pytest
 from backend.main import app
 import pandas as pd
 
+from backend.api.files import GeneDataType
+
 test_sample = "tests/upstream/test.xlsx"
+test_tpm = "tests/upstream/samples_merged_tpm.csv"
+test_counts = "tests/upstream/samples_merged_counts.csv"
 rawdata_dir = "tests/upstream/ngs-test-data"
 
 
@@ -13,6 +17,16 @@ def sample_xlsx():
     with open(test_sample, "rb") as f:
         sample_xlsx = io.BytesIO(f.read())
     return sample_xlsx
+
+
+@pytest.fixture
+def gene_tpm():
+    return pd.read_csv(test_tpm)
+
+
+@pytest.fixture
+def gene_counts():
+    return pd.read_csv(test_counts)
 
 
 @pytest.fixture
@@ -46,10 +60,22 @@ def get_token_header():
         return {"Authorization": f"Bearer {token}"}
 
 
+def assert_result(resp, expect_ok: bool, expected_message_sub: str):
+    assert resp.status_code == 200
+    body = resp.json()
+    assert "code" in body and "message" in body and "data" in body
+    if expect_ok:
+        assert body["code"] == 0
+        assert body["message"] == expected_message_sub  # 精确匹配成功消息
+    else:
+        assert body["code"] == 1
+        assert expected_message_sub in body["message"]
+
+
 @pytest.mark.parametrize(
     "df_key, status, respond_message",
     [
-        ("sample_data", True, "success"),
+        ("sample_data", True, "Sample sheet uploaded successfully."),
         ("invalid_collection_time", False, "Error parsing file"),
         ("invalid_sample_id_format", False,
          "SampleID contains invalid characters:"),
@@ -68,42 +94,40 @@ def test_upload_sample_sheet(sample_data_validation, df_key, status, respond_mes
         excel_io = io.BytesIO()
         df.to_excel(excel_io, index=False, sheet_name="SampleInfo")
         excel_io.seek(0)
-        response = client.post(
+        resp = client.post(
             "/pipeline/sample_sheet/",
             files={"file": ("test.xlsx", excel_io,
                             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")},
             headers=get_token_header()
         )
-        assert response.status_code == 200
-        json_data = response.json()
-        assert "success" in json_data
-        assert "msg" in json_data
-
-        if status:
-            assert json_data["success"] is True
-            assert json_data["msg"] == "Sample sheet uploaded successfully."
-        else:
-            assert json_data["success"] is False
-            assert respond_message in json_data["msg"]
+        assert_result(resp, status, respond_message)
 
 
-# def test_upload_gene_ex_tpm():
-#     fake_csv = io.BytesIO(b"gene_id,sample1\nG1,10\nG2,20")
-#     response = client.post(
-#         "/pipeline/gene_ex_tpm/",
-#         files={"file": ("test.csv", fake_csv, "text/csv")},
-#         headers=get_token_header()
-#     )
-#     assert response.status_code == 200
-#     assert "success" in response.json()
+def test_upload_gene_tpm(gene_tpm):
+    with TestClient(app) as client:
+        csv_io = io.BytesIO()
+        gene_tpm.to_csv(csv_io, index=False)
+
+        resp = client.post(
+            "/pipeline/gene_ex_tpm/",
+            files={"file": ("test.csv", csv_io,
+                            "text/csv")},
+            headers=get_token_header()
+        )
+        assert_result(
+            resp, True, f"Gene expression data {GeneDataType.tpm} uploaded successfully.")
 
 
-# def test_upload_gene_ex_counts():
-#     fake_csv = io.BytesIO(b"gene_id,sample1\nG1,5\nG2,15")
-#     response = client.post(
-#         "/pipeline/gene_ex_counts/",
-#         files={"file": ("test.csv", fake_csv, "text/csv")},
-#         headers=get_token_header()
-#     )
-#     assert response.status_code == 200
-#     assert "success" in response.json()
+def test_upload_gene_counts(gene_counts):
+    with TestClient(app) as client:
+        csv_io = io.BytesIO()
+        gene_counts.to_csv(csv_io, index=False)
+
+        resp = client.post(
+            "/pipeline/gene_ex_counts/",
+            files={"file": ("test.csv", csv_io,
+                            "text/csv")},
+            headers=get_token_header()
+        )
+        assert_result(
+            resp, True, f"Gene expression data {GeneDataType.counts} uploaded successfully.")

@@ -1,8 +1,9 @@
-from abc import ABC
 from dataclasses import dataclass
 from datetime import date
 from typing import List, Tuple, Dict
 import pandas as pd
+
+from backend.db.utils import Utils
 
 from backend.db.repositories.impl.ExpClassRepositoryImpl import ExpClassRepositoryImpl
 from backend.db.repositories.impl.ExperimentRepositoryImpl import ExperimentRepositoryImpl
@@ -31,7 +32,7 @@ class CollectionDate:
     endtime: date
 
 
-class GetDataBaseInterface():
+class GetDataBaseInterface:
     """
     Database interface for all get repository operations.
     """
@@ -143,13 +144,13 @@ class GetDataBaseInterface():
         return pd.DataFrame(data)
 
 
-class PutDataBaseInterface(ABC):
+class PutDataBaseInterface:
     """
     Database interface for all put repository operations.
     """
 
     @staticmethod
-    def put_experiment(data: pd.DataFrame) -> bool:
+    async def put_experiment(data: pd.DataFrame) -> bool:
         """
         Insert experiment data into the database.
 
@@ -162,10 +163,21 @@ class PutDataBaseInterface(ABC):
         Returns:
             bool: True if the operation was successful, False otherwise.
         """
-        pass
+
+        try:
+            # 将 DataFrame 转换为Experiment格式
+            records = Utils.to_experiment(data)
+
+            # 使用 bulk_create 方法批量创建记录
+            await db.experiment.model.bulk_create(records)
+
+            return True
+
+        except Exception as e:
+            return False
 
     @staticmethod
-    def put_sample(data: pd.DataFrame) -> bool:
+    async def put_sample(data: pd.DataFrame) -> bool:
         """
         Insert sample data into the database.
 
@@ -173,6 +185,7 @@ class PutDataBaseInterface(ABC):
             data (pd.DataFrame): DataFrame containing sample data.
             The DataFrame should have the following columns:
                 UniqueID: Unique identifier for the sample.
+                UniqueEXID: Unique identifier for the experiment.
                 SampleID: Name of the sample.
                 SampleAge: Age of the sample.
                 SampleDetail: Additional details about the sample.
@@ -183,10 +196,21 @@ class PutDataBaseInterface(ABC):
         Returns:
             bool: True if the operation was successful, False otherwise.
         """
-        pass
+
+        try:
+            # 将 DataFrame 转换为Experiment格式
+            records = Utils.to_sample(data)
+
+            # 使用 bulk_create 方法批量创建记录
+            await db.sample.model.bulk_create(records)
+
+            return True
+
+        except Exception as e:
+            return False
 
     @staticmethod
-    def put_gene_tpm(data: pd.DataFrame) -> bool:
+    async def put_gene_tpm(data: pd.DataFrame) -> bool:
         """
         Insert gene expression data in TPM (Transcripts Per Million) format into the database.
 
@@ -196,14 +220,25 @@ class PutDataBaseInterface(ABC):
                 UniqueID: Unique identifier for the sample.
                 SampleID: Name of the sample.
                 GeneID: Name of the gene.
-                GeneTPM: Expression level of the gene in TPM.
+                Tpm: Expression level of the gene in TPM.
         Returns:
             bool: True if the operation was successful, False otherwise.
         """
-        pass
+
+        try:
+            # 将 DataFrame 转换为Experiment格式
+            records = Utils.to_gene_tpm(data)
+
+            # 使用 bulk_create 方法批量创建记录
+            await db.gene_tpm.model.bulk_create(records)
+
+            return True
+
+        except Exception as e:
+            return False
 
     @staticmethod
-    def put_gene_counts(data: pd.DataFrame) -> bool:
+    async def put_gene_counts(data: pd.DataFrame) -> bool:
         """
         Insert gene expression data in counts format into the database.
 
@@ -213,15 +248,26 @@ class PutDataBaseInterface(ABC):
                 UniqueID: Unique identifier for the sample.
                 SampleID: Name of the sample.
                 GeneID: Name of the gene.
-                GeneCounts: Expression level of the gene in counts.
+                Counts: Expression level of the gene in counts.
         Returns:
             bool: True if the operation was successful, False otherwise.
         """
-        pass
+
+        try:
+            # 将 DataFrame 转换为Experiment格式
+            records = Utils.to_gene_counts(data)
+
+            # 使用 bulk_create 方法批量创建记录
+            await db.gene_counts.model.bulk_create(records)
+
+            return True
+
+        except Exception as e:
+            return False
 
     @staticmethod
-    def exclass_processing(
-            exclass: list[dict[str, str]]) -> list[list[bool], List[Dict[str, str]]]:
+    async def exclass_processing(
+            exclass: list[dict[str, str]]) -> tuple[list[bool], List[Dict[str, str]]]:
         """
         Process experimental class data for database insertion. This method should convert a list of dictionaries
 
@@ -236,11 +282,11 @@ class PutDataBaseInterface(ABC):
             and the second element is a list of dictionaries with processed experimental class data.
             Each dictionary should have the keys 'ExpClass' and 'ExperimentCategory'.
         """
-        pass
-
-
-a = [{"ExpClass": "e2", "ExperimentCategory": "dormant"},
-     {"ExpClass": "e1", "ExperimentCategory": "dormant"}]
-
-b = [[True, False], [{"ExpClass": "e2", "ExperimentCategory": "dormant"}, {
-    "ExpClass": "e3", "ExperimentCategory": "dormant"}]]
+        # 检查每个 ExperimentCategory 是否存在
+        results_bool = []
+        for exp_class in exclass:
+            exists = await db.exp_class.model.filter(ExperimentCategory=exp_class['ExperimentCategory']).exists()
+            if not exists:
+                await db.exp_class.model.create(**exp_class)
+            results_bool.append(not exists)  # 如果不存在，返回 True；否则返回 False
+        return results_bool, exclass
