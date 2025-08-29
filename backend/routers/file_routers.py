@@ -3,15 +3,19 @@ from typing import Tuple
 import logging
 from io import BytesIO
 from typing import Annotated
+from pathlib import Path
+import aiofiles
 
 from backend.api.files import UploadFileProcessor, FileType, GeneDataType, PutDataBaseWrapper
 from backend.routers.validation import get_current_active_user, User
 from backend.db.result.Result import Result
 from backend.db.interface import PutDataBaseInterface
+from backend.api.config import config
 
 
 file_router = APIRouter()
 logger = logging.getLogger(__name__)
+UPLOAD_RAWDATA_PATH = config.upload_rawdata_dir
 
 
 async def sample_sheet_validation(file: BytesIO, user: str, name: str, request: Request) -> Tuple[bool, str]:
@@ -123,6 +127,14 @@ async def process_db_upload(user: str, request: Request) -> Tuple[bool, str]:
         return False, str(e)
 
 
+async def upload_file_saving(file:UploadFile, save_path: Path) -> None:
+    save_path = Path(save_path, file.filename)
+
+    async with aiofiles.open(save_path,  "wb") as f:
+        while chunk := await file.read(8192): 
+            await f.write(chunk)
+
+
 @file_router.post("/pipeline/sample_sheet/")
 async def upload_sample_sheet(request: Request,
                               current_user: Annotated[User, Depends(get_current_active_user)],
@@ -175,12 +187,20 @@ async def upload_gene_ex_counts(request: Request,
         return Result.fail(msg=rel[1])
 
 
-# @file_router.post("/pipeline/rawdata/")
-# async def upload_metadata(file: UploadFile = File(...), user_id: str = ""):
-#     metadata = BytesIO(await file.read())
+@file_router.post("/pipeline/rawdata/")
+async def upload_rawdata(current_user: Annotated[User, Depends(get_current_active_user)],
+    files: list[UploadFile] = File(
+    description="Multiple rawdata files Upload"),
+    ):
+    user = current_user.username
+    raw_path = Path(UPLOAD_RAWDATA_PATH,user)
+    metadata = 
 
-#     rel = process_rawdata(metadata)
-#     return {"success": rel[0], "msg": rel[1]}
+    rel = process_rawdata(metadata)
+    if rel[0]:
+        return Result.ok(msg=rel[1])
+    else:
+        return Result.fail(msg=rel[1])
 
 @file_router.post("/pipeline/put_database/")
 async def put_database(request: Request,
