@@ -39,4 +39,4 @@ class Settings(BaseModel):
             return cls(**yaml.safe_load(f))
 
 
-settings = Settings.from_yaml("backend/settings.yaml")
+settings = Settings.from_yaml("backend/conf/settings.yaml")
