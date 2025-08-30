@@ -320,10 +320,13 @@ class PutDataBaseWrapper:
             logger.info("Exclass replaced in sample sheet.")
 
         exp_sheet = self.sample_sheet_wrapped[[
-            "ExpClass", "UniqueEXID", "Experiment"]]
+            "ExpClass", "UniqueEXID", "Experiment"]].drop_duplicates()
         logger.info("Experiment sheet extracted from original sample sheet.")
         sample_sheet = self.sample_sheet_wrapped.drop(
-            columns=["ExpClass", "ExperimentCategory", "Experiment"])
+            columns=["ExpClass", "ExperimentCategory", "Experiment", "FileName1",
+                     "FileName2", "MD5checksum1", "MD5checksum2"])
+        sample_sheet["FileName"] = None
+        sample_sheet["Sample"] = None
         logger.info("Sample sheet extracted from original sample sheet.")
 
         return exp_sheet, sample_sheet

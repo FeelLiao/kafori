@@ -187,20 +187,20 @@ async def upload_gene_ex_counts(request: Request,
         return Result.fail(msg=rel[1])
 
 
-@file_router.post("/pipeline/rawdata/")
-async def upload_rawdata(current_user: Annotated[User, Depends(get_current_active_user)],
-    files: list[UploadFile] = File(
-    description="Multiple rawdata files Upload"),
-    ):
-    user = current_user.username
-    raw_path = Path(UPLOAD_RAWDATA_PATH,user)
-    metadata = 
+# @file_router.post("/pipeline/rawdata/")
+# async def upload_rawdata(current_user: Annotated[User, Depends(get_current_active_user)],
+#     files: list[UploadFile] = File(
+#     description="Multiple rawdata files Upload"),
+#     ):
+#     user = current_user.username
+#     raw_path = Path(UPLOAD_RAWDATA_PATH,user)
+#     metadata = 
 
-    rel = process_rawdata(metadata)
-    if rel[0]:
-        return Result.ok(msg=rel[1])
-    else:
-        return Result.fail(msg=rel[1])
+#     rel = process_rawdata(metadata)
+#     if rel[0]:
+#         return Result.ok(msg=rel[1])
+#     else:
+#         return Result.fail(msg=rel[1])
 
 @file_router.post("/pipeline/put_database/")
 async def put_database(request: Request,

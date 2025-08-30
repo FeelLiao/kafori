@@ -1,11 +1,13 @@
 import io
 import pytest
 import pandas as pd
-from backend.api.files import UploadFileProcessor, FileType
+from backend.api.files import UploadFileProcessor, FileType, PutDataBaseWrapper
 from pathlib import Path
 
 test_sample = "tests/upstream/test.xlsx"
 rawdata_dir = "tests/upstream/ngs-test-data"
+counts = "tests/upstream/samples_merged_counts.csv"
+tpm = "tests/upstream/samples_merged_tpm.csv"
 
 
 @pytest.fixture
@@ -18,6 +20,16 @@ def sample_xlsx():
 @pytest.fixture
 def rawdata_dir_path():
     return Path(rawdata_dir)
+
+
+@pytest.fixture
+def tpm_in():
+    return tpm
+
+
+@pytest.fixture
+def counts_in():
+    return counts
 
 
 @pytest.mark.parametrize(
@@ -67,7 +79,8 @@ def sample_data_validation(sample_xlsx):
     "df_key, expected_error, error_message",
     [
         ("invalid_collection_time", RuntimeError, "Error parsing file"),
-        ("invalid_sample_id_format", ValueError, "SampleID contains invalid characters:"),
+        ("invalid_sample_id_format", ValueError,
+         "SampleID contains invalid characters:"),
         ("duplicate_sample_id", ValueError, "SampleID contains duplicate values:"),
     ]
 )
@@ -85,7 +98,8 @@ def test_invalid_sample_file(df_key, expected_error, error_message, sample_data_
 
 def test_rawdata_validation(sample_xlsx, rawdata_dir_path):
     sample_sheet = UploadFileProcessor.read_file(sample_xlsx, FileType.xlsx)
-    valid, missing = UploadFileProcessor.rawdata_validation(sample_sheet, rawdata_dir_path)
+    valid, missing = UploadFileProcessor.rawdata_validation(
+        sample_sheet, rawdata_dir_path)
     assert valid is True
     assert missing == []
 
@@ -102,19 +116,30 @@ def test_rawdata_missing_file(sample_xlsx, rawdata_dir_path, caplog):
 def test_rawdata_wrong_md5(sample_xlsx, rawdata_dir_path):
     processor = UploadFileProcessor.read_file(sample_xlsx, FileType.xlsx)
     processor.at[0, "MD5checksum1"] = "dummy_md5"
-    valid, missing = UploadFileProcessor.rawdata_validation(processor, rawdata_dir_path)
+    valid, missing = UploadFileProcessor.rawdata_validation(
+        processor, rawdata_dir_path)
     assert valid is False
     assert "Atreated-2_1.fq" in missing
 
 
-# def test_database_wrapper(sample_xlsx):
-#     processor = UploadFileProcessor(sample_xlsx)
-#     df = processor.database_wrapper()
-#     assert "UniqueID" in df.columns
-#     assert "UniqueEXID" in df.columns
-#     assert df["UniqueID"].str.startswith("LRX").all()
-#     assert df["UniqueEXID"].str.startswith("TRCRIE").all()
-#     assert len(df["UniqueID"].unique()) == len(df)
+def test_database_wrapper(sample_xlsx, tpm_in, counts_in):
+    sample_sheet_data = UploadFileProcessor.read_file(
+        sample_xlsx, FileType.xlsx)
+    gene_tpm_data = UploadFileProcessor.read_file(tpm_in, FileType.csv)
+    gene_counts_data = UploadFileProcessor.read_file(counts_in, FileType.csv)
+    data_base_wrapper = PutDataBaseWrapper(
+        sample_sheet_data, gene_tpm_data, gene_counts_data)
+    exp_class_communication = data_base_wrapper.communicate_id_in_db()
+    tu = ([True, True], [])
+
+    exp_sheet, sample_sheet = data_base_wrapper.db_insert(tu)
+    tpm, counts = data_base_wrapper.expression_wrapper(sample_sheet)
+
+    print(exp_class_communication)
+    print(exp_sheet)
+    print(sample_sheet)
+    print(tpm.head())
+    print(counts.head())
 
 
 # def test_trans_to_smk_samples(sample_xlsx, rawdata_dir_path, tmp_path):
