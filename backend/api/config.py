@@ -35,5 +35,5 @@ class Config:
         return instance
 
 
-config = Config("backend/settings.yaml")
+config = Config("backend/conf/settings.yaml")
 logger.info("Configuration loaded successfully.")

@@ -14,3 +14,5 @@ backend/kafori_running.log
 
 tests/test_backend_core/conftest.py
 backend/settings.yaml
+backend/conf/settings.yaml
+
