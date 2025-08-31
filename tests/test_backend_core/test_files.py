@@ -138,7 +138,7 @@ def test_database_wrapper(sample_xlsx, tpm_in, counts_in):
     print(exp_class_communication)
     print(exp_sheet)
     print(sample_sheet)
-    print(tpm.head())
+    print(tpm.head(), type(tpm))
     print(counts.head())
 
 

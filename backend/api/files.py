@@ -341,6 +341,7 @@ class PutDataBaseWrapper:
         counts_t = dataframe_t(self.gene_expression_counts)
 
         ids = sample_sheet[["SampleID", "UniqueID"]]
+        ids = ids.rename(columns={"UniqueID": "SampleRealID"})
 
         tpm_t_merge = tpm_t.merge(ids, on="SampleID", how="left")
         counts_t_merge = counts_t.merge(ids, on="SampleID", how="left")

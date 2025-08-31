@@ -109,13 +109,17 @@ async def process_db_upload(user: str, request: Request) -> Tuple[bool, str]:
         tpm, counts = data_base_wrapper.expression_wrapper(sample_sheet)
 
         exp_valid = await PutDataBaseInterface.put_experiment(exp_sheet)
-        logger.info(f"Experiment data has been put into database successfully for user {user}.")
+        if exp_valid:
+            logger.info(f"Experiment data has been put into database successfully for user {user}.")
         sample_valid = await PutDataBaseInterface.put_sample(sample_sheet)
-        logger.info(f"Sample data has been put into database successfully for user {user}.")
+        if sample_valid:
+            logger.info(f"Sample data has been put into database successfully for user {user}.")
         tpm_valid = await PutDataBaseInterface.put_gene_tpm(tpm)
-        logger.info(f"Gene TPM data has been put into database successfully for user {user}.")
+        if tpm_valid:
+            logger.info(f"Gene TPM data has been put into database successfully for user {user}.")
         counts_valid = await PutDataBaseInterface.put_gene_counts(counts)
-        logger.info(f"Gene Counts data has been put into database successfully for user {user}.")
+        if counts_valid:
+            logger.info(f"Gene Counts data has been put into database successfully for user {user}.")
 
         valid = [exp_valid, sample_valid, tpm_valid, counts_valid]
         if all(valid):
@@ -127,7 +131,7 @@ async def process_db_upload(user: str, request: Request) -> Tuple[bool, str]:
         return False, str(e)
 
 
-async def upload_file_saving(file:UploadFile, save_path: Path) -> None:
+async def upload_file_saving(file: UploadFile, save_path: Path) -> None:
     save_path = Path(save_path, file.filename)
 
     async with aiofiles.open(save_path,  "wb") as f:
