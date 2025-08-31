@@ -273,11 +273,9 @@ def dataframe_wide2long(df: mpd.DataFrame, type: str) -> mpd.DataFrame:
     """
     timestamp_int = int(time.time())
     date_str = format(timestamp_int, "x").zfill(8)
-
-    # Add a unique identifier for each sample
-    hex_ids = [format(i+1, "x").zfill(8) for i in range(len(df))]
     df_long = mpd.melt(
         df, id_vars=['SampleID', "SampleRealID"], var_name='GeneID', value_name=type)
+    hex_ids = [format(i+1, "x").zfill(8) for i in range(len(df_long))]
     df_long["UniqueID"] = ["GEXP" + date_str + hex_id for hex_id in hex_ids]
 
     return df_long
