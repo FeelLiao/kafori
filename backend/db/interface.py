@@ -118,7 +118,7 @@ class GetDataBaseInterface:
                 GeneID: Name of the gene.
                 GeneTPM: Expression level of the gene in TPM.
         """
-        data = await db.gene_tpm.model.filter(SampleID__in=unique_id, GeneID__in=gene_id).values()
+        data = await db.gene_tpm.model.filter(SampleRealID__in=unique_id, GeneID__in=gene_id).values()
         return pd.DataFrame(data)
 
     @staticmethod
@@ -139,7 +139,7 @@ class GetDataBaseInterface:
                 GeneID: Name of the gene.
                 GeneCounts: Expression level of the gene in counts.
         """
-        data = await db.gene_counts.model.filter(SampleID__in=unique_id, GeneID__in=gene_id).values()
+        data = await db.gene_counts.model.filter(SampleRealID__in=unique_id, GeneID__in=gene_id).values()
         return pd.DataFrame(data)
 
 
