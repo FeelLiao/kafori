@@ -49,20 +49,24 @@ PARTITION BY RANGE (YEAR(collection_time)) (
 
 CREATE TABLE gene_express_counts (
     unique_id   VARCHAR(100) primary key comment "sample的 unique_id + gene_id",
+    sample_real_id   VARCHAR(255) NOT NULL ,
     sample_id   VARCHAR(255),
     gene_id     VARCHAR(10),
     counts      INT,
 
-    KEY idx_sample_id (sample_id)
+    KEY idx_sample_id (sample_id),
+    KEY idx_sample_real_id (sample_real_id)
 ) ENGINE=InnoDB;
 
 CREATE TABLE gene_express_tpm (
      unique_id   VARCHAR(100) primary key comment "sample的 unique_id + gene_id",
-     sample_id   VARCHAR(255),
+     sample_real_id   VARCHAR(255) NOT NULL ,
+     sample_id   VARCHAR(255) ,
      gene_id     VARCHAR(10),
      tpm         FLOAT,
 
-     KEY idx_sample_id (sample_id)
+     KEY idx_sample_id (sample_id),
+     KEY idx_sample_real_id (sample_real_id)
 ) ENGINE=InnoDB;
 
 

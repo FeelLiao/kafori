@@ -73,6 +73,7 @@ async def test_put_tpm():
     test_data = {
         'UniqueID': ['s1000000', 's1000001'],
         'GeneID': ['s1', 's2'],
+        'SampleRealID': ['E-1', 'E-2'],
         'SampleID': ['E-1', 'E-2'],
         'Tpm': ['445', '226'],
 
@@ -86,6 +87,7 @@ async def test_put_counts():
     test_data = {
         'UniqueID': ['s1000000', 's1000001'],
         'GeneID': ['s1', 's2'],
+        'SampleRealID': ['E-1', 'E-2'],
         'SampleID': ['E-1', 'E-2'],
         'Counts': ['445', '226'],
 
