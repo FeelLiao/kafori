@@ -14,7 +14,7 @@ analysis_router = APIRouter()
 logger = logging.getLogger(__name__)
 
 
-def db_extract_gene_data(unique_ids: set[str], gene_name: set[str], type: AnalysisType) -> pd.DataFrame:
+async def db_extract_gene_data(unique_ids: set[str], gene_name: set[str], type: AnalysisType) -> pd.DataFrame:
     """
     Placeholder function to extract gene data from the database.
     This should be replaced with actual database query logic.
@@ -31,12 +31,13 @@ def db_extract_gene_data(unique_ids: set[str], gene_name: set[str], type: Analys
     # Placeholder: Replace with actual database query
     match type:
         case AnalysisType.deg:
-            data = db.get_gene_counts(unique_id=unique_ids, gene_id=gene_name)
+            data = await db.get_gene_counts(unique_id=unique_ids, gene_id=gene_name
+                                            )
         case AnalysisType.pca:
-            data = db.get_gene_tpm(unique_id=unique_ids, gene_id=gene_name)
+            data = await db.get_gene_tpm(unique_id=unique_ids, gene_id=gene_name)
         case AnalysisType.tpm_heatmap:
-            data = db.get_gene_tpm(unique_id=unique_ids, gene_id=gene_name)
-    return dataframe_long2wide(data)
+            data = await db.get_gene_tpm(unique_id=unique_ids, gene_id=gene_name)
+    return data
 
 
 class PlotParameter(BaseModel):

@@ -96,10 +96,17 @@ class GetDataBaseInterface:
                 Origin: Origin of the sample.
         """
 
+        if collection_time is not None:
+            start_time = collection_time.starttime
+            end_time = collection_time.endtime
+        else:
+            start_time = None
+            end_time = None
+
         res = await db.sample.get_sample_by_unique_ex_id_and_part_time(unique_ex_id=unique_ex_id,
                                                                        collection_part=collection_part,
-                                                                       start_time=collection_time.starttime,
-                                                                       end_time=collection_time.endtime)
+                                                                       start_time=start_time,
+                                                                       end_time=end_time)
         return pd.DataFrame(res)
 
     @staticmethod
