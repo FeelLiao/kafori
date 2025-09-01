@@ -283,9 +283,12 @@ class PutDataBaseInterface:
         """
         # 检查每个 ExperimentCategory 是否存在
         results_bool = []
-        for exp_class in exclass:
-            exists = await db.exp_class.model.filter(ExperimentCategory=exp_class['ExperimentCategory']).exists()
+        for i, exp_class in enumerate(exclass):
+            exists = await db.exp_class.model.filter(ExperimentCategory=exp_class['ExperimentCategory']).values()
             if not exists:
                 await db.exp_class.model.create(**exp_class)
+            else:
+                # 或 exclass[i].update(exists[0])，视 exists 结构而定
+                exclass[i] = exists[0]
             results_bool.append(not exists)  # 如果不存在，返回 True；否则返回 False
         return results_bool, exclass

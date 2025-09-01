@@ -269,7 +269,7 @@ def dataframe_wide2long(df: mpd.DataFrame, type: str) -> mpd.DataFrame:
             df (mpd.DataFrame): The DataFrame to reshape.
             type (str): The name of the value column ("Counts" or "Tpm").
         Returns:
-            pd.DataFrame: The DataFrame with additional columns.
+            mpd.DataFrame: The DataFrame with additional columns.
     """
     timestamp_int = int(time.time())
     date_str = format(timestamp_int, "x").zfill(8)
@@ -279,3 +279,26 @@ def dataframe_wide2long(df: mpd.DataFrame, type: str) -> mpd.DataFrame:
     df_long["UniqueID"] = ["GEXP" + date_str + hex_id for hex_id in hex_ids]
 
     return df_long
+
+
+def dataframe_long2wide(df: pd.DataFrame, type: str | None = None) -> pd.DataFrame:
+    """
+    Convert a DataFrame from long format to wide format.
+
+    Args:
+        df (mpd.DataFrame): The DataFrame to reshape.
+
+    Returns:
+        pd.DataFrame: The reshaped DataFrame.
+    """
+    mdf = mpd.DataFrame(df).drop(columns=['UniqueID'])
+    if type is None:
+        type = mdf.columns.to_list()[-1]
+    df_wide = mdf.pivot(index=['SampleID', 'SampleRealID'], columns='GeneID', values=type).reset_index()
+    df_wide.columns.name = None  # 清除列名的层次结构
+    ors = df_wide.T
+    ori_df = ors.reset_index()
+    ori_df.columns = ori_df.iloc[0]  # 第一行作为新的列名
+    ori_df = ori_df.iloc[2:]         # 去掉第一行
+    results = ori_df.rename(columns={'SampleID': 'gene_id'})
+    return results._to_pandas()

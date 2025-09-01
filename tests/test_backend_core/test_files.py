@@ -2,6 +2,7 @@ import io
 import pytest
 import pandas as pd
 from backend.api.files import UploadFileProcessor, FileType, PutDataBaseWrapper
+from backend.db.interface import PutDataBaseInterface
 from pathlib import Path
 
 test_sample = "tests/upstream/test.xlsx"
@@ -122,7 +123,8 @@ def test_rawdata_wrong_md5(sample_xlsx, rawdata_dir_path):
     assert "Atreated-2_1.fq" in missing
 
 
-def test_database_wrapper(sample_xlsx, tpm_in, counts_in):
+@pytest.mark.asyncio
+async def test_database_wrapper(sample_xlsx, tpm_in, counts_in):
     sample_sheet_data = UploadFileProcessor.read_file(
         sample_xlsx, FileType.xlsx)
     gene_tpm_data = UploadFileProcessor.read_file(tpm_in, FileType.csv)
@@ -130,16 +132,20 @@ def test_database_wrapper(sample_xlsx, tpm_in, counts_in):
     data_base_wrapper = PutDataBaseWrapper(
         sample_sheet_data, gene_tpm_data, gene_counts_data)
     exp_class_communication = data_base_wrapper.communicate_id_in_db()
-    tu = ([True, True], [])
+    exp_class_communication_r = await PutDataBaseInterface.exclass_processing(exp_class_communication)
 
-    exp_sheet, sample_sheet = data_base_wrapper.db_insert(tu)
+    exp_sheet, sample_sheet = data_base_wrapper.db_insert(exp_class_communication_r)
     tpm, counts = data_base_wrapper.expression_wrapper(sample_sheet)
 
+    assert len(exp_class_communication) == len(exp_class_communication_r[1])
+    assert type(exp_class_communication_r[0]) is list
+    assert set(exp_sheet.columns.tolist()) == {"ExpClass", "UniqueEXID", "Experiment"}
+    assert len(sample_sheet.columns.tolist()) == 12
+    assert tpm.shape[0] == counts.shape[0]
+    assert tpm.shape[1] == counts.shape[1]
+
     print(exp_class_communication)
-    print(exp_sheet)
-    print(sample_sheet)
-    print(tpm.head(), type(tpm))
-    print(counts.head())
+    print(exp_class_communication_r)
 
 
 # def test_trans_to_smk_samples(sample_xlsx, rawdata_dir_path, tmp_path):

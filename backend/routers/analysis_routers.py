@@ -3,12 +3,11 @@ import logging
 from typing import Annotated
 from pydantic import BaseModel, Field, field_validator
 import re
+import pandas as pd
 
 from backend.analysis.tpm_analysis import GeneDataAnalysis, AnalysisType
 from backend.db.interface import GetDataBaseInterface
-
-
-import pandas as pd
+from backend.api.utils import dataframe_long2wide
 
 
 analysis_router = APIRouter()
@@ -27,7 +26,8 @@ def db_extract_gene_data(unique_ids: set[str], gene_name: set[str], type: Analys
     """
 
     db = GetDataBaseInterface()
-    logger.info(f"Extracting gene data for unique_ids: {unique_ids}, gene_name: {gene_name}, type: {type}")
+    logger.info(
+        f"Extracting gene data for unique_ids: {unique_ids}, gene_name: {gene_name}, type: {type}")
     # Placeholder: Replace with actual database query
     match type:
         case AnalysisType.deg:
@@ -36,7 +36,7 @@ def db_extract_gene_data(unique_ids: set[str], gene_name: set[str], type: Analys
             data = db.get_gene_tpm(unique_id=unique_ids, gene_id=gene_name)
         case AnalysisType.tpm_heatmap:
             data = db.get_gene_tpm(unique_id=unique_ids, gene_id=gene_name)
-    return data
+    return dataframe_long2wide(data)
 
 
 class PlotParameter(BaseModel):

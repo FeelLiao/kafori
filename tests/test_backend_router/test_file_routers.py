@@ -131,3 +131,14 @@ def test_upload_gene_counts(gene_counts):
         )
         assert_result(
             resp, True, f"Gene expression data {GeneDataType.counts} uploaded successfully.")
+
+
+def test_put_database():
+    with TestClient(app) as client:
+
+        resp = client.post(
+            "/pipeline/put_database/",
+            headers=get_token_header()
+        )
+        assert_result(
+            resp, True, "Database data uploaded successfully.")

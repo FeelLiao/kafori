@@ -1,5 +1,7 @@
 import pytest
 from backend.api import utils
+import pandas as pd
+import modin.pandas as mpd
 
 hisat2_log_content = (
     """
@@ -54,6 +56,12 @@ fastp_json_content = (
 }
     """
 )
+
+tpmdata_path = "tests/upstream/samples_merged_tpm.csv"
+
+@pytest.fixture
+def dataframe_trans_data(tpm = tpmdata_path):
+    return tpm
 
 
 @pytest.fixture
@@ -206,3 +214,15 @@ def test_cleanup_directories(tmp_path, caplog):
     with caplog.at_level("WARNING"):
         utils.cleanup_directories([d1])
     assert "Directory does not exist" in caplog.text
+
+
+def test_dataframe_trans(dataframe_trans_data):
+    df = pd.read_csv(dataframe_trans_data)
+    df_t = utils.dataframe_t(df)
+    df_t["SampleRealID"] = None
+    df_long = utils.dataframe_wide2long(mpd.DataFrame(df_t), "Tpm")
+
+    df_wide = utils.dataframe_long2wide(df_long._to_pandas())
+
+    assert df_wide.shape == df.shape
+    assert set(df_wide.columns.to_list()) == set(df.columns.to_list())
