@@ -135,7 +135,7 @@ async def upload_file_saving(file: UploadFile, save_path: Path) -> None:
     save_path = Path(save_path, file.filename)
 
     async with aiofiles.open(save_path,  "wb") as f:
-        while chunk := await file.read(8192): 
+        while chunk := await file.read(8192):
             await f.write(chunk)
 
 

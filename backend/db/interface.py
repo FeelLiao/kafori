@@ -110,7 +110,8 @@ class GetDataBaseInterface:
         return pd.DataFrame(res)
 
     @staticmethod
-    async def get_gene_tpm(gene_id: tuple[str], unique_id: tuple[str]) -> pd.DataFrame:
+    async def get_gene_tpm(gene_id: tuple[str], unique_id: tuple[str],
+                           gene_id_is_all: bool = False) -> pd.DataFrame:
         """
         Get gene expression data in TPM (Transcripts Per Million) format. This method should implement the filtering
         based on `gene_id` and `unique_id`.
@@ -125,11 +126,15 @@ class GetDataBaseInterface:
                 GeneID: Name of the gene.
                 GeneTPM: Expression level of the gene in TPM.
         """
-        data = await db.gene_tpm.model.filter(SampleRealID__in=unique_id, GeneID__in=gene_id).values()
+        if gene_id_is_all:
+            data = await db.gene_counts.model.filter(SampleRealID__in=unique_id).values()
+        else:
+            data = await db.gene_counts.model.filter(SampleRealID__in=unique_id, GeneID__in=gene_id).values()
         return pd.DataFrame(data)
 
     @staticmethod
-    async def get_gene_counts(gene_id: tuple[str], unique_id: tuple[str], gend_id_is_all: bool) -> pd.DataFrame:
+    async def get_gene_counts(gene_id: tuple[str], unique_id: tuple[str],
+                              gene_id_is_all: bool = False) -> pd.DataFrame:
         """
         Get gene expression data in counts format. This method should implement the filtering
         based on `gene_id` and `unique_id`.
@@ -146,9 +151,9 @@ class GetDataBaseInterface:
                 GeneID: Name of the gene.
                 GeneCounts: Expression level of the gene in counts.
         """
-        if gend_id_is_all:
+        if gene_id_is_all:
             data = await db.gene_counts.model.filter(SampleRealID__in=unique_id).values()
-        else :
+        else:
             data = await db.gene_counts.model.filter(SampleRealID__in=unique_id, GeneID__in=gene_id).values()
         return pd.DataFrame(data)
 
