@@ -3,19 +3,19 @@ import logging
 from typing import Annotated
 from pydantic import BaseModel, Field, field_validator
 import re
+import pandas as pd
 
 from backend.analysis.tpm_analysis import GeneDataAnalysis, AnalysisType
 from backend.db.interface import GetDataBaseInterface
-
-
-import pandas as pd
+from backend.api.utils import dataframe_long2wide
 
 
 analysis_router = APIRouter()
 logger = logging.getLogger(__name__)
 
 
-def db_extract_gene_data(unique_ids: set[str], gene_name: set[str], type: AnalysisType) -> pd.DataFrame:
+async def db_extract_gene_data(unique_ids: tuple[str], gene_name: tuple[str],
+                               all_gene: bool, type: AnalysisType) -> pd.DataFrame:
     """
     Placeholder function to extract gene data from the database.
     This should be replaced with actual database query logic.
@@ -27,16 +27,18 @@ def db_extract_gene_data(unique_ids: set[str], gene_name: set[str], type: Analys
     """
 
     db = GetDataBaseInterface()
-    logger.info(f"Extracting gene data for unique_ids: {unique_ids}, gene_name: {gene_name}, type: {type}")
+    logger.info(
+        f"Extracting gene data for unique_ids: {unique_ids}, gene_name: {gene_name}, type: {type}")
     # Placeholder: Replace with actual database query
     match type:
         case AnalysisType.deg:
-            data = db.get_gene_counts(unique_id=unique_ids, gene_id=gene_name)
+            data = await db.get_gene_counts(unique_id=unique_ids, gene_id=gene_name, gene_id_is_all=all_gene
+                                            )
         case AnalysisType.pca:
-            data = db.get_gene_tpm(unique_id=unique_ids, gene_id=gene_name)
+            data = await db.get_gene_tpm(unique_id=unique_ids, gene_id=gene_name, gene_id_is_all=all_gene)
         case AnalysisType.tpm_heatmap:
-            data = db.get_gene_tpm(unique_id=unique_ids, gene_id=gene_name)
-    return data
+            data = await db.get_gene_tpm(unique_id=unique_ids, gene_id=gene_name, gene_id_is_all=all_gene)
+    return dataframe_long2wide(data)
 
 
 class PlotParameter(BaseModel):
@@ -77,8 +79,8 @@ async def tpm_analysis(request: Request, filters: GeneDataFilter):
     logger.info("Received request for TPM analysis with filters: %s", filters)
 
     # Extracting parameters from the filters
-    unique_ids = filters.unique_id
-    gene_name = filters.gene_name
+    unique_ids = tuple(filters.unique_id)
+    gene_name = tuple(filters.gene_name)
     analysis_type = filters.analysis_type
     logger.info(
         "Extracting gene data from the database\n"

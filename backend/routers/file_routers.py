@@ -3,13 +3,19 @@ from typing import Tuple
 import logging
 from io import BytesIO
 from typing import Annotated
+from pathlib import Path
+import aiofiles
 
-from backend.api.files import UploadFileProcessor, FileType, GeneDataType
+from backend.api.files import UploadFileProcessor, FileType, GeneDataType, PutDataBaseWrapper
 from backend.routers.validation import get_current_active_user, User
+from backend.db.result.Result import Result
+from backend.db.interface import PutDataBaseInterface
+from backend.api.config import config
 
 
 file_router = APIRouter()
 logger = logging.getLogger(__name__)
+UPLOAD_RAWDATA_PATH = config.upload_rawdata_dir
 
 
 async def sample_sheet_validation(file: BytesIO, user: str, name: str, request: Request) -> Tuple[bool, str]:
@@ -35,7 +41,9 @@ async def sample_sheet_validation(file: BytesIO, user: str, name: str, request: 
             await redis.set(f"{user}_sample_sheet", sample_save, ex=600)
             logger.info(
                 f"Sample sheet for user {user} saved to redis successfully.")
-        return valid, "Sample sheet uploaded successfully."
+            return valid, "Sample sheet uploaded successfully."
+        else:
+            return False, "Sample sheet uploaded failed."
     except Exception as e:
         return False, str(e)
 
@@ -79,6 +87,58 @@ async def process_gene_ex(file: BytesIO, user: str, name: str,
         return False, str(e)
 
 
+async def process_db_upload(user: str, request: Request) -> Tuple[bool, str]:
+    try:
+        redis = request.app.state.redis
+        sample_sheet = BytesIO(await redis.get(f"{user}_sample_sheet"))
+        sample_sheet_data = UploadFileProcessor.read_file(sample_sheet, file_type=FileType.parquet)
+        logger.info(f"sample sheet file extracted successfully for user {user}.")
+        gene_tpm = BytesIO(await redis.get(f"{user}_gene_{GeneDataType.tpm}"))
+        gene_tpm_data = UploadFileProcessor.read_file(gene_tpm, file_type=FileType.parquet)
+        logger.info(f"gene tpm file extracted successfully for user {user}.")
+        gene_counts = BytesIO(await redis.get(f"{user}_gene_{GeneDataType.counts}"))
+        gene_counts_data = UploadFileProcessor.read_file(gene_counts, file_type=FileType.parquet)
+        logger.info(f"gene counts file extracted successfully for user {user}.")
+
+        data_base_wrapper = PutDataBaseWrapper(sample_sheet_data, gene_tpm_data, gene_counts_data)
+        exp_class_communication = data_base_wrapper.communicate_id_in_db()
+        exp_class_communication_r = await PutDataBaseInterface.exclass_processing(exp_class_communication)
+        logger.info(f"Experiment class has put into database successfully for user {user}.")
+
+        exp_sheet, sample_sheet = data_base_wrapper.db_insert(exp_class_communication_r)
+        tpm, counts = data_base_wrapper.expression_wrapper(sample_sheet)
+
+        exp_valid = await PutDataBaseInterface.put_experiment(exp_sheet)
+        if exp_valid:
+            logger.info(f"Experiment data has been put into database successfully for user {user}.")
+        sample_valid = await PutDataBaseInterface.put_sample(sample_sheet)
+        if sample_valid:
+            logger.info(f"Sample data has been put into database successfully for user {user}.")
+        tpm_valid = await PutDataBaseInterface.put_gene_tpm(tpm)
+        if tpm_valid:
+            logger.info(f"Gene TPM data has been put into database successfully for user {user}.")
+        counts_valid = await PutDataBaseInterface.put_gene_counts(counts)
+        if counts_valid:
+            logger.info(f"Gene Counts data has been put into database successfully for user {user}.")
+
+        valid = [exp_valid, sample_valid, tpm_valid, counts_valid]
+        if all(valid):
+            return True, "Database data uploaded successfully."
+        else:
+            return False, "Database data upload failed."
+    except Exception as e:
+        logger.error(f"Error in putting data into database for user {user}: {e}", exc_info=True)
+        return False, str(e)
+
+
+async def upload_file_saving(file: UploadFile, save_path: Path) -> None:
+    save_path = Path(save_path, file.filename)
+
+    async with aiofiles.open(save_path,  "wb") as f:
+        while chunk := await file.read(8192):
+            await f.write(chunk)
+
+
 @file_router.post("/pipeline/sample_sheet/")
 async def upload_sample_sheet(request: Request,
                               current_user: Annotated[User, Depends(get_current_active_user)],
@@ -90,7 +150,10 @@ async def upload_sample_sheet(request: Request,
     sample_sheet_io = BytesIO(await file.read())
     rel = await sample_sheet_validation(
         sample_sheet_io, user=user, name=sample_sheet_name, request=request)
-    return {"success": rel[0], "msg": rel[1]}
+    if rel[0]:
+        return Result.ok(msg=rel[1])
+    else:
+        return Result.fail(msg=rel[1])
 
 
 @file_router.post("/pipeline/gene_ex_tpm/")
@@ -104,7 +167,10 @@ async def upload_gene_ex_tpm(request: Request,
     rel = await process_gene_ex(
         gene_tpm, user=user, name=gene_tpm_name,
         request=request, type=GeneDataType.tpm)
-    return {"success": rel[0], "msg": rel[1]}
+    if rel[0]:
+        return Result.ok(msg=rel[1])
+    else:
+        return Result.fail(msg=rel[1])
 
 
 @file_router.post("/pipeline/gene_ex_counts/")
@@ -119,12 +185,34 @@ async def upload_gene_ex_counts(request: Request,
     rel = await process_gene_ex(
         gene_counts, user=user, name=gene_counts_name,
         request=request, type=GeneDataType.counts)
-    return {"success": rel[0], "msg": rel[1]}
+    if rel[0]:
+        return Result.ok(msg=rel[1])
+    else:
+        return Result.fail(msg=rel[1])
 
 
 # @file_router.post("/pipeline/rawdata/")
-# async def upload_metadata(file: UploadFile = File(...), user_id: str = ""):
-#     metadata = BytesIO(await file.read())
+# async def upload_rawdata(current_user: Annotated[User, Depends(get_current_active_user)],
+#     files: list[UploadFile] = File(
+#     description="Multiple rawdata files Upload"),
+#     ):
+#     user = current_user.username
+#     raw_path = Path(UPLOAD_RAWDATA_PATH,user)
+#     metadata = 
 
 #     rel = process_rawdata(metadata)
-#     return {"success": rel[0], "msg": rel[1]}
+#     if rel[0]:
+#         return Result.ok(msg=rel[1])
+#     else:
+#         return Result.fail(msg=rel[1])
+
+@file_router.post("/pipeline/put_database/")
+async def put_database(request: Request,
+                       current_user: Annotated[User, Depends(get_current_active_user)],
+                       ):
+    user = current_user.username
+    rel = await process_db_upload(user=user, request=request)
+    if rel[0]:
+        return Result.ok(msg=rel[1])
+    else:
+        return Result.fail(msg=rel[1])

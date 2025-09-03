@@ -96,14 +96,22 @@ class GetDataBaseInterface:
                 Origin: Origin of the sample.
         """
 
+        if collection_time is not None:
+            start_time = collection_time.starttime
+            end_time = collection_time.endtime
+        else:
+            start_time = None
+            end_time = None
+
         res = await db.sample.get_sample_by_unique_ex_id_and_part_time(unique_ex_id=unique_ex_id,
                                                                        collection_part=collection_part,
-                                                                       start_time=collection_time.starttime,
-                                                                       end_time=collection_time.endtime)
+                                                                       start_time=start_time,
+                                                                       end_time=end_time)
         return pd.DataFrame(res)
 
     @staticmethod
-    async def get_gene_tpm(gene_id: tuple[str], unique_id: tuple[str]) -> pd.DataFrame:
+    async def get_gene_tpm(gene_id: tuple[str], unique_id: tuple[str],
+                           gene_id_is_all: bool = False) -> pd.DataFrame:
         """
         Get gene expression data in TPM (Transcripts Per Million) format. This method should implement the filtering
         based on `gene_id` and `unique_id`.
@@ -118,11 +126,15 @@ class GetDataBaseInterface:
                 GeneID: Name of the gene.
                 GeneTPM: Expression level of the gene in TPM.
         """
-        data = await db.gene_tpm.model.filter(SampleRealID__in=unique_id, GeneID__in=gene_id).values()
+        if gene_id_is_all:
+            data = await db.gene_counts.model.filter(SampleRealID__in=unique_id).values()
+        else:
+            data = await db.gene_counts.model.filter(SampleRealID__in=unique_id, GeneID__in=gene_id).values()
         return pd.DataFrame(data)
 
     @staticmethod
-    async def get_gene_counts(unique_id: tuple[str], gene_id: tuple[str] | None = None, gend_id_is_all: bool | None=False) -> pd.DataFrame:
+    async def get_gene_counts(gene_id: tuple[str], unique_id: tuple[str],
+                              gene_id_is_all: bool = False) -> pd.DataFrame:
         """
         Get gene expression data in counts format. This method should implement the filtering
         based on `gene_id` and `unique_id`.
@@ -139,7 +151,7 @@ class GetDataBaseInterface:
                 GeneID: Name of the gene.
                 GeneCounts: Expression level of the gene in counts.
         """
-        if gend_id_is_all:
+        if gene_id_is_all:
             data = await db.gene_counts.model.filter(SampleRealID__in=unique_id).values()
         else:
             data = await db.gene_counts.model.filter(SampleRealID__in=unique_id, GeneID__in=gene_id).values()
@@ -269,7 +281,7 @@ class PutDataBaseInterface:
 
     @staticmethod
     async def exclass_processing(
-            exclass: list[dict[str, str]]) -> list[list[bool], List[Dict[str, str]]]:
+            exclass: list[dict[str, str]]) -> tuple[list[bool], List[Dict[str, str]]]:
         """
         Process experimental class data for database insertion. This method should convert a list of dictionaries
 
@@ -286,16 +298,12 @@ class PutDataBaseInterface:
         """
         # 检查每个 ExperimentCategory 是否存在
         results_bool = []
-        for exp_class in exclass:
-            exists = await db.exp_class.model.filter(ExperimentCategory=exp_class['ExperimentCategory']).exists()
+        for i, exp_class in enumerate(exclass):
+            exists = await db.exp_class.model.filter(ExperimentCategory=exp_class['ExperimentCategory']).values()
             if not exists:
                 await db.exp_class.model.create(**exp_class)
+            else:
+                # 或 exclass[i].update(exists[0])，视 exists 结构而定
+                exclass[i] = exists[0]
             results_bool.append(not exists)  # 如果不存在，返回 True；否则返回 False
-        return list[results_bool, exclass]
-
-
-a = [{"ExpClass": "e2", "ExperimentCategory": "dormant1"},
-     {"ExpClass": "e1", "ExperimentCategory": "dormant2"}]
-
-b = [[True, False], [{"ExpClass": "e2", "ExperimentCategory": "dormant"}, {
-    "ExpClass": "e3", "ExperimentCategory": "dormant"}]]
+        return results_bool, exclass
