@@ -122,7 +122,7 @@ class GetDataBaseInterface:
         return pd.DataFrame(data)
 
     @staticmethod
-    async def get_gene_counts(gene_id: tuple[str], unique_id: tuple[str], gend_id_is_all: bool) -> pd.DataFrame:
+    async def get_gene_counts(unique_id: tuple[str], gene_id: tuple[str] | None = None, gend_id_is_all: bool | None=False) -> pd.DataFrame:
         """
         Get gene expression data in counts format. This method should implement the filtering
         based on `gene_id` and `unique_id`.
@@ -141,7 +141,7 @@ class GetDataBaseInterface:
         """
         if gend_id_is_all:
             data = await db.gene_counts.model.filter(SampleRealID__in=unique_id).values()
-        else :
+        else:
             data = await db.gene_counts.model.filter(SampleRealID__in=unique_id, GeneID__in=gene_id).values()
         return pd.DataFrame(data)
 
