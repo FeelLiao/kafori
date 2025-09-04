@@ -1,5 +1,4 @@
 import time
-from fastapi import Request
 import pandas as pd
 from pathlib import Path
 from hashlib import md5
@@ -40,6 +39,7 @@ class UploadFileProcessor:
         RuntimeError: If there is an error reading or parsing the file.
     """
 
+    @staticmethod
     def read_file(file: BytesIO, file_type: FileType) -> pd.DataFrame:
         """
         Read file and return a DataFrame.
@@ -68,6 +68,7 @@ class UploadFileProcessor:
                 f"Error reading or parsing {file_type} file: {e}"
             )
 
+    @staticmethod
     def sample_data_validation(name: str, dataframe: pd.DataFrame) -> bool:
         """
         Validate the uploaded file. Checks if the xlsx file is created according to the
@@ -132,6 +133,7 @@ class UploadFileProcessor:
             file_md5 = md5(f.read()).hexdigest()
         return file_path.name, file_md5 == expected_md5
 
+    @staticmethod
     def gene_ex_validation(sample_sheet: pd.DataFrame, ex: pd.DataFrame) -> bool:
         """
         Validate the gene expression file.
@@ -153,6 +155,7 @@ class UploadFileProcessor:
             logger.info("Gene expression file validation passed.")
             return True
 
+    @staticmethod
     def rawdata_validation(df: pd.DataFrame, rawdata_path: Path) -> Tuple[bool, List[str]]:
         """
         Validate the md5 of raw data.
@@ -220,7 +223,7 @@ class UploadFileProcessor:
         sample_sheet = pd.DataFrame()
         sample_sheet["sample"] = dataframe["FileName1"].apply(
             lambda x: str(x).split("_")[0])
-        sample_sheet["sample_id"] = dataframe["UniqueID"]
+        sample_sheet["sample_id"] = dataframe["SampleID"]
         sample_sheet["read1"] = dataframe["FileName1"].apply(
             lambda x: str(Path(rawdata_path, x).absolute()))
         sample_sheet["read2"] = dataframe["FileName2"].apply(
@@ -367,34 +370,25 @@ class UpstreamAnalysisWrapper:
         user (str): The user ID.
         work_dir (Path): The working directory.
         rawdata_dir (Path): The raw data directory.
-        request (Request): The request object.
+        sample_sheet (pd.DataFrame): The sample sheet DataFrame.
+        genome (Path): The genome file path.
+        annotation (Path): The annotation file path.
+        smk_file (Path): The Snakemake file path.
     """
 
-    def __init__(self, user: str, work_dir: Path, rawdata_dir: Path, request: Request,
+    def __init__(self, user: str, work_dir: Path, rawdata_dir: Path, sample_sheet: pd.DataFrame,
                  genome: Path, annotation: Path,
                  smk_file: Path = Path("backend/analysis/workflow/Snakefile")):
         self.user = user
         self.work_dir = work_dir
+        work_dir.mkdir(parents=True, exist_ok=True)
         self.rawdata_dir = rawdata_dir
         self.smk_file = smk_file
         self.genome = genome
         self.annotation = annotation
-        self.redis = request.app.state.redis
-        self.sample_sheet = self._get_sample_sheet()
+        self.sample_sheet = sample_sheet
         self.smk_sample_sheet = self._get_smk_samples()
         self.upstream = self._snakemake_wrapper()
-
-    async def _get_sample_sheet(self) -> pd.DataFrame:
-        """
-        Retrieve the sample sheet from Redis.
-        Returns:
-            pd.DataFrame: The sample sheet DataFrame.
-        """
-        sample_sheet = BytesIO(await self.redis.get(f"{self.user}_sample_sheet"))
-        res = UploadFileProcessor.read_file(
-            sample_sheet, file_type=FileType.parquet)
-        logger.info("Sample sheet retrieved from Redis successfully.")
-        return res
 
     def _get_smk_samples(self) -> pd.DataFrame:
         """
@@ -450,7 +444,7 @@ class UpstreamAnalysisWrapper:
             logger.error(f"Failed to execute Snakemake dry run: {e}")
             return False
 
-    def smk_run(self, cores) -> bool:
+    def smk_run(self, cores: int) -> bool:
         """
         Run Snakemake in normal mode.
         Returns:

@@ -2,11 +2,9 @@ import io
 import pytest
 import pandas as pd
 from pathlib import Path
-from fastapi.testclient import TestClient
 
 from backend.api.files import UploadFileProcessor, FileType, PutDataBaseWrapper, UpstreamAnalysisWrapper
 from backend.db.interface import PutDataBaseInterface
-from backend.main import app
 
 test_sample = "tests/upstream/test.xlsx"
 rawdata_dir = "tests/upstream/ngs-test-data"
@@ -154,47 +152,43 @@ async def test_database_wrapper(sample_xlsx, tpm_in, counts_in):
 
 
 test_path = Path("tests/upstream")
-test_sample = "tests/upstream/test.xlsx"
-
-
-def get_token_header():
-    with TestClient(app) as client:
-        response = client.post(
-            "/token",
-            data={"username": "admin", "password": "secret"},
-            headers={"Content-Type": "application/x-www-form-urlencoded"}
-        )
-        assert response.status_code == 200
-        token = response.json()["access_token"]
-        return {"Authorization": f"Bearer {token}"}
 
 
 @pytest.fixture
 def valid_paths():
-    work_dir = test_path
-    rawdata_dir = work_dir / "ngs-test-data"
-    genome = Path("tests/upstream/ref/Saccharomyces_cerevisiae.fa")
-    annotation = Path(
-        "tests/upstream/ref/Saccharomyces_cerevisiae.gtf")
+    work_dir = test_path / "work_dir"
+    rawdata_dir = test_path / "ngs-test-data"
+    genome = test_path / "ref/Saccharomyces_cerevisiae.fa"
+    annotation = test_path / "ref/Saccharomyces_cerevisiae.gtf"
     return work_dir, rawdata_dir, genome, annotation
 
 
 def test_run_analysis_success(sample_xlsx, valid_paths):
     work_dir, rawdata_dir, genome, annotation = valid_paths
-    with TestClient(app) as client:
-        resp = client.post(
-            "/pipeline/sample_sheet/",
-            files={"file": ("test.xlsx", sample_xlsx,
-                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")},
-            headers=get_token_header()
-        )
-        assert resp.status_code == 200
-        body = resp.json()
-        assert "code" in body and "message" in body and "data" in body
-        assert body["code"] == 0
+    sample_sheet = UploadFileProcessor.read_file(
+        sample_xlsx, FileType.xlsx)
     analysis = UpstreamAnalysisWrapper(user="admin",
                                        work_dir=work_dir, rawdata_dir=rawdata_dir,
+                                       sample_sheet=sample_sheet,
                                        genome=genome, annotation=annotation)
 
-    result = analysis.run_analysis(dryrun=True, ncores=2, verbose=False)
-    assert result is True
+    result_dry_run = analysis.smk_dry_run()
+    result_run = analysis.smk_run(8)
+    res = analysis.post_process()
+
+    tpm = res["quantification"][0]
+    counts = res["quantification"][1]
+    align_status = res["align_report"][0]
+    align_report = res["align_report"][1]
+    fastp_status = res["fastp_report"][0]
+    fastp_report = res["fastp_report"][1]
+
+    assert result_run is True
+    assert result_dry_run is True
+
+    assert tpm.shape[0] > 0 and tpm.shape[1] > 0
+    assert counts.shape[0] > 0 and counts.shape[1] > 0
+    assert align_status is True
+    assert fastp_status is True
+    assert align_report.shape[0] > 0 and align_report.shape[1] > 0
+    assert fastp_report.shape[0] > 0 and fastp_report.shape[1] > 0

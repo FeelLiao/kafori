@@ -6,7 +6,7 @@ from typing import Annotated
 from pathlib import Path
 import aiofiles
 
-from backend.api.files import UploadFileProcessor, FileType, GeneDataType, PutDataBaseWrapper
+from backend.api.files import UploadFileProcessor, FileType, GeneDataType, PutDataBaseWrapper, UpstreamAnalysisWrapper
 from backend.routers.validation import get_current_active_user, User
 from backend.db.result.Result import Result
 from backend.db.interface import PutDataBaseInterface
@@ -216,17 +216,22 @@ async def upload_rawdata(current_user: Annotated[User, Depends(get_current_activ
 
 
 # 对rawdata进行转录组上游分析，发送信号过后返回是否成功启动了上游分析流程
-@file_router.post("/pipeline/rawdata_processing/")
-async def process_rawdata(current_user: Annotated[User, Depends(get_current_active_user)],
-                          request: Request):
-    user = current_user.username
-    rawdata_path = Path(UPLOAD_RAWDATA_PATH, user, "rawdata")
-    work_dir = Path(UPLOAD_RAWDATA_PATH, user)
-    rel = await process_rawdata_files(user=user, request=request)
-    if rel[0]:
-        return Result.ok(msg=rel[1])
-    else:
-        return Result.fail(msg=rel[1])
+# @file_router.post("/pipeline/rawdata_processing/")
+# async def process_rawdata(current_user: Annotated[User, Depends(get_current_active_user)],
+#                           request: Request):
+#     user = current_user.username
+#     rawdata_path = Path(UPLOAD_RAWDATA_PATH, user, "rawdata")
+#     work_dir = Path(UPLOAD_RAWDATA_PATH, user)
+#     analysis = UpstreamAnalysisWrapper(user="admin",
+#                                        work_dir=work_dir, rawdata_dir=rawdata_path,
+#                                        genome=genome, annotation=annotation)
+
+#     result = analysis.run_analysis(dryrun=True, ncores=2, verbose=False)
+#     rel = await process_rawdata_files(user=user, request=request)
+#     if rel[0]:
+#         return Result.ok(msg=rel[1])
+#     else:
+#         return Result.fail(msg=rel[1])
 
 
 # 返回rawdata处理状态
