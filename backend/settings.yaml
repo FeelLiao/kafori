@@ -1,0 +1,35 @@
+upload_rawdata_dir: upload/
+log_dir: backend/kafori_running.log
+
+# ---------- Redis ----------
+redis:
+  mode: single               # single | sentinel | cluster
+  host: 127.0.0.1
+  port: 6379
+  db: 0
+  password: "redis_ezDtRP"
+  max_connections: 50
+  # 哨兵专用
+  sentinel_nodes:
+    - "sentinel1:26379"
+    - "sentinel2:26379"
+  sentinel_name: mymaster
+  # 集群专用
+  cluster_nodes:
+    - "127.0.0.1:7000"
+    - "127.0.0.1:7001"
+
+# ---------- MySQL ----------
+mysql:
+  host: 127.0.0.1
+  port: 3306
+  user: root
+  password: "mysql_zxtASb"
+  database: kafori
+  charset: utf8mb4
+  pool_size: 10            # 最小连接数
+  max_pool_size: 50        # 最大连接数
+  max_overflow: 10         # 额外溢出
+  pool_recycle: 3600       # 连接回收时间(秒)
+  echo: false              # 是否打印 SQL
+ 

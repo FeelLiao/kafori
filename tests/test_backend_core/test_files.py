@@ -1,9 +1,12 @@
 import io
 import pytest
 import pandas as pd
-from backend.api.files import UploadFileProcessor, FileType, PutDataBaseWrapper
-from backend.db.interface import PutDataBaseInterface
 from pathlib import Path
+from fastapi.testclient import TestClient
+
+from backend.api.files import UploadFileProcessor, FileType, PutDataBaseWrapper, UpstreamAnalysisWrapper
+from backend.db.interface import PutDataBaseInterface
+from backend.main import app
 
 test_sample = "tests/upstream/test.xlsx"
 rawdata_dir = "tests/upstream/ngs-test-data"
@@ -134,12 +137,14 @@ async def test_database_wrapper(sample_xlsx, tpm_in, counts_in):
     exp_class_communication = data_base_wrapper.communicate_id_in_db()
     exp_class_communication_r = await PutDataBaseInterface.exclass_processing(exp_class_communication)
 
-    exp_sheet, sample_sheet = data_base_wrapper.db_insert(exp_class_communication_r)
+    exp_sheet, sample_sheet = data_base_wrapper.db_insert(
+        exp_class_communication_r)
     tpm, counts = data_base_wrapper.expression_wrapper(sample_sheet)
 
     assert len(exp_class_communication) == len(exp_class_communication_r[1])
     assert type(exp_class_communication_r[0]) is list
-    assert set(exp_sheet.columns.tolist()) == {"ExpClass", "UniqueEXID", "Experiment"}
+    assert set(exp_sheet.columns.tolist()) == {
+        "ExpClass", "UniqueEXID", "Experiment"}
     assert len(sample_sheet.columns.tolist()) == 12
     assert tpm.shape[0] == counts.shape[0]
     assert tpm.shape[1] == counts.shape[1]
@@ -148,17 +153,48 @@ async def test_database_wrapper(sample_xlsx, tpm_in, counts_in):
     print(exp_class_communication_r)
 
 
-# def test_trans_to_smk_samples(sample_xlsx, rawdata_dir_path, tmp_path):
-#     processor = UploadFileProcessor(sample_xlsx)
-#     db_df = processor.database_wrapper()
-#     output_path = tmp_path / "samples.csv"
-#     smk_df = UploadFileProcessor.trans_to_smk_samples(
-#         db_df, rawdata_dir_path, to_file=True, output_path=output_path)
-#     assert "sample" in smk_df.columns
-#     assert "sample_id" in smk_df.columns
-#     assert "read1" in smk_df.columns
-#     assert "read2" in smk_df.columns
-#     # Check file written
-#     assert output_path.exists()
-#     loaded = pd.read_csv(output_path)
-#     assert loaded.equals(smk_df)
+test_path = Path("tests/upstream")
+test_sample = "tests/upstream/test.xlsx"
+
+
+def get_token_header():
+    with TestClient(app) as client:
+        response = client.post(
+            "/token",
+            data={"username": "admin", "password": "secret"},
+            headers={"Content-Type": "application/x-www-form-urlencoded"}
+        )
+        assert response.status_code == 200
+        token = response.json()["access_token"]
+        return {"Authorization": f"Bearer {token}"}
+
+
+@pytest.fixture
+def valid_paths():
+    work_dir = test_path
+    rawdata_dir = work_dir / "ngs-test-data"
+    genome = Path("tests/upstream/ref/Saccharomyces_cerevisiae.fa")
+    annotation = Path(
+        "tests/upstream/ref/Saccharomyces_cerevisiae.gtf")
+    return work_dir, rawdata_dir, genome, annotation
+
+
+def test_run_analysis_success(sample_xlsx, valid_paths):
+    work_dir, rawdata_dir, genome, annotation = valid_paths
+    with TestClient(app) as client:
+        resp = client.post(
+            "/pipeline/sample_sheet/",
+            files={"file": ("test.xlsx", sample_xlsx,
+                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")},
+            headers=get_token_header()
+        )
+        assert resp.status_code == 200
+        body = resp.json()
+        assert "code" in body and "message" in body and "data" in body
+        assert body["code"] == 0
+    analysis = UpstreamAnalysisWrapper(user="admin",
+                                       work_dir=work_dir, rawdata_dir=rawdata_dir,
+                                       genome=genome, annotation=annotation)
+
+    result = analysis.run_analysis(dryrun=True, ncores=2, verbose=False)
+    assert result is True

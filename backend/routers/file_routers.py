@@ -87,47 +87,61 @@ async def process_gene_ex(file: BytesIO, user: str, name: str,
         return False, str(e)
 
 
+# 是否需要在redis中存储用户选择的上传类别，然后在后续处理时使用？
 async def process_db_upload(user: str, request: Request) -> Tuple[bool, str]:
     try:
         redis = request.app.state.redis
         sample_sheet = BytesIO(await redis.get(f"{user}_sample_sheet"))
-        sample_sheet_data = UploadFileProcessor.read_file(sample_sheet, file_type=FileType.parquet)
-        logger.info(f"sample sheet file extracted successfully for user {user}.")
+        sample_sheet_data = UploadFileProcessor.read_file(
+            sample_sheet, file_type=FileType.parquet)
+        logger.info(
+            f"sample sheet file extracted successfully for user {user}.")
         gene_tpm = BytesIO(await redis.get(f"{user}_gene_{GeneDataType.tpm}"))
-        gene_tpm_data = UploadFileProcessor.read_file(gene_tpm, file_type=FileType.parquet)
+        gene_tpm_data = UploadFileProcessor.read_file(
+            gene_tpm, file_type=FileType.parquet)
         logger.info(f"gene tpm file extracted successfully for user {user}.")
         gene_counts = BytesIO(await redis.get(f"{user}_gene_{GeneDataType.counts}"))
-        gene_counts_data = UploadFileProcessor.read_file(gene_counts, file_type=FileType.parquet)
-        logger.info(f"gene counts file extracted successfully for user {user}.")
+        gene_counts_data = UploadFileProcessor.read_file(
+            gene_counts, file_type=FileType.parquet)
+        logger.info(
+            f"gene counts file extracted successfully for user {user}.")
 
-        data_base_wrapper = PutDataBaseWrapper(sample_sheet_data, gene_tpm_data, gene_counts_data)
+        data_base_wrapper = PutDataBaseWrapper(
+            sample_sheet_data, gene_tpm_data, gene_counts_data)
         exp_class_communication = data_base_wrapper.communicate_id_in_db()
         exp_class_communication_r = await PutDataBaseInterface.exclass_processing(exp_class_communication)
-        logger.info(f"Experiment class has put into database successfully for user {user}.")
+        logger.info(
+            f"Experiment class has put into database successfully for user {user}.")
 
-        exp_sheet, sample_sheet = data_base_wrapper.db_insert(exp_class_communication_r)
+        exp_sheet, sample_sheet = data_base_wrapper.db_insert(
+            exp_class_communication_r)
         tpm, counts = data_base_wrapper.expression_wrapper(sample_sheet)
 
         exp_valid = await PutDataBaseInterface.put_experiment(exp_sheet)
         if exp_valid:
-            logger.info(f"Experiment data has been put into database successfully for user {user}.")
+            logger.info(
+                f"Experiment data has been put into database successfully for user {user}.")
         sample_valid = await PutDataBaseInterface.put_sample(sample_sheet)
         if sample_valid:
-            logger.info(f"Sample data has been put into database successfully for user {user}.")
+            logger.info(
+                f"Sample data has been put into database successfully for user {user}.")
         tpm_valid = await PutDataBaseInterface.put_gene_tpm(tpm)
         if tpm_valid:
-            logger.info(f"Gene TPM data has been put into database successfully for user {user}.")
+            logger.info(
+                f"Gene TPM data has been put into database successfully for user {user}.")
         counts_valid = await PutDataBaseInterface.put_gene_counts(counts)
         if counts_valid:
-            logger.info(f"Gene Counts data has been put into database successfully for user {user}.")
+            logger.info(
+                f"Gene Counts data has been put into database successfully for user {user}.")
 
         valid = [exp_valid, sample_valid, tpm_valid, counts_valid]
         if all(valid):
             return True, "Database data uploaded successfully."
         else:
-            return False, "Database data upload failed."
+            return False, "Database data upload failed. Please see log for more information"
     except Exception as e:
-        logger.error(f"Error in putting data into database for user {user}: {e}", exc_info=True)
+        logger.error(
+            f"Error in putting data into database for user {user}: {e}", exc_info=True)
         return False, str(e)
 
 
@@ -191,20 +205,36 @@ async def upload_gene_ex_counts(request: Request,
         return Result.fail(msg=rel[1])
 
 
-# @file_router.post("/pipeline/rawdata/")
-# async def upload_rawdata(current_user: Annotated[User, Depends(get_current_active_user)],
-#     files: list[UploadFile] = File(
-#     description="Multiple rawdata files Upload"),
-#     ):
-#     user = current_user.username
-#     raw_path = Path(UPLOAD_RAWDATA_PATH,user)
-#     metadata = 
+# 上传rawdata，将上传的数据存储在本地 upload_rawdata_dir/<user>/file.fastq,
+# 上传完成后利用样本信息表对rawdata的文件进行md5校验，然后返回检验结果给前端
+@file_router.post("/pipeline/rawdata/")
+async def upload_rawdata(current_user: Annotated[User, Depends(get_current_active_user)],
+                         files: list[UploadFile] = File(
+    description="Multiple rawdata files Upload"),
+):
+    pass
 
-#     rel = process_rawdata(metadata)
-#     if rel[0]:
-#         return Result.ok(msg=rel[1])
-#     else:
-#         return Result.fail(msg=rel[1])
+
+# 对rawdata进行转录组上游分析，发送信号过后返回是否成功启动了上游分析流程
+@file_router.post("/pipeline/rawdata_processing/")
+async def process_rawdata(current_user: Annotated[User, Depends(get_current_active_user)],
+                          request: Request):
+    user = current_user.username
+    rawdata_path = Path(UPLOAD_RAWDATA_PATH, user, "rawdata")
+    work_dir = Path(UPLOAD_RAWDATA_PATH, user)
+    rel = await process_rawdata_files(user=user, request=request)
+    if rel[0]:
+        return Result.ok(msg=rel[1])
+    else:
+        return Result.fail(msg=rel[1])
+
+
+# 返回rawdata处理状态
+@file_router.post("/pipeline/rawdata_status/")
+async def get_rawdata_status(current_user: Annotated[User, Depends(get_current_active_user)],
+                             request: Request):
+    pass
+
 
 @file_router.post("/pipeline/put_database/")
 async def put_database(request: Request,

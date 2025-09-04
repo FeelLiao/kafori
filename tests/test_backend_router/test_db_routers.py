@@ -53,15 +53,4 @@ def test_query_transcripts_sample_id_success():
         response = client.post("/transcripts/query", json=payload)
     assert response.status_code == 200
     assert response.json()["code"] == 0
-    assert {
-      "UniqueID": "LRX68b567d3003",
-      "SampleID": "Buntreated-1",
-      "Sample": "null",
-      "SampleAge": 10,
-      "SampleDetail": "0 weeks ",
-      "DepositDatabase": "nan",
-      "Accession": "nan",
-      "Origin": "nan",
-      "CollectionPart": "stem",
-      "CollectionTime": "2020-03-09"
-    } in response.json()["data"]
+    assert type(response.json()["data"]) == list

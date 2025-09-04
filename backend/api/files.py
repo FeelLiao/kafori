@@ -1,4 +1,5 @@
 import time
+from fastapi import Request
 import pandas as pd
 from pathlib import Path
 from hashlib import md5
@@ -12,6 +13,7 @@ from enum import StrEnum, auto
 import modin.pandas as mpd
 
 from backend.api.utils import dataframe_t, dataframe_wide2long
+from backend.analysis.upstream import UpstreamAnalysis
 
 
 logger = logging.getLogger(__name__)
@@ -267,7 +269,8 @@ class PutDataBaseWrapper:
             logger.info("UniqueID column added to sample sheet.")
 
             # Add a unique experiment ID
-            experiment_groups = df.groupby("Experiment").ngroup() + 1  # 分组编号从1开始
+            experiment_groups = df.groupby(
+                "Experiment").ngroup() + 1  # 分组编号从1开始
             df["UniqueEXID"] = [
                 f"TRCRIE{date_str}{str(idx).zfill(3)}"
                 for idx in experiment_groups
@@ -279,7 +282,8 @@ class PutDataBaseWrapper:
             logger.info("ExpClass column added to sample sheet.")
 
         except Exception as e:
-            logger.error(f"Error occurred while wrapping sample sheet for database: {e}")
+            logger.error(
+                f"Error occurred while wrapping sample sheet for database: {e}")
 
         return df
 
@@ -354,3 +358,135 @@ class PutDataBaseWrapper:
         logger.info("Gene expression data converted to long format.")
 
         return tpm, counts
+
+
+class UpstreamAnalysisWrapper:
+    """
+    Rawdata analysis wrapper for upstream processing.
+    Args:
+        user (str): The user ID.
+        work_dir (Path): The working directory.
+        rawdata_dir (Path): The raw data directory.
+        request (Request): The request object.
+    """
+
+    def __init__(self, user: str, work_dir: Path, rawdata_dir: Path, request: Request,
+                 genome: Path, annotation: Path,
+                 smk_file: Path = Path("backend/analysis/workflow/Snakefile")):
+        self.user = user
+        self.work_dir = work_dir
+        self.rawdata_dir = rawdata_dir
+        self.smk_file = smk_file
+        self.genome = genome
+        self.annotation = annotation
+        self.redis = request.app.state.redis
+        self.sample_sheet = self._get_sample_sheet()
+        self.smk_sample_sheet = self._get_smk_samples()
+        self.upstream = self._snakemake_wrapper()
+
+    async def _get_sample_sheet(self) -> pd.DataFrame:
+        """
+        Retrieve the sample sheet from Redis.
+        Returns:
+            pd.DataFrame: The sample sheet DataFrame.
+        """
+        sample_sheet = BytesIO(await self.redis.get(f"{self.user}_sample_sheet"))
+        res = UploadFileProcessor.read_file(
+            sample_sheet, file_type=FileType.parquet)
+        logger.info("Sample sheet retrieved from Redis successfully.")
+        return res
+
+    def _get_smk_samples(self) -> pd.DataFrame:
+        """
+        Convert the DataFrame to snakemake samples format.
+        Returns:
+            pd.DataFrame: The converted DataFrame.
+        """
+
+        res = UploadFileProcessor.trans_to_smk_samples(self.sample_sheet, self.rawdata_dir,
+                                                       True, self.work_dir / "samples.csv")
+        logger.info("Snakemake sample sheet created successfully.")
+        return res
+
+    def _snakemake_wrapper(self) -> UpstreamAnalysis | None:
+        """
+        Create and return an UpstreamAnalysis instance.
+        Returns:
+            UpstreamAnalysis | None: Instance if success else None.
+        """
+        samples_csv = self.work_dir / "samples.csv"
+        if not samples_csv.exists():
+            logger.error(
+                f"Snakemake wrapper aborted: {samples_csv} not found.")
+            return None
+        try:
+            upstream_analysis = UpstreamAnalysis(
+                snakefile_path=self.smk_file,
+                work_dir=self.work_dir,
+                sample_sheet=samples_csv,
+                genome=self.genome,
+                annotation=self.annotation
+            )
+            logger.info("UpstreamAnalysis instance created successfully.")
+            return upstream_analysis
+        except Exception as e:
+            logger.error(f"Failed to create UpstreamAnalysis: {e}")
+            return None
+
+    def smk_dry_run(self) -> bool:
+        """
+        Run Snakemake in dry run mode.
+        Returns:
+            bool: if dry run is successful
+        """
+        if not self.upstream:
+            logger.error("Snakemake wrapper not initialized.")
+            return False
+        try:
+            result = self.upstream.run_analysis(dryrun=True)
+            logger.info("Snakemake dry run completed successfully.")
+            return result
+        except Exception as e:
+            logger.error(f"Failed to execute Snakemake dry run: {e}")
+            return False
+
+    def smk_run(self, cores) -> bool:
+        """
+        Run Snakemake in normal mode.
+        Returns:
+            bool: if run is successful
+        """
+        if not self.upstream:
+            logger.error("Snakemake wrapper not initialized.")
+            return False
+        try:
+            result = self.upstream.run_analysis(dryrun=False, ncores=cores)
+            logger.info("Snakemake run completed successfully.")
+            return result
+        except Exception as e:
+            logger.error(f"Failed to execute Snakemake run: {e}")
+            return False
+
+    def post_process(self, clean: bool = True) -> Dict:
+        """
+        Post-process the results of the upstream analysis.
+        Args:
+            clean (bool): Whether to clean up the working directory after processing.
+        Returns:
+            Dict: A dictionary containing processed results,
+            including quantification data, alignment reports, and fastp reports.
+            The dictionary has the following structure:
+            - "quantification": List containing TPM and counts DataFrames.
+            - "align_report": List containing success status, alignment DataFrame,
+              and list of failed HISAT2 logs.
+            - "fastp_report": List containing success status, fastp DataFrame,
+              and list of failed fastp logs.
+        Raises:
+            RuntimeError: If there is an error processing the reports.
+        """
+        res = self.upstream.post_process(clean=clean) if self.upstream else {}
+        if res:
+            logger.info("Post-processing completed successfully.")
+        else:
+            logger.error("Post-processing failed.")
+        return res
