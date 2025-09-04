@@ -228,23 +228,22 @@ def trim_report(fastp_json_dir: Path) -> tuple[bool, pd.DataFrame, list[str]]:
     return True, trim_report, report_errors
 
 
-def cleanup_directories(directories: list[Path]) -> None:
+def cleanup_directories(dir_path: Path) -> None:
     """
     Clean up specified directories by removing them if they exist.
 
     Args:
         directories (list[Path]): List of Path objects representing directories to clean up.
     """
-    for dir_path in directories:
-        if dir_path.exists():
-            try:
-                shutil.rmtree(dir_path)
-                logger.info(f"Removed directory: {dir_path}")
-            except Exception as e:
-                logger.error(
-                    f"Error removing directory {dir_path}: {e}", exc_info=True)
-        else:
-            logger.warning(f"Directory does not exist: {dir_path}")
+    if dir_path.exists():
+        try:
+            shutil.rmtree(dir_path)
+            logger.info(f"Removed directory: {dir_path}")
+        except Exception as e:
+            logger.error(
+                f"Error removing directory {dir_path}: {e}", exc_info=True)
+    else:
+        logger.warning(f"Directory does not exist: {dir_path}")
 
 
 def dataframe_t(df: pd.DataFrame) -> pd.DataFrame:
@@ -294,7 +293,8 @@ def dataframe_long2wide(df: pd.DataFrame, type: str | None = None) -> pd.DataFra
     mdf = mpd.DataFrame(df).drop(columns=['UniqueID'])
     if type is None:
         type = mdf.columns.to_list()[-1]
-    df_wide = mdf.pivot(index=['SampleID', 'SampleRealID'], columns='GeneID', values=type).reset_index()
+    df_wide = mdf.pivot(index=['SampleID', 'SampleRealID'],
+                        columns='GeneID', values=type).reset_index()
     df_wide.columns.name = None  # 清除列名的层次结构
     ors = df_wide.T
     ori_df = ors.reset_index()

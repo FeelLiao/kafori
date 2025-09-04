@@ -1,9 +1,10 @@
 import io
 import pytest
 import pandas as pd
-from backend.api.files import UploadFileProcessor, FileType, PutDataBaseWrapper
-from backend.db.interface import PutDataBaseInterface
 from pathlib import Path
+
+from backend.api.files import UploadFileProcessor, FileType, PutDataBaseWrapper, UpstreamAnalysisWrapper
+from backend.db.interface import PutDataBaseInterface
 
 test_sample = "tests/upstream/test.xlsx"
 rawdata_dir = "tests/upstream/ngs-test-data"
@@ -134,12 +135,14 @@ async def test_database_wrapper(sample_xlsx, tpm_in, counts_in):
     exp_class_communication = data_base_wrapper.communicate_id_in_db()
     exp_class_communication_r = await PutDataBaseInterface.exclass_processing(exp_class_communication)
 
-    exp_sheet, sample_sheet = data_base_wrapper.db_insert(exp_class_communication_r)
+    exp_sheet, sample_sheet = data_base_wrapper.db_insert(
+        exp_class_communication_r)
     tpm, counts = data_base_wrapper.expression_wrapper(sample_sheet)
 
     assert len(exp_class_communication) == len(exp_class_communication_r[1])
     assert type(exp_class_communication_r[0]) is list
-    assert set(exp_sheet.columns.tolist()) == {"ExpClass", "UniqueEXID", "Experiment"}
+    assert set(exp_sheet.columns.tolist()) == {
+        "ExpClass", "UniqueEXID", "Experiment"}
     assert len(sample_sheet.columns.tolist()) == 12
     assert tpm.shape[0] == counts.shape[0]
     assert tpm.shape[1] == counts.shape[1]
@@ -148,17 +151,44 @@ async def test_database_wrapper(sample_xlsx, tpm_in, counts_in):
     print(exp_class_communication_r)
 
 
-# def test_trans_to_smk_samples(sample_xlsx, rawdata_dir_path, tmp_path):
-#     processor = UploadFileProcessor(sample_xlsx)
-#     db_df = processor.database_wrapper()
-#     output_path = tmp_path / "samples.csv"
-#     smk_df = UploadFileProcessor.trans_to_smk_samples(
-#         db_df, rawdata_dir_path, to_file=True, output_path=output_path)
-#     assert "sample" in smk_df.columns
-#     assert "sample_id" in smk_df.columns
-#     assert "read1" in smk_df.columns
-#     assert "read2" in smk_df.columns
-#     # Check file written
-#     assert output_path.exists()
-#     loaded = pd.read_csv(output_path)
-#     assert loaded.equals(smk_df)
+test_path = Path("tests/upstream")
+
+
+@pytest.fixture
+def valid_paths():
+    work_dir = test_path / "work_dir"
+    rawdata_dir = test_path / "ngs-test-data"
+    genome = test_path / "ref/Saccharomyces_cerevisiae.fa"
+    annotation = test_path / "ref/Saccharomyces_cerevisiae.gtf"
+    return work_dir, rawdata_dir, genome, annotation
+
+
+def test_run_analysis_success(sample_xlsx, valid_paths):
+    work_dir, rawdata_dir, genome, annotation = valid_paths
+    sample_sheet = UploadFileProcessor.read_file(
+        sample_xlsx, FileType.xlsx)
+    analysis = UpstreamAnalysisWrapper(user="admin",
+                                       work_dir=work_dir, rawdata_dir=rawdata_dir,
+                                       sample_sheet=sample_sheet,
+                                       genome=genome, annotation=annotation)
+
+    result_dry_run = analysis.smk_dry_run()
+    result_run = analysis.smk_run(8)
+    res = analysis.post_process()
+
+    tpm = res["quantification"][0]
+    counts = res["quantification"][1]
+    align_status = res["align_report"][0]
+    align_report = res["align_report"][1]
+    fastp_status = res["fastp_report"][0]
+    fastp_report = res["fastp_report"][1]
+
+    assert result_run is True
+    assert result_dry_run is True
+
+    assert tpm.shape[0] > 0 and tpm.shape[1] > 0
+    assert counts.shape[0] > 0 and counts.shape[1] > 0
+    assert align_status is True
+    assert fastp_status is True
+    assert align_report.shape[0] > 0 and align_report.shape[1] > 0
+    assert fastp_report.shape[0] > 0 and fastp_report.shape[1] > 0

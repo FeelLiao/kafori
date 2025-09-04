@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Body, HTTPException
+from fastapi import APIRouter, Body
 import logging
 from typing import Annotated
 from pydantic import BaseModel, Field, model_validator
@@ -56,7 +56,8 @@ async def query_transcripts(query: Annotated[TranscriptQuery, Body(...)]) -> Res
     results = await get_db_data(query.query_type, query.query_value)
     if results is None or results.empty:
         logger.warning(f"No data found for query: {query}")
-        raise HTTPException(status_code=404, detail="No data found")
+        return Result.error(
+            message=f"No data found for query: {query}")
     # 序列化
     payload = Result.success(data=results.to_dict(orient="records"))
     logger.info(
