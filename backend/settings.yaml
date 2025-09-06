@@ -1,4 +1,7 @@
 upload_rawdata_dir: upload/
+ref_genome: /data/genome/hg38/hg38.fa
+ref_annotation: /data/genome/hg38/hg38.gtf
+upstream_cores: 8
 log_dir: backend/kafori_running.log
 
 # ---------- Redis ----------
