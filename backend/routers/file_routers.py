@@ -136,6 +136,7 @@ async def process_db_upload(user: str, request: Request) -> Tuple[bool, str]:
             logger.info(
                 f"Experiment data has been put into database successfully for user {user}.")
         sample_valid = await PutDataBaseInterface.put_sample(sample_sheet)
+        sample_sheet.to_csv(f"{user}_sample_sheet.csv", index=False)
         if sample_valid:
             logger.info(
                 f"Sample data has been put into database successfully for user {user}.")

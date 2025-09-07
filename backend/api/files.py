@@ -83,6 +83,24 @@ class UploadFileProcessor:
         """
         try:
             df = dataframe
+            required_columns = set(['SampleID', 'CollectionTime', 'SampleAge', 'CollectionPart', 'ExperimentCategory',
+                                    'Experiment', 'SampleDetail', 'DepositDatabase', 'Accession', 'Origin', 'FileName1',
+                                    'MD5checksum1', 'FileName2', 'MD5checksum2'])
+            df_columns = set(df.columns.to_list())
+            if df_columns != required_columns:
+                missing_cols = required_columns - df_columns
+                extra_cols = df_columns - required_columns
+                error_msg = ""
+                if missing_cols:
+                    error_msg += f"Missing columns: {', '.join(missing_cols)}. "
+                if extra_cols:
+                    error_msg += f"Extra columns: {', '.join(extra_cols)}."
+                logger.error(f"{name} file columns are incorrect: {error_msg}")
+                raise ValueError(
+                    f"File columns are incorrect: {error_msg}\n"
+                    f"Required columns are: {', '.join(required_columns)}\n"
+                )
+
             # Check if CollectionTime and SampleAge is in the correct format
             df["CollectionTime"] = pd.to_datetime(df["CollectionTime"])
             logger.info(
@@ -319,7 +337,6 @@ class PutDataBaseWrapper:
                 exp_sheet: experiment category DataFrame
                 sample_sheet: sample sheet DataFrame
         """
-        # TODO: CHANGE
         if not all(exclass[0]):
             new_exclass = pd.DataFrame.from_records(exclass[1])
             self.sample_sheet_wrapped = self.sample_sheet_wrapped.drop(columns=["ExpClass"]).merge(
