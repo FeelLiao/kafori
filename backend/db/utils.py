@@ -5,6 +5,7 @@ from backend.db.models.entity.Sample import Sample
 from backend.db.models.entity.GeneExpressTpm import GeneExpressTpm
 from backend.db.models.entity.GeneExpressCounts import GeneExpressCounts
 
+from backend.db.models.dto.ExpClassDTO import ExpClassDTO
 
 class Utils:
     @staticmethod
@@ -46,3 +47,13 @@ class Utils:
             GeneExpressCounts(**row)
             for row in data.to_dict('records')
         ]
+
+    @staticmethod
+    def quick_sort(arr: list[ExpClassDTO]) -> list[ExpClassDTO]:
+        if len(arr) <= 1:
+            return arr
+        pivot = arr[len(arr) // 2].SampleCounts
+        left = [x for x in arr if x.SampleCounts > pivot]
+        middle = [x for x in arr if x.SampleCounts == pivot]
+        right = [x for x in arr if x.SampleCounts < pivot]
+        return Utils.quick_sort(left) + middle + Utils.quick_sort(right)

@@ -7,6 +7,11 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jwt.exceptions import InvalidTokenError
 from passlib.context import CryptContext
 from pydantic import BaseModel
+from backend.db.interface import DataBase
+from backend.db.result.Result import Result
+
+from backend.db.models.dto.UserDTO import UserDTO
+from backend.db.models.vo.UserVO import UserVO
 
 validation_router = APIRouter()
 
@@ -23,6 +28,7 @@ fake_users_db = {
     }
 }
 
+db = DataBase()
 
 class Token(BaseModel):
     access_token: str
@@ -91,7 +97,10 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username = payload.get("sub")
         if username is None:
-            raise credentials_exception
+            return Result.error(message='Token could not validate credentials')
+
+        user = await db.user.model.filter(Username=username).first()
+        UserVO.from_orm(user)
         token_data = TokenData(username=username)
     except InvalidTokenError:
         raise credentials_exception
@@ -102,33 +111,48 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
 
 
 async def get_current_active_user(
-    current_user: Annotated[User, Depends(get_current_user)],
+    current_user: Annotated[UserVO, Depends(get_current_user)],
 ):
-    if current_user.disabled:
-        raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
 
 
-@validation_router.post("/token")
+@validation_router.post("/user/login")
 async def login_for_access_token(
-    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
-) -> Token:
-    user = authenticate_user(fake_users_db, form_data.username, form_data.password)
+    userDTO:UserDTO
+) -> Result:
+
+    user = await db.user.model.filter(Username=userDTO.username).first()
+    print(userDTO.username)
     if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+        return Result.error(message='User not found')
+    if not verify_password(userDTO.password, user.Password):
+        return Result.error(message='Incorrect password')
+
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": user.username}, expires_delta=access_token_expires
+    access_token = 'Bearer ' + create_access_token(
+        data={"sub": user.Username}, expires_delta=access_token_expires
     )
-    return Token(access_token=access_token, token_type="bearer")
+    print(access_token)
+    return Result.success(access_token)
 
 
-@validation_router.get("/admin/user", response_model=User)
-async def read_current_user(
-    current_user: Annotated[User, Depends(get_current_active_user)],
-):
-    return current_user
+@validation_router.get("/user/getUserInfo")
+async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username = payload.get("sub")
+        if username is None:
+            return Result.error(message='Token could not validate credentials')
+        user = await db.user.model.filter(Username=username).first()
+        if not user:
+            return Result.error(message='user not found')
+        user_vo = UserVO.model_validate(user)  # 适合pydantic v2
+        return Result.success(message="用户信息获取成功",data=user_vo.model_dump(by_alias=True))
+    except InvalidTokenError:
+        return Result.error(message='Token could not validate credentials')
+

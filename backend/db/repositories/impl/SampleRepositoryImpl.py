@@ -197,6 +197,7 @@ class SampleRepositoryImpl(SampleRepository):
 
         sql = f"""
             SELECT unique_id      AS UniqueID,
+                   unique_ex_id   AS UniqueEXID,
                    sample_id      AS SampleID,
                    sample         AS Sample,
                    sample_age     AS SampleAge,

@@ -33,3 +33,7 @@ class ExperimentRepositoryImpl(ExperimentRepository):
         conn = Tortoise.get_connection("default")
         return await conn.execute_query_dict(sql)
 
+    async def getExperimentCountsByExClass(self, exp_class: int) -> int:
+        counts = await self.model.filter(ExpClass =exp_class).count()
+
+

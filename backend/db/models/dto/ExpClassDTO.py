@@ -1,10 +1,12 @@
 from pydantic import BaseModel,ConfigDict
-
+from typing import Optional
 # ------------ 请求模型 ------------
 class ExpClassDTO(BaseModel):
-    ExpClass: str | None = None
-    ExperimentCategory: str | None = None
+    ExpClass: str
+    ExperimentCategory: str
+    Experiment: Optional[str] = None
+    SampleCounts: Optional[int] = None
 
-    model_config = ConfigDict(from_attributes=True)  # 不再报警
+    model_config = ConfigDict(from_attributes=True)
 
 

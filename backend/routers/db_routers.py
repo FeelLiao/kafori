@@ -4,13 +4,15 @@ from typing import Annotated
 from pydantic import BaseModel, Field, model_validator
 from enum import StrEnum, auto
 from pandas import DataFrame
+from backend.db.decorator.Cache import cache
 
 from backend.db.interface import GetDataBaseInterface
 from backend.db.result.Result import Result
 
+from backend.db.models.dto.ExpClassDTO import ExpClassDTO
 logger = logging.getLogger(__name__)
 db_router = APIRouter()
-
+db = GetDataBaseInterface()
 
 class QueryType(StrEnum):
     exp_class = auto()
@@ -36,7 +38,6 @@ class TranscriptQuery(BaseModel):
 
 
 async def get_db_data(query_type: QueryType, query_value: tuple | None) -> DataFrame | None:
-    db = GetDataBaseInterface()
     match query_type:
         case QueryType.exp_class:
             logger.info("Fetching all experiment classes from the database.")
@@ -52,6 +53,7 @@ async def get_db_data(query_type: QueryType, query_value: tuple | None) -> DataF
 
 
 @db_router.post("/transcripts/query")
+# @cache(expire=3600,key_prefix="transcripts:exp_class")
 async def query_transcripts(query: Annotated[TranscriptQuery, Body(...)]) -> Result:
     results = await get_db_data(query.query_type, query.query_value)
     if results is None or results.empty:
@@ -63,3 +65,8 @@ async def query_transcripts(query: Annotated[TranscriptQuery, Body(...)]) -> Res
     logger.info(
         f"Successfully fetched query: {query}")
     return payload
+
+@db_router.post("/transcripts/get_allexp_counts")
+async def get_allexp_counts(expClassDTO: list[ExpClassDTO]) -> Result:
+    res = await db.get_data_static(expClassDTO)
+    return Result.success(res)
