@@ -54,7 +54,6 @@ async def run_analysis(request: Request, payload: Annotated[AnalysisRequest, Bod
         cls = get_analysis(payload.analysis)
         # 拉数
         gene_df = await _fetch_gene_data(payload.data_filter, cls.input_type)
-        gene_df.to_csv("/home/feelliao/project/kafori/gene_df.csv", index=False)
         # 参数校验为插件声明的 Pydantic 模型
         params = cls.Params.model_validate(payload.params)
         # 执行
