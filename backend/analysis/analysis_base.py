@@ -68,9 +68,9 @@ class RProcessorPoolMP(DataAnalysis):
         pool_size (int): Number of worker processes in the pool.
     """
 
-    def __init__(self, pool_maxsize=4):
+    def __init__(self, pool_maxsize=1):
         self.pool = None
-        self.max_pool_size: int = min(pool_maxsize, os.cpu_count(), 2)
+        self.max_pool_size: int = max(pool_maxsize, os.cpu_count(), 2)
         self._initialize_pool()
 
     def _initialize_pool(self):
