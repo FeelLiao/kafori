@@ -16,6 +16,141 @@ kafori日本落叶松转录组数据库及分析平台后端API接口设计文�
 
 ### analysis_routers分析相关接口
 
+#### 1. 获取分析目录
+
+- 接口路径: GET /transcripts/analysis/catalog
+- 功能: 列出已注册的分析插件及其参数 JSON Schema，前端可据此动态渲染参数表单
+- 权限: 公开
+
+成功响应示例:
+```json
+{
+  "code": 0,
+  "message": "OK",
+  "data": [
+    {
+      "id": "pca",
+      "title": "PCA",
+      "input_type": "tpm",
+      "params_schema": {
+        "type": "object",
+        "properties": {
+          "title": "PCAParams",
+          "type": "object",
+          "width": {
+            "default": 800,
+            "description": "Plot width in px",
+            "title": "Width",
+            "type": "integer"
+          },
+          "height": {
+            "default": 600,
+            "description": "Plot height in px",
+            "title": "Height",
+            "type": "integer"
+          },
+          // 具体取决于插件定义，可能还有其它参数
+        },
+      }
+    }
+  ]
+}
+```
+
+失败响应:
+- 500 服务器内部错误
+```json
+{ "code": 1, "message": "Internal Server Error", "data": null }
+```
+
+返回字段说明:
+- id: 分析唯一标识（**与后续运行接口的 analysis 字段一致**）
+- title: 分析名称
+- input_type: 插件需要的数据类型（tpm/counts），在运行分析中这一字段不需要前端指定，后端会自动处理。
+- params_schema: 该分析参数的 JSON Schema（由 Pydantic 模型生成）
+
+
+
+#### 2. 运行分析
+
+- 接口路径: POST /transcripts/analysis
+- 功能: 运行指定的分析插件；后端从数据库按 input_type 抓取数据，调用 R 分析并返回结果
+- 权限: 公开
+- Content-Type: application/json
+
+请求体字段:
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| analysis | string | 是 | 分析ID（需与目录接口返回的 id 匹配，如 pca） |
+| params | object | 否 | 分析参数，结构由catalog接口的 params_schema 定义（如 width、height 等） |
+| data_filter | object | 是 | 数据筛选条件 |
+
+data_filter 子字段:
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| unique_id | array(string) | 是 | 样本 UniqueEXID 列表 |
+| gene_name | array(string) | 否 | 基因ID列表；当 all_gene=true 时可留空 [] |
+| all_gene | boolean | 否 | 是否忽略 gene_name 并返回全部基因（默认 false） |
+
+请求示例:
+```json
+{
+  "analysis": "pca",
+  "params": { "width": 900, "height": 600 },
+  "data_filter": {
+    "unique_id": ["LRX68bc3ebb001","LRX68bc3ebb002","LRX68bc3ebb003","LRX68bc3ebb004"],
+    "gene_name": [],
+    "all_gene": true
+  }
+}
+```
+
+成功响应示例（不同插件返回结构会有所差异，以下为 PCA 示例）:
+```json
+{
+  "code": 0,
+  "message": "OK",
+  "data": {
+    "meta": { "title": "PCA" },
+    "plots": [
+      { "format": "image/svg+xml;base64", "title": "PCA Plot", "data": "<base64-encoded-svg>" }
+    ],
+    "tables": {
+      "pca_eig": [ { "PC": "Dim.1", "Variance": 42.1, "Cumulative": 42.1 }, { "PC": "Dim.2", "Variance": 21.3, "Cumulative": 63.4 } ],
+      "pca_sample": [ { "Sample": "LRX68bc3ebb001", "Dim.1": 1.23, "Dim.2": -0.45, "group": "LRX68bc3ebb001" } ]
+    }
+  }
+}
+```
+
+失败响应:
+- 404 未知分析ID
+```json
+{ "detail": "Unknown analysis: <analysis>" }
+```
+- 500 分析执行失败（R 运行错误或数据为空等）
+```json
+{ "code": 1, "message": "Analysis failed: <error message>", "data": null }
+```
+
+参数与逻辑说明:
+- 插件机制: 后端通过注册表按 analysis 字段获取插件类（get_analysis），实例化并执行 plugin.run()。
+- 数据抓取: 根据插件声明的 input_type（tpm/counts）从数据库获取长表，转换为宽表后传入插件。
+- 参数校验: params 由插件声明的 Pydantic Params 模型校验（超出 schema 的字段将被拒绝或忽略，视实现而定）。
+- 返回结构: 插件返回统一结构：
+  - meta: 元信息（如标题）
+  - plots: 图像数组（格式字段如 image/svg+xml;base64；data 为 base64 内容）
+  - tables: 各分析表结果（DataFrame 转 records）
+- 性能与超时: 后端在单独进程运行 R 代码，默认 60s 超时与重试（见 analysis_base.RProcessorPool* 实现）；大量样本/基因时建议前端限制筛选范围或后台化处理。
+
+错误场景总结:
+| 场景 | 触发 | 返回 |
+|------|------|------|
+| analysis 不存在 | 未注册的插件ID | 404 |
+| 数据为空 | unique_id/gene_name 过滤后无数据 | 500（后续可细化为 404） |
+| R 运行错误 | R 包缺失/参数非法/输入非数值 | 500 |
+| 参数非法 | 不符合 params_schema | 400（由 Pydantic 抛出；当前实现捕获后以 500 形式返回） |
+
 
 
 ### db_routers数据库相关接口
