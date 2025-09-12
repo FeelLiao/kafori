@@ -131,9 +131,9 @@ class GetDataBaseInterface:
                 GeneTPM: Expression level of the gene in TPM.
         """
         if gene_id_is_all:
-            data = await db.gene_counts.model.filter(SampleRealID__in=unique_id).values()
+            data = await db.gene_tpm.model.filter(SampleRealID__in=unique_id).values()
         else:
-            data = await db.gene_counts.model.filter(SampleRealID__in=unique_id, GeneID__in=gene_id).values()
+            data = await db.gene_tpm.model.filter(SampleRealID__in=unique_id, GeneID__in=gene_id).values()
         return pd.DataFrame(data)
 
     @staticmethod

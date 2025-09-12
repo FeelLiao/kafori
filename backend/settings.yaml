@@ -1,13 +1,16 @@
-
-log_dir: backend/kafori_running.log
 upload_rawdata_dir: upload/
+ref_genome: /data/genome/hg38/hg38.fa
+ref_annotation: /data/genome/hg38/hg38.gtf
+upstream_cores: 8
+log_dir: backend/kafori_running.log
+
 # ---------- Redis ----------
 redis:
   mode: single               # single | sentinel | cluster
   host: 127.0.0.1
   port: 6379
   db: 0
-  password: ""
+  password: "redis_ezDtRP"
   max_connections: 50
   # 哨兵专用
   sentinel_nodes:
@@ -23,8 +26,8 @@ redis:
 mysql:
   host: 127.0.0.1
   port: 3306
-  user: admin
-  password: "123456"
+  user: root
+  password: "mysql_zxtASb"
   database: kafori
   charset: utf8mb4
   pool_size: 10            # 最小连接数
@@ -32,3 +35,4 @@ mysql:
   max_overflow: 10         # 额外溢出
   pool_recycle: 3600       # 连接回收时间(秒)
   echo: false              # 是否打印 SQL
+ 

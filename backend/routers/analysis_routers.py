@@ -1,108 +1,69 @@
-from fastapi import APIRouter, Request, Body
+from fastapi import APIRouter, Request, Body, HTTPException
 import logging
-from typing import Annotated
-from pydantic import BaseModel, Field, field_validator
-import re
+from typing import Annotated, Any
+from pydantic import BaseModel, Field
 import pandas as pd
 
-from backend.analysis.tpm_analysis import GeneDataAnalysis, AnalysisType
+from backend.analysis.framework import get_analysis, catalog, InputData
 from backend.db.interface import GetDataBaseInterface
 from backend.api.utils import dataframe_long2wide
-
+from backend.db.result.Result import Result  # 你的统一返回封装
+# 确保在 app 启动时 import 一次插件目录，完成注册
+import backend.analysis.plugins.pca  # noqa: F401
 
 analysis_router = APIRouter()
 logger = logging.getLogger(__name__)
 
 
-async def db_extract_gene_data(unique_ids: tuple[str], gene_name: tuple[str],
-                               all_gene: bool, type: AnalysisType) -> pd.DataFrame:
-    """
-    Placeholder function to extract gene data from the database.
-    This should be replaced with actual database query logic.
-    Args:
-        unique_ids: Set of unique IDs to filter the data.
-        gene_name: Set of gene names to filter the data.
-    Returns:
-        A pandas DataFrame containing the filtered gene data.
-    """
+class DataFilter(BaseModel):
+    unique_id: set[str] = Field(..., description="UniqueEXID set")
+    gene_name: set[str] = Field(..., description="Gene ID set")
+    all_gene: bool = Field(
+        False, description="Ignore gene_name and fetch all genes")
 
+
+class AnalysisRequest(BaseModel):
+    analysis: str = Field(..., description="Analysis id, e.g. pca")
+    params: dict[str, Any] = Field(
+        default_factory=dict, description="Analysis-specific params")
+    data_filter: DataFilter
+
+
+async def _fetch_gene_data(dfilt: DataFilter, kind: InputData) -> pd.DataFrame:
     db = GetDataBaseInterface()
-    logger.info(
-        f"Extracting gene data for unique_ids: {unique_ids}, gene_name: {gene_name}, type: {type}")
-    # Placeholder: Replace with actual database query
-    match type:
-        case AnalysisType.deg:
-            data = await db.get_gene_counts(unique_id=unique_ids, gene_id=gene_name, gene_id_is_all=all_gene
-                                            )
-        case AnalysisType.pca:
-            data = await db.get_gene_tpm(unique_id=unique_ids, gene_id=gene_name, gene_id_is_all=all_gene)
-        case AnalysisType.tpm_heatmap:
-            data = await db.get_gene_tpm(unique_id=unique_ids, gene_id=gene_name, gene_id_is_all=all_gene)
+    uids = tuple(dfilt.unique_id)
+    genes = tuple(dfilt.gene_name)
+    if kind == InputData.tpm:
+        data = await db.get_gene_tpm(unique_id=uids, gene_id=genes, gene_id_is_all=dfilt.all_gene)
+        logger.info(f"Fetched TPM data from database with shape {data.shape}")
+    else:
+        data = await db.get_gene_counts(unique_id=uids, gene_id=genes, gene_id_is_all=dfilt.all_gene)
+        logger.info(f"Fetched Counts data from database with shape {data.shape}")
     return dataframe_long2wide(data)
 
 
-class PlotParameter(BaseModel):
-    """
-    Base class for parameters used in analysis.
-    This can be extended for specific analysis types.
-    """
-    width: int = Field(800, description="Width of the plot in pixels")
-    height: int = Field(600, description="Height of the plot in pixels")
+@analysis_router.get("/transcripts/analysis/catalog", description="List available analyses and param schemas")
+async def list_analyses():
+    return Result.ok(data=catalog(), msg="OK")
 
 
-class GeneDataFilter(BaseModel):
-    gene_name: set[str] = Field(..., description="Set of gene_id")
-    unique_id: set[str] = Field(..., description="Set of uniqueID")
-    analysis_type: AnalysisType = Field(...,
-                                        description="Type of analysis to perform")
-    plot_parameters: PlotParameter | None = Field(
-        None, description="Parameters for the plot, if applicable")
-
-    @field_validator("gene_name", mode="after")
-    def validate_gene_name(cls, value):
-        pattern = re.compile(r"^g\d{1,5}$")
-        if not all(pattern.match(gene) for gene in value):
-            raise ValueError(
-                "gene_name must be a set of strings starting with 'g' followed by 1-5 digits")
-        return value
-
-
-async def tpm_analysis(request: Request, filters: GeneDataFilter):
-    """
-    Endpoint to perform TPM analysis on gene expression data.
-    Args:
-        request: FastAPI request object.
-        filters: Filters for gene expression data analysis.
-    Returns:
-        Result of the TPM analysis.
-    """
-    logger.info("Received request for TPM analysis with filters: %s", filters)
-
-    # Extracting parameters from the filters
-    unique_ids = tuple(filters.unique_id)
-    gene_name = tuple(filters.gene_name)
-    analysis_type = filters.analysis_type
-    logger.info(
-        "Extracting gene data from the database\n"
-        f"unique_ids: {unique_ids}, gene_name: {gene_name}, analysis_type: {analysis_type}")
-
-    gene_data = db_extract_gene_data(unique_ids, gene_name, analysis_type)
-    rprocessor = request.app.state.rprocessor
-
-    analysis = GeneDataAnalysis(
-        gene_data=gene_data,  # Placeholder for actual gene data
-        analysis_type=analysis_type,
-        rprocessor=rprocessor
-    )
-
-    return analysis.analysis()
-
-
-# TODO:统一后端返回给前端的格式
-@analysis_router.put("/transcripts/tpm",
-                     description="Analysis for gene expression data")
-async def tpm(request: Request,
-              filters: Annotated[GeneDataFilter,
-                                 Body(..., title="Gene expression data analysis filters")]):
-    result = await tpm_analysis(request, filters)
-    return {"result": str(result)}
+@analysis_router.post("/transcripts/analysis", description="Run an analysis plugin")
+async def run_analysis(request: Request, payload: Annotated[AnalysisRequest, Body(...)]):
+    try:
+        # 解析插件
+        cls = get_analysis(payload.analysis)
+        # 拉数
+        gene_df = await _fetch_gene_data(payload.data_filter, cls.input_type)
+        # 参数校验为插件声明的 Pydantic 模型
+        params = cls.Params.model_validate(payload.params)
+        # 执行
+        logger.info(f"Running analysis: {cls.title} with params {cls.Params.model_dump(params)}")
+        rproc = request.app.state.r_processor
+        plugin = cls(df=gene_df, params=params, rproc=rproc)
+        result = await plugin.run()
+        return Result.ok(data=result, msg="OK")
+    except KeyError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        logger.exception("Analysis failed")
+        return Result.fail(msg=str(e))

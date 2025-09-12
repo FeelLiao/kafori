@@ -4,6 +4,8 @@ suppressPackageStartupMessages(library(FactoMineR))
 suppressPackageStartupMessages(library(ggrepel))
 
 gene_tpm <- expression_tpm |>
+  remove_rownames() |>
+  mutate(across(-gene_id, ~ suppressWarnings(as.numeric(.x)))) |>
   mutate(valid_samples = rowSums(across(-gene_id, ~ .x > 1)) >= 5) |>
   filter(valid_samples) |>
   select(-valid_samples) |>
@@ -44,7 +46,7 @@ p <- ggplot(data = pca_sample, aes(x = Dim.1, y = Dim.2)) +
     y = paste("PCA2:", pca_eig2, "%"), color = ""
   )
 
-pca_plot <- plot_to_raw(p)
+pca_plot <- plot_to_raw(p, width = width, height = height)
 
 list(
   pca_plot = pca_plot,

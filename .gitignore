@@ -5,6 +5,7 @@ __pycache__/
 .pytest_cache/
 .coverage
 tests/upstream/out/
+upload/
 
 backend/settings.yaml
 
