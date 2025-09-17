@@ -20,10 +20,11 @@ async def download_catalog():
         return Result.error(message=str(e))
 
 
-@download_router.post("/download/{classes}/{name}/")
-async def download_file(classes: str, name: str) -> Response:
+@download_router.post("/download/{classes}/{filename}/")
+async def download_file(classes: str, filename: str) -> Response:
     try:
-        return await handle_download(name)
+        cls = handle_download(classes)
+        return cls().response(filename)
     except Exception as e:
         logger.error("download error: %s", str(e))
         return Result.error(message=str(e))

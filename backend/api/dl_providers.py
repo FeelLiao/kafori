@@ -1,8 +1,6 @@
 import logging
 from abc import ABC, abstractmethod
-from pathlib import Path
-from typing import Any, Dict, Type, Optional
-import mimetypes
+from typing import Any, Dict, Type
 import threading
 
 from fastapi.responses import FileResponse, StreamingResponse
@@ -68,19 +66,8 @@ class BaseDownload(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def response(self) -> FileResponse | StreamingResponse:
+    def response(self, filename: str) -> FileResponse | StreamingResponse:
         raise NotImplementedError
-
-    @staticmethod
-    def file_payload(path: Path, filename: Optional[str] = None, media_type: Optional[str] = None) -> Dict[str, Any]:
-        p = Path(path).resolve()
-        if not p.is_file():
-            raise FileNotFoundError(f"File not found: {p}")
-        return {
-            "filename": filename or p.name,
-            "media_type": media_type or (mimetypes.guess_type(str(p))[0] or "application/octet-stream"),
-            "path": str(p),
-        }
 
 
 _registry: Dict[str, Type[BaseDownload]] = {}
@@ -99,7 +86,8 @@ def register_download(classes_: str):
 
 def handle_download(classes_: str) -> Type[BaseDownload]:
     if classes_ not in _registry:
-        raise KeyError(f"Unknown analysis: {classes_}")
+        logger.error(f"Unknown download provider: {classes_}")
+        raise KeyError(f"Unknown download provider: {classes_}")
     return _registry[classes_]
 
 
