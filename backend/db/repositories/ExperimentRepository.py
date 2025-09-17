@@ -30,5 +30,17 @@ class ExperimentRepository(ABC, BaseRepository[Experiment]):
     async def getExperimentByCategory(self) -> list[dict]:
         ...
 
+    @abstractmethod
+    async def getExperimentCountsByExClass(self, exp_class: int) -> int:
+        """
+        Get all experiment counts according to exp_class.
+
+        Args:
+            exp_class: exp_class of ExpClass connect to ExperimentCategory
+        Returns:
+            int: containing all experiment counts according to exp_class.
+        """
+        ...
+
 # 单例
 # sample_repo = SampleRepository()

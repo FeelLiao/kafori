@@ -5,11 +5,14 @@ import pandas as pd
 
 from backend.db.utils import Utils
 
+from backend.db.models.dto.ExpClassDTO import ExpClassDTO
+
 from backend.db.repositories.impl.ExpClassRepositoryImpl import ExpClassRepositoryImpl
 from backend.db.repositories.impl.ExperimentRepositoryImpl import ExperimentRepositoryImpl
 from backend.db.repositories.impl.SampleRepositoryImpl import SampleRepositoryImpl
 from backend.db.repositories.impl.GeneExpressTpmRepositoryImpl import GeneExpressTpmRepositoryImpl
 from backend.db.repositories.impl.GeneExpressCountsRepositoryImpl import GeneExpressCountsRepositoryImpl
+from backend.db.repositories.impl.UserRepositoryImpl import UserRepositoryImpl
 
 
 class DataBase:
@@ -21,6 +24,7 @@ class DataBase:
         self.sample = SampleRepositoryImpl()
         self.gene_tpm = GeneExpressTpmRepositoryImpl()
         self.gene_counts = GeneExpressCountsRepositoryImpl()
+        self.user = UserRepositoryImpl()
 
 
 db = DataBase()
@@ -156,6 +160,29 @@ class GetDataBaseInterface:
         else:
             data = await db.gene_counts.model.filter(SampleRealID__in=unique_id, GeneID__in=gene_id).values()
         return pd.DataFrame(data)
+
+
+
+    @staticmethod
+    async def get_data_static(expClassDTO: List[ExpClassDTO]) -> List[ExpClassDTO]:
+        result = []
+        for expClass in expClassDTO:
+            samples_counts = 0
+            experiments = await db.experiment.model.filter(ExpClass=expClass.ExpClass).all()
+
+            for experiment in experiments:
+                samples_count = await db.sample.model.filter(UniqueEXID=experiment.UniqueEXID).count()
+                # 创建一个新的 ExpClassDTO 对象
+                data = ExpClassDTO(
+                    ExpClass=expClass.ExpClass,
+                    ExperimentCategory=expClass.ExperimentCategory,
+                    Experiment=experiment.Experiment,
+                    SampleCounts=samples_count
+                )
+                result.append(data)
+
+        # 返回排序过的结果
+        return Utils.quick_sort(result)[:10]
 
 
 class PutDataBaseInterface:
@@ -307,3 +334,9 @@ class PutDataBaseInterface:
                 exclass[i] = exists[0]
             results_bool.append(not exists)  # 如果不存在，返回 True；否则返回 False
         return results_bool, exclass
+
+
+
+
+
+

@@ -5,7 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0d2b8e7c-5000-4f2a-92a3-76e621242948" name="更改" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/ed43d1d3-7e22-46fd-b404-1d2745f68b6f.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/ed43d1d3-7e22-46fd-b404-1d2745f68b6f.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/db/exceptions/handlers.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/exceptions/handlers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/db/interface.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/interface.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/db/repositories/impl/SampleRepositoryImpl.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/repositories/impl/SampleRepositoryImpl.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/routers/file_routers.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routers/file_routers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/routers/validation.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routers/validation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/后端API文档/API接口设计.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/后端API文档/API接口设计.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,6 +29,9 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="PerforceDirect.Settings">
+    <option name="CHARSET" value="无" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
@@ -38,14 +49,15 @@
     &quot;Python 测试.pytest (test_expclass.py 内).executor&quot;: &quot;Run&quot;,
     &quot;Python 测试.pytest (test_experiment.py 内).executor&quot;: &quot;Run&quot;,
     &quot;Python 测试.pytest (test_sample.py 内).executor&quot;: &quot;Run&quot;,
-    &quot;Python 测试.pytest in test_sample.py.executor&quot;: &quot;Run&quot;,
+    &quot;Python 测试.pytest in test_expclass.py.executor&quot;: &quot;Run&quot;,
+    &quot;Python 测试.pytest in test_sample.py.executor&quot;: &quot;Debug&quot;,
     &quot;Python 测试.test_backend_core.executor&quot;: &quot;Run&quot;,
     &quot;Python 测试.test_backend_router.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;db__interface&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;//wsl.localhost/Ubuntu-22.04/home/zhoujunjie/pythonproject/kafori/docs/部署&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/kafori_2025-09-12_214212.sql&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -60,11 +72,16 @@
   &quot;keyToStringList&quot;: {
     &quot;DatabaseDriversLRU&quot;: [
       &quot;mysql&quot;
+    ],
+    &quot;com.intellij.ide.scratch.LRUPopupBuilder$1/SQL Dialect&quot;: [
+      &quot;MySQL&quot;
     ]
   }
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="\\wsl.localhost\Ubuntu-22.04\home\zhoujunjie\pythonproject\kafori\backend" />
+      <recent name="\\wsl.localhost\Ubuntu-22.04\home\zhoujunjie\pythonproject\kafori\docs\后端API文档" />
       <recent name="\\wsl.localhost\Ubuntu-22.04\home\zhoujunjie\pythonproject\kafori\docs\部署" />
       <recent name="\\wsl.localhost\Ubuntu-22.04\home\zhoujunjie\pythonproject\kafori\docs" />
     </key>
@@ -73,7 +90,7 @@
       <recent name="\\wsl.localhost\Ubuntu-22.04\home\zhoujunjie\pythonproject\kafori" />
     </key>
   </component>
-  <component name="RunManager" selected="Python 测试.pytest in test_sample.py">
+  <component name="RunManager" selected="FastAPI.kafori">
     <configuration name="kafori" type="Python.FastAPI">
       <option name="additionalOptions" value="--reload --host 0.0.0.0 " />
       <option name="file" value="\\wsl.localhost\Ubuntu-22.04\home\zhoujunjie\pythonproject\kafori\backend\main.py" />
@@ -242,6 +259,22 @@
       <workItem from="1756134592676" duration="5749000" />
       <workItem from="1756342266414" duration="39539000" />
       <workItem from="1756652851048" duration="2223000" />
+      <workItem from="1756737330838" duration="1583000" />
+      <workItem from="1756782407486" duration="56000" />
+      <workItem from="1756902929729" duration="8297000" />
+      <workItem from="1756987748910" duration="3582000" />
+      <workItem from="1757060835751" duration="63643000" />
+      <workItem from="1757306978243" duration="4779000" />
+      <workItem from="1757408972533" duration="12813000" />
+      <workItem from="1757576571293" duration="58000" />
+      <workItem from="1757652615404" duration="25443000" />
+      <workItem from="1757733227697" duration="18269000" />
+      <workItem from="1757860028394" duration="1073000" />
+      <workItem from="1757936442505" duration="116000" />
+      <workItem from="1757936568994" duration="63000" />
+      <workItem from="1757936733930" duration="27000" />
+      <workItem from="1758020144685" duration="11650000" />
+      <workItem from="1758037147582" duration="2221000" />
     </task>
     <servers />
   </component>
@@ -250,11 +283,12 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/kafori$pytest__test_expclass_py__.coverage" NAME="pytest (test_expclass.py 内) 覆盖结果" MODIFIED="1756308695060" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="\\wsl.localhost\Ubuntu-22.04\home\zhoujunjie\pythonproject\kafori" />
-    <SUITE FILE_PATH="coverage/kafori$kafori.coverage" NAME="kafori 覆盖结果" MODIFIED="1756488166916" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/kafori$pytest_in_test_sample_py.coverage" NAME="pytest in test_sample.py 覆盖结果" MODIFIED="1756654316808" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/kafori$pytest_in_test_expclass_py.coverage" NAME="pytest in test_expclass.py 覆盖结果" MODIFIED="1757149639513" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/kafori$pytest_in_test_sample_py.coverage" NAME="pytest in test_sample.py 覆盖结果" MODIFIED="1758022290535" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/kafori$kafori.coverage" NAME="kafori 覆盖结果" MODIFIED="1758037823469" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/kafori$test_backend_router.coverage" NAME="test_backend_router 覆盖结果" MODIFIED="1756124612367" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="\\wsl.localhost\Ubuntu-22.04\home\zhoujunjie\pythonproject\kafori" />
     <SUITE FILE_PATH="coverage/kafori$pytest__test_backend_core__.coverage" NAME="test_backend_core 覆盖结果" MODIFIED="1756132669677" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="\\wsl.localhost\Ubuntu-22.04\home\zhoujunjie\pythonproject\kafori" />
-    <SUITE FILE_PATH="coverage/kafori$test_backend_core.coverage" NAME="test_backend_core 覆盖结果" MODIFIED="1756654159814" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/kafori$test_backend_core.coverage" NAME="test_backend_core 覆盖结果" MODIFIED="1757148770089" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/kafori$pytest__test_experiment_py__.coverage" NAME="pytest (test_experiment.py 内) 覆盖结果" MODIFIED="1756348111988" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="\\wsl.localhost\Ubuntu-22.04\home\zhoujunjie\pythonproject\kafori" />
     <SUITE FILE_PATH="coverage/kafori$pytest__test_sample_py__.coverage" NAME="pytest (test_sample.py 内) 覆盖结果" MODIFIED="1756348139278" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="\\wsl.localhost\Ubuntu-22.04\home\zhoujunjie\pythonproject\kafori" />
   </component>

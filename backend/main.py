@@ -1,9 +1,11 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 import logging
 from contextlib import asynccontextmanager
 import warnings
 from tortoise.contrib.fastapi import register_tortoise
 import os
+from backend.db.decorator.Redis import register_redis
 
 from backend.db.config.redis_conf import build_redis_pool
 from backend.db.config.tortoise_conf import TORTOISE_ORM
@@ -50,16 +52,39 @@ app = FastAPI(lifespan=lifespan,
               )
 app.include_router(router)
 
+# 1) Mysql “一键注册”
 register_tortoise(
     app,
     config=TORTOISE_ORM,
     generate_schemas=False,  # 生产环境用迁移
-    add_exception_handlers=True,
+    add_exception_handlers=False,
+)
+
+# 2) Redis “一键注册”
+register_redis(
+    app,
+    generate_schemas=False,        # 占位，与 Tortoise 对齐
+    add_exception_handlers=False,
 )
 
 # 注册异常处理器（一行即可）
 ExceptionHandler.register(app)
 
+
+
+
+# 配置CORS中间件
+origins = [
+    "*"  # 允许的前端域名
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # 允许的来源
+    allow_credentials=True,  # 允许发送Cookie
+    allow_methods=["*"],  # 允许的HTTP方法
+    allow_headers=["*"],  # 允许的头
+)
 
 @app.get("/")
 async def root():

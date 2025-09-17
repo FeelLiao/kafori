@@ -2,8 +2,228 @@
 <dataSource name="@localhost">
   <database-model serializer="dbm" dbms="MYSQL" family-id="MYSQL" format-version="4.52">
     <root id="1">
+      <DefaultCasing>exact</DefaultCasing>
       <DefaultEngine>InnoDB</DefaultEngine>
       <DefaultTmpEngine>InnoDB</DefaultTmpEngine>
+      <Grants>|root||admin||ALTER|G
+|root||debian-sys-maint|localhost|ALTER|G
+|root||root|localhost|ALTER|G
+|root||admin||ALTER ROUTINE|G
+|root||debian-sys-maint|localhost|ALTER ROUTINE|G
+|root||root|localhost|ALTER ROUTINE|G
+|root||admin||APPLICATION_PASSWORD_ADMIN|G
+|root||debian-sys-maint|localhost|APPLICATION_PASSWORD_ADMIN|G
+|root||root|localhost|APPLICATION_PASSWORD_ADMIN|G
+|root||admin||AUDIT_ABORT_EXEMPT|G
+|root||mysql.infoschema|localhost|AUDIT_ABORT_EXEMPT|G
+|root||mysql.session|localhost|AUDIT_ABORT_EXEMPT|G
+|root||mysql.sys|localhost|AUDIT_ABORT_EXEMPT|G
+|root||root|localhost|AUDIT_ABORT_EXEMPT|G
+|root||admin||AUDIT_ADMIN|G
+|root||debian-sys-maint|localhost|AUDIT_ADMIN|G
+|root||root|localhost|AUDIT_ADMIN|G
+|root||admin||AUTHENTICATION_POLICY_ADMIN|G
+|root||debian-sys-maint|localhost|AUTHENTICATION_POLICY_ADMIN|G
+|root||mysql.session|localhost|AUTHENTICATION_POLICY_ADMIN|G
+|root||root|localhost|AUTHENTICATION_POLICY_ADMIN|G
+|root||admin||BACKUP_ADMIN|G
+|root||debian-sys-maint|localhost|BACKUP_ADMIN|G
+|root||mysql.session|localhost|BACKUP_ADMIN|G
+|root||root|localhost|BACKUP_ADMIN|G
+|root||admin||BINLOG_ADMIN|G
+|root||debian-sys-maint|localhost|BINLOG_ADMIN|G
+|root||root|localhost|BINLOG_ADMIN|G
+|root||admin||BINLOG_ENCRYPTION_ADMIN|G
+|root||debian-sys-maint|localhost|BINLOG_ENCRYPTION_ADMIN|G
+|root||root|localhost|BINLOG_ENCRYPTION_ADMIN|G
+|root||admin||CLONE_ADMIN|G
+|root||debian-sys-maint|localhost|CLONE_ADMIN|G
+|root||mysql.session|localhost|CLONE_ADMIN|G
+|root||root|localhost|CLONE_ADMIN|G
+|root||admin||CONNECTION_ADMIN|G
+|root||debian-sys-maint|localhost|CONNECTION_ADMIN|G
+|root||mysql.session|localhost|CONNECTION_ADMIN|G
+|root||root|localhost|CONNECTION_ADMIN|G
+|root||admin||CREATE|G
+|root||debian-sys-maint|localhost|CREATE|G
+|root||root|localhost|CREATE|G
+|root||admin||CREATE ROLE|G
+|root||debian-sys-maint|localhost|CREATE ROLE|G
+|root||root|localhost|CREATE ROLE|G
+|root||admin||CREATE ROUTINE|G
+|root||debian-sys-maint|localhost|CREATE ROUTINE|G
+|root||root|localhost|CREATE ROUTINE|G
+|root||admin||CREATE TABLESPACE|G
+|root||debian-sys-maint|localhost|CREATE TABLESPACE|G
+|root||root|localhost|CREATE TABLESPACE|G
+|root||admin||CREATE TEMPORARY TABLES|G
+|root||debian-sys-maint|localhost|CREATE TEMPORARY TABLES|G
+|root||root|localhost|CREATE TEMPORARY TABLES|G
+|root||admin||CREATE USER|G
+|root||debian-sys-maint|localhost|CREATE USER|G
+|root||root|localhost|CREATE USER|G
+|root||admin||CREATE VIEW|G
+|root||debian-sys-maint|localhost|CREATE VIEW|G
+|root||root|localhost|CREATE VIEW|G
+|root||admin||DELETE|G
+|root||debian-sys-maint|localhost|DELETE|G
+|root||root|localhost|DELETE|G
+|root||admin||DROP|G
+|root||debian-sys-maint|localhost|DROP|G
+|root||root|localhost|DROP|G
+|root||admin||DROP ROLE|G
+|root||debian-sys-maint|localhost|DROP ROLE|G
+|root||root|localhost|DROP ROLE|G
+|root||admin||ENCRYPTION_KEY_ADMIN|G
+|root||debian-sys-maint|localhost|ENCRYPTION_KEY_ADMIN|G
+|root||root|localhost|ENCRYPTION_KEY_ADMIN|G
+|root||admin||EVENT|G
+|root||debian-sys-maint|localhost|EVENT|G
+|root||root|localhost|EVENT|G
+|root||admin||EXECUTE|G
+|root||debian-sys-maint|localhost|EXECUTE|G
+|root||root|localhost|EXECUTE|G
+|root||admin||FILE|G
+|root||debian-sys-maint|localhost|FILE|G
+|root||root|localhost|FILE|G
+|root||admin||FIREWALL_EXEMPT|G
+|root||mysql.infoschema|localhost|FIREWALL_EXEMPT|G
+|root||mysql.session|localhost|FIREWALL_EXEMPT|G
+|root||mysql.sys|localhost|FIREWALL_EXEMPT|G
+|root||root|localhost|FIREWALL_EXEMPT|G
+|root||admin||FLUSH_OPTIMIZER_COSTS|G
+|root||debian-sys-maint|localhost|FLUSH_OPTIMIZER_COSTS|G
+|root||root|localhost|FLUSH_OPTIMIZER_COSTS|G
+|root||admin||FLUSH_STATUS|G
+|root||debian-sys-maint|localhost|FLUSH_STATUS|G
+|root||root|localhost|FLUSH_STATUS|G
+|root||admin||FLUSH_TABLES|G
+|root||debian-sys-maint|localhost|FLUSH_TABLES|G
+|root||root|localhost|FLUSH_TABLES|G
+|root||admin||FLUSH_USER_RESOURCES|G
+|root||debian-sys-maint|localhost|FLUSH_USER_RESOURCES|G
+|root||root|localhost|FLUSH_USER_RESOURCES|G
+|root||admin||GROUP_REPLICATION_ADMIN|G
+|root||debian-sys-maint|localhost|GROUP_REPLICATION_ADMIN|G
+|root||root|localhost|GROUP_REPLICATION_ADMIN|G
+|root||admin||GROUP_REPLICATION_STREAM|G
+|root||debian-sys-maint|localhost|GROUP_REPLICATION_STREAM|G
+|root||root|localhost|GROUP_REPLICATION_STREAM|G
+|root||admin||INDEX|G
+|root||debian-sys-maint|localhost|INDEX|G
+|root||root|localhost|INDEX|G
+|root||admin||INNODB_REDO_LOG_ARCHIVE|G
+|root||debian-sys-maint|localhost|INNODB_REDO_LOG_ARCHIVE|G
+|root||root|localhost|INNODB_REDO_LOG_ARCHIVE|G
+|root||admin||INNODB_REDO_LOG_ENABLE|G
+|root||debian-sys-maint|localhost|INNODB_REDO_LOG_ENABLE|G
+|root||root|localhost|INNODB_REDO_LOG_ENABLE|G
+|root||admin||INSERT|G
+|root||debian-sys-maint|localhost|INSERT|G
+|root||root|localhost|INSERT|G
+|root||admin||LOCK TABLES|G
+|root||debian-sys-maint|localhost|LOCK TABLES|G
+|root||root|localhost|LOCK TABLES|G
+|root||admin||PASSWORDLESS_USER_ADMIN|G
+|root||debian-sys-maint|localhost|PASSWORDLESS_USER_ADMIN|G
+|root||root|localhost|PASSWORDLESS_USER_ADMIN|G
+|root||admin||PERSIST_RO_VARIABLES_ADMIN|G
+|root||debian-sys-maint|localhost|PERSIST_RO_VARIABLES_ADMIN|G
+|root||mysql.session|localhost|PERSIST_RO_VARIABLES_ADMIN|G
+|root||root|localhost|PERSIST_RO_VARIABLES_ADMIN|G
+|root||admin||PROCESS|G
+|root||debian-sys-maint|localhost|PROCESS|G
+|root||root|localhost|PROCESS|G
+|root||admin||REFERENCES|G
+|root||debian-sys-maint|localhost|REFERENCES|G
+|root||root|localhost|REFERENCES|G
+|root||admin||RELOAD|G
+|root||debian-sys-maint|localhost|RELOAD|G
+|root||root|localhost|RELOAD|G
+|root||admin||REPLICATION CLIENT|G
+|root||debian-sys-maint|localhost|REPLICATION CLIENT|G
+|root||root|localhost|REPLICATION CLIENT|G
+|root||admin||REPLICATION SLAVE|G
+|root||debian-sys-maint|localhost|REPLICATION SLAVE|G
+|root||root|localhost|REPLICATION SLAVE|G
+|root||admin||REPLICATION_APPLIER|G
+|root||debian-sys-maint|localhost|REPLICATION_APPLIER|G
+|root||root|localhost|REPLICATION_APPLIER|G
+|root||admin||REPLICATION_SLAVE_ADMIN|G
+|root||debian-sys-maint|localhost|REPLICATION_SLAVE_ADMIN|G
+|root||root|localhost|REPLICATION_SLAVE_ADMIN|G
+|root||admin||RESOURCE_GROUP_ADMIN|G
+|root||debian-sys-maint|localhost|RESOURCE_GROUP_ADMIN|G
+|root||root|localhost|RESOURCE_GROUP_ADMIN|G
+|root||admin||RESOURCE_GROUP_USER|G
+|root||debian-sys-maint|localhost|RESOURCE_GROUP_USER|G
+|root||root|localhost|RESOURCE_GROUP_USER|G
+|root||admin||ROLE_ADMIN|G
+|root||debian-sys-maint|localhost|ROLE_ADMIN|G
+|root||root|localhost|ROLE_ADMIN|G
+|root||admin||SELECT|G
+|root||debian-sys-maint|localhost|SELECT|G
+|root||mysql.infoschema|localhost|SELECT|G
+|root||root|localhost|SELECT|G
+|root||admin||SENSITIVE_VARIABLES_OBSERVER|G
+|root||debian-sys-maint|localhost|SENSITIVE_VARIABLES_OBSERVER|G
+|root||root|localhost|SENSITIVE_VARIABLES_OBSERVER|G
+|root||admin||SERVICE_CONNECTION_ADMIN|G
+|root||debian-sys-maint|localhost|SERVICE_CONNECTION_ADMIN|G
+|root||root|localhost|SERVICE_CONNECTION_ADMIN|G
+|root||admin||SESSION_VARIABLES_ADMIN|G
+|root||debian-sys-maint|localhost|SESSION_VARIABLES_ADMIN|G
+|root||mysql.session|localhost|SESSION_VARIABLES_ADMIN|G
+|root||root|localhost|SESSION_VARIABLES_ADMIN|G
+|root||admin||SET_USER_ID|G
+|root||debian-sys-maint|localhost|SET_USER_ID|G
+|root||root|localhost|SET_USER_ID|G
+|root||admin||SHOW DATABASES|G
+|root||debian-sys-maint|localhost|SHOW DATABASES|G
+|root||root|localhost|SHOW DATABASES|G
+|root||admin||SHOW VIEW|G
+|root||debian-sys-maint|localhost|SHOW VIEW|G
+|root||root|localhost|SHOW VIEW|G
+|root||admin||SHOW_ROUTINE|G
+|root||debian-sys-maint|localhost|SHOW_ROUTINE|G
+|root||root|localhost|SHOW_ROUTINE|G
+|root||admin||SHUTDOWN|G
+|root||debian-sys-maint|localhost|SHUTDOWN|G
+|root||mysql.session|localhost|SHUTDOWN|G
+|root||root|localhost|SHUTDOWN|G
+|root||admin||SUPER|G
+|root||debian-sys-maint|localhost|SUPER|G
+|root||mysql.session|localhost|SUPER|G
+|root||root|localhost|SUPER|G
+|root||admin||SYSTEM_USER|G
+|root||debian-sys-maint|localhost|SYSTEM_USER|G
+|root||mysql.infoschema|localhost|SYSTEM_USER|G
+|root||mysql.session|localhost|SYSTEM_USER|G
+|root||mysql.sys|localhost|SYSTEM_USER|G
+|root||root|localhost|SYSTEM_USER|G
+|root||admin||SYSTEM_VARIABLES_ADMIN|G
+|root||debian-sys-maint|localhost|SYSTEM_VARIABLES_ADMIN|G
+|root||mysql.session|localhost|SYSTEM_VARIABLES_ADMIN|G
+|root||root|localhost|SYSTEM_VARIABLES_ADMIN|G
+|root||admin||TABLE_ENCRYPTION_ADMIN|G
+|root||debian-sys-maint|localhost|TABLE_ENCRYPTION_ADMIN|G
+|root||root|localhost|TABLE_ENCRYPTION_ADMIN|G
+|root||admin||TELEMETRY_LOG_ADMIN|G
+|root||debian-sys-maint|localhost|TELEMETRY_LOG_ADMIN|G
+|root||root|localhost|TELEMETRY_LOG_ADMIN|G
+|root||admin||TRIGGER|G
+|root||debian-sys-maint|localhost|TRIGGER|G
+|root||root|localhost|TRIGGER|G
+|root||admin||UPDATE|G
+|root||debian-sys-maint|localhost|UPDATE|G
+|root||root|localhost|UPDATE|G
+|root||admin||XA_RECOVER_ADMIN|G
+|root||debian-sys-maint|localhost|XA_RECOVER_ADMIN|G
+|root||root|localhost|XA_RECOVER_ADMIN|G
+|root||debian-sys-maint|localhost|grant option|G
+|root||root|localhost|grant option|G
+performance_schema|schema||mysql.session|localhost|SELECT|G
+sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
       <ServerVersion>8.0.43</ServerVersion>
     </root>
     <collation id="2" parent="1" name="armscii8_general_ci">
@@ -930,13 +1150,14 @@
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
     <schema id="296" parent="1" name="fmusic">
+      <LastIntrospectionLocalTimestamp>2025-09-12.13:54:10</LastIntrospectionLocalTimestamp>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
     <schema id="297" parent="1" name="demo_db">
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
     <schema id="298" parent="1" name="kafori">
-      <LastIntrospectionLocalTimestamp>2025-08-31.15:16:31</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2025-09-12.13:54:10</LastIntrospectionLocalTimestamp>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
     <user id="299" parent="1" name="admin">
@@ -968,282 +1189,1395 @@
       <Host>localhost</Host>
       <Plugin>auth_socket</Plugin>
     </user>
-    <table id="306" parent="298" name="exp_class">
+    <table id="306" parent="296" name="tb_admin">
+      <Engine>InnoDB</Engine>
+      <Options>row_format
+DYNAMIC</Options>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <table id="307" parent="296" name="tb_artist">
+      <Engine>InnoDB</Engine>
+      <Options>row_format
+DYNAMIC</Options>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <table id="308" parent="296" name="tb_banner">
+      <Engine>InnoDB</Engine>
+      <Options>row_format
+DYNAMIC</Options>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <table id="309" parent="296" name="tb_comment">
+      <Engine>InnoDB</Engine>
+      <Options>row_format
+DYNAMIC</Options>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <table id="310" parent="296" name="tb_feedback">
+      <Engine>InnoDB</Engine>
+      <Options>row_format
+DYNAMIC</Options>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <table id="311" parent="296" name="tb_genre">
+      <Engine>InnoDB</Engine>
+      <Options>row_format
+DYNAMIC</Options>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <table id="312" parent="296" name="tb_membership_plan">
+      <Comment>会员套餐表</Comment>
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </table>
-    <table id="307" parent="298" name="experiment">
+    <table id="313" parent="296" name="tb_order">
+      <Comment>订单表</Comment>
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </table>
-    <table id="308" parent="298" name="gene_express_counts">
+    <table id="314" parent="296" name="tb_playlist">
+      <Engine>InnoDB</Engine>
+      <Options>row_format
+DYNAMIC</Options>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <table id="315" parent="296" name="tb_playlist_binding">
+      <Engine>InnoDB</Engine>
+      <Options>row_format
+DYNAMIC</Options>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <table id="316" parent="296" name="tb_song">
+      <Engine>InnoDB</Engine>
+      <Options>row_format
+DYNAMIC</Options>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <table id="317" parent="296" name="tb_style">
+      <Engine>InnoDB</Engine>
+      <Options>row_format
+DYNAMIC</Options>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <table id="318" parent="296" name="tb_user">
+      <Engine>InnoDB</Engine>
+      <Options>row_format
+DYNAMIC</Options>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <table id="319" parent="296" name="tb_user_favorite">
+      <Engine>InnoDB</Engine>
+      <Options>row_format
+DYNAMIC</Options>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <table id="320" parent="296" name="tb_user_membership">
+      <Comment>用户会员表</Comment>
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </table>
-    <table id="309" parent="298" name="gene_express_tpm">
+    <table id="321" parent="298" name="exp_class">
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </table>
-    <table id="310" parent="298" name="sample">
+    <table id="322" parent="298" name="experiment">
+      <Engine>InnoDB</Engine>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <table id="323" parent="298" name="gene_express_counts">
+      <Engine>InnoDB</Engine>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <table id="324" parent="298" name="gene_express_tpm">
+      <Engine>InnoDB</Engine>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <table id="325" parent="298" name="sample">
       <Engine>InnoDB</Engine>
       <PartitionExpression>year(`collection_time`)</PartitionExpression>
       <PartitionMethod>RANGE</PartitionMethod>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </table>
-    <column id="311" parent="306" name="exp_class">
+    <table id="326" parent="298" name="user">
+      <Engine>InnoDB</Engine>
+      <Options>row_format
+DYNAMIC</Options>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <column id="327" parent="306" name="id">
+      <AutoIncrement>170</AutoIncrement>
+      <Comment>管理员 id</Comment>
+      <DasType>bigint|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="328" parent="306" name="username">
+      <Comment>管理员用户名</Comment>
+      <DasType>varchar(20)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <column id="329" parent="306" name="password">
+      <Comment>管理员密码</Comment>
+      <DasType>varchar(64)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+    </column>
+    <index id="330" parent="306" name="PRIMARY">
+      <ColNames>id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="331" parent="306" name="username">
+      <ColNames>username</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <key id="332" parent="306" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <key id="333" parent="306" name="username">
+      <UnderlyingIndexName>username</UnderlyingIndexName>
+    </key>
+    <column id="334" parent="307" name="id">
+      <AutoIncrement>141</AutoIncrement>
+      <Comment>歌手 id</Comment>
+      <DasType>bigint|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="335" parent="307" name="name">
+      <Comment>歌手姓名</Comment>
+      <DasType>varchar(100)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <column id="336" parent="307" name="gender">
+      <Comment>歌手性别：0-男，1-女，2-组合/乐队</Comment>
+      <DasType>int|0s</DasType>
+      <Position>3</Position>
+    </column>
+    <column id="337" parent="307" name="avatar">
+      <Comment>歌手头像</Comment>
+      <DasType>varchar(255)|0s</DasType>
+      <Position>4</Position>
+    </column>
+    <column id="338" parent="307" name="birth">
+      <Comment>歌手出生日期</Comment>
+      <DasType>date|0s</DasType>
+      <Position>5</Position>
+    </column>
+    <column id="339" parent="307" name="area">
+      <Comment>歌手国籍</Comment>
+      <DasType>varchar(30)|0s</DasType>
+      <Position>6</Position>
+    </column>
+    <column id="340" parent="307" name="introduction">
+      <Comment>歌手简介</Comment>
+      <DasType>varchar(255)|0s</DasType>
+      <Position>7</Position>
+    </column>
+    <index id="341" parent="307" name="PRIMARY">
+      <ColNames>id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="342" parent="307" name="name">
+      <ColNames>name</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="343" parent="307" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="344" parent="308" name="id">
+      <AutoIncrement>30</AutoIncrement>
+      <Comment>轮播图 id</Comment>
+      <DasType>bigint|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="345" parent="308" name="banner_url">
+      <Comment>轮播图 url</Comment>
+      <DasType>varchar(255)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <column id="346" parent="308" name="status">
+      <Comment>轮播图状态：0-启用，1-禁用</Comment>
+      <DasType>tinyint|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+    </column>
+    <index id="347" parent="308" name="PRIMARY">
+      <ColNames>id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <key id="348" parent="308" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="349" parent="309" name="id">
+      <AutoIncrement>194</AutoIncrement>
+      <Comment>评论 id</Comment>
+      <DasType>bigint|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="350" parent="309" name="user_id">
+      <Comment>用户 id</Comment>
+      <DasType>bigint|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <column id="351" parent="309" name="song_id">
+      <Comment>歌曲 id</Comment>
+      <DasType>bigint|0s</DasType>
+      <Position>3</Position>
+    </column>
+    <column id="352" parent="309" name="playlist_id">
+      <Comment>歌单 id</Comment>
+      <DasType>bigint|0s</DasType>
+      <Position>4</Position>
+    </column>
+    <column id="353" parent="309" name="content">
+      <Comment>评论内容</Comment>
+      <DasType>varchar(255)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+    </column>
+    <column id="354" parent="309" name="create_time">
+      <Comment>评论时间</Comment>
+      <DasType>datetime|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>6</Position>
+    </column>
+    <column id="355" parent="309" name="type">
+      <Comment>评论类型：0-歌曲评论，1-歌单评论</Comment>
+      <DasType>tinyint|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>7</Position>
+    </column>
+    <column id="356" parent="309" name="like_count">
+      <Comment>点赞数量</Comment>
+      <DasType>bigint|0s</DasType>
+      <Position>8</Position>
+    </column>
+    <foreign-key id="357" parent="309" name="fk_comment_user_id">
+      <ColNames>user_id</ColNames>
+      <OnDelete>cascade</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <RefColNames>id</RefColNames>
+      <RefTableName>tb_user</RefTableName>
+    </foreign-key>
+    <foreign-key id="358" parent="309" name="fk_comment_song_id">
+      <ColNames>song_id</ColNames>
+      <OnDelete>cascade</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <RefColNames>id</RefColNames>
+      <RefTableName>tb_song</RefTableName>
+    </foreign-key>
+    <foreign-key id="359" parent="309" name="fk_comment_playlist_id">
+      <ColNames>playlist_id</ColNames>
+      <OnDelete>cascade</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <RefColNames>id</RefColNames>
+      <RefTableName>tb_playlist</RefTableName>
+    </foreign-key>
+    <index id="360" parent="309" name="PRIMARY">
+      <ColNames>id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="361" parent="309" name="fk_comment_user_id">
+      <ColNames>user_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <index id="362" parent="309" name="fk_comment_song_id">
+      <ColNames>song_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <index id="363" parent="309" name="fk_comment_playlist_id">
+      <ColNames>playlist_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="364" parent="309" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="365" parent="310" name="id">
+      <AutoIncrement>72</AutoIncrement>
+      <Comment>反馈 id</Comment>
+      <DasType>bigint|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="366" parent="310" name="user_id">
+      <Comment>用户 id</Comment>
+      <DasType>bigint|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <column id="367" parent="310" name="feedback">
+      <Comment>反馈内容</Comment>
+      <DasType>varchar(255)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+    </column>
+    <column id="368" parent="310" name="create_time">
+      <Comment>创建时间</Comment>
+      <DasType>datetime|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+    </column>
+    <foreign-key id="369" parent="310" name="fk_feedback_user_id">
+      <ColNames>user_id</ColNames>
+      <OnUpdate>cascade</OnUpdate>
+      <RefColNames>id</RefColNames>
+      <RefTableName>tb_user</RefTableName>
+    </foreign-key>
+    <index id="370" parent="310" name="PRIMARY">
+      <ColNames>id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="371" parent="310" name="fk_feedback_user_id">
+      <ColNames>user_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="372" parent="310" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="373" parent="311" name="song_id">
+      <Comment>歌曲 id</Comment>
+      <DasType>bigint|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="374" parent="311" name="style_id">
+      <Comment>风格 id</Comment>
+      <DasType>bigint|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <foreign-key id="375" parent="311" name="fk_genre_song_id">
+      <ColNames>song_id</ColNames>
+      <OnDelete>cascade</OnDelete>
+      <RefColNames>id</RefColNames>
+      <RefTableName>tb_song</RefTableName>
+    </foreign-key>
+    <foreign-key id="376" parent="311" name="fk_genre_style_id">
+      <ColNames>style_id</ColNames>
+      <OnDelete>cascade</OnDelete>
+      <RefColNames>id</RefColNames>
+      <RefTableName>tb_style</RefTableName>
+    </foreign-key>
+    <index id="377" parent="311" name="PRIMARY">
+      <ColNames>song_id
+style_id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="378" parent="311" name="fk_genre_style_id">
+      <ColNames>style_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="379" parent="311" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="380" parent="312" name="id">
+      <AutoIncrement>2</AutoIncrement>
+      <Comment>会员套餐ID</Comment>
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="381" parent="312" name="name">
+      <Comment>套餐名称</Comment>
+      <DasType>varchar(100)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <column id="382" parent="312" name="description">
+      <Comment>套餐描述</Comment>
+      <DasType>text|0s</DasType>
+      <Position>3</Position>
+    </column>
+    <column id="383" parent="312" name="duration_days">
+      <Comment>会员有效期(天)</Comment>
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+    </column>
+    <column id="384" parent="312" name="price">
+      <Comment>价格</Comment>
+      <DasType>decimal(10,2 digit)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+    </column>
+    <column id="385" parent="312" name="discount_price">
+      <Comment>折扣价格</Comment>
+      <DasType>decimal(10,2 digit)|0s</DasType>
+      <Position>6</Position>
+    </column>
+    <column id="386" parent="312" name="status">
+      <Comment>状态(1-启用,0-禁用)</Comment>
+      <DasType>tinyint|0s</DasType>
+      <DefaultExpression>1</DefaultExpression>
+      <Position>7</Position>
+    </column>
+    <column id="387" parent="312" name="created_at">
+      <Comment>创建时间</Comment>
+      <DasType>timestamp|0s</DasType>
+      <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
+      <Position>8</Position>
+    </column>
+    <column id="388" parent="312" name="updated_at">
+      <Comment>更新时间</Comment>
+      <DasType>timestamp|0s</DasType>
+      <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
+      <OnUpdate>CURRENT_TIMESTAMP</OnUpdate>
+      <Position>9</Position>
+    </column>
+    <index id="389" parent="312" name="PRIMARY">
+      <ColNames>id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <key id="390" parent="312" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="391" parent="313" name="id">
+      <AutoIncrement>32</AutoIncrement>
+      <Comment>订单ID</Comment>
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="392" parent="313" name="order_no">
+      <Comment>订单号</Comment>
+      <DasType>varchar(64)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <column id="393" parent="313" name="user_id">
+      <Comment>用户ID</Comment>
+      <DasType>bigint|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+    </column>
+    <column id="394" parent="313" name="plan_id">
+      <Comment>会员套餐ID</Comment>
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+    </column>
+    <column id="395" parent="313" name="amount">
+      <Comment>订单金额</Comment>
+      <DasType>decimal(10,2 digit)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+    </column>
+    <column id="396" parent="313" name="discount_amount">
+      <Comment>优惠金额</Comment>
+      <DasType>decimal(10,2 digit)|0s</DasType>
+      <DefaultExpression>0.00</DefaultExpression>
+      <Position>6</Position>
+    </column>
+    <column id="397" parent="313" name="final_amount">
+      <Comment>实付金额</Comment>
+      <DasType>decimal(10,2 digit)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>7</Position>
+    </column>
+    <column id="398" parent="313" name="status">
+      <Comment>订单状态(0-待支付,1-已支付,2-已取消,3-已退款)</Comment>
+      <DasType>tinyint|0s</DasType>
+      <DefaultExpression>0</DefaultExpression>
+      <Position>8</Position>
+    </column>
+    <column id="399" parent="313" name="payment_method">
+      <Comment>支付方式</Comment>
+      <DasType>varchar(20)|0s</DasType>
+      <Position>9</Position>
+    </column>
+    <column id="400" parent="313" name="payment_time">
+      <Comment>支付时间</Comment>
+      <DasType>timestamp|0s</DasType>
+      <Position>10</Position>
+    </column>
+    <column id="401" parent="313" name="created_at">
+      <Comment>创建时间</Comment>
+      <DasType>timestamp|0s</DasType>
+      <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
+      <Position>11</Position>
+    </column>
+    <column id="402" parent="313" name="updated_at">
+      <Comment>更新时间</Comment>
+      <DasType>timestamp|0s</DasType>
+      <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
+      <OnUpdate>CURRENT_TIMESTAMP</OnUpdate>
+      <Position>12</Position>
+    </column>
+    <foreign-key id="403" parent="313" name="tb_order_ibfk_1">
+      <ColNames>user_id</ColNames>
+      <RefColNames>id</RefColNames>
+      <RefTableName>tb_user</RefTableName>
+    </foreign-key>
+    <foreign-key id="404" parent="313" name="tb_order_ibfk_2">
+      <ColNames>plan_id</ColNames>
+      <RefColNames>id</RefColNames>
+      <RefTableName>tb_membership_plan</RefTableName>
+    </foreign-key>
+    <index id="405" parent="313" name="PRIMARY">
+      <ColNames>id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="406" parent="313" name="order_no">
+      <ColNames>order_no</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="407" parent="313" name="user_id">
+      <ColNames>user_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <index id="408" parent="313" name="plan_id">
+      <ColNames>plan_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="409" parent="313" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <key id="410" parent="313" name="order_no">
+      <UnderlyingIndexName>order_no</UnderlyingIndexName>
+    </key>
+    <column id="411" parent="314" name="id">
+      <AutoIncrement>23</AutoIncrement>
+      <Comment>歌单 id</Comment>
+      <DasType>bigint|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="412" parent="314" name="title">
+      <Comment>歌单标题</Comment>
+      <DasType>varchar(255)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <column id="413" parent="314" name="cover_url">
+      <Comment>歌单封面</Comment>
+      <DasType>varchar(255)|0s</DasType>
+      <Position>3</Position>
+    </column>
+    <column id="414" parent="314" name="introduction">
+      <Comment>歌单简介</Comment>
+      <DasType>text|0s</DasType>
+      <Position>4</Position>
+    </column>
+    <column id="415" parent="314" name="style">
+      <Comment>歌单风格</Comment>
+      <DasType>varchar(255)|0s</DasType>
+      <Position>5</Position>
+    </column>
+    <index id="416" parent="314" name="PRIMARY">
+      <ColNames>id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <key id="417" parent="314" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="418" parent="315" name="playlist_id">
+      <Comment>歌单 id</Comment>
+      <DasType>bigint|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="419" parent="315" name="song_id">
+      <Comment>歌曲 id</Comment>
+      <DasType>bigint|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <foreign-key id="420" parent="315" name="fk_playlist_binding_playlist_id">
+      <ColNames>playlist_id</ColNames>
+      <OnDelete>cascade</OnDelete>
+      <RefColNames>id</RefColNames>
+      <RefTableName>tb_playlist</RefTableName>
+    </foreign-key>
+    <foreign-key id="421" parent="315" name="fk_playlist_binding_song_id">
+      <ColNames>song_id</ColNames>
+      <OnDelete>cascade</OnDelete>
+      <RefColNames>id</RefColNames>
+      <RefTableName>tb_song</RefTableName>
+    </foreign-key>
+    <index id="422" parent="315" name="PRIMARY">
+      <ColNames>playlist_id
+song_id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="423" parent="315" name="fk_playlist_binding_song_id">
+      <ColNames>song_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="424" parent="315" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="425" parent="316" name="id">
+      <AutoIncrement>535</AutoIncrement>
+      <Comment>歌曲 id</Comment>
+      <DasType>bigint|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="426" parent="316" name="artist_id">
+      <Comment>歌手 id</Comment>
+      <DasType>bigint|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <column id="427" parent="316" name="name">
+      <Comment>歌名</Comment>
+      <DasType>varchar(255)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+    </column>
+    <column id="428" parent="316" name="album">
+      <Comment>专辑</Comment>
+      <DasType>varchar(255)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+    </column>
+    <column id="429" parent="316" name="lyric">
+      <Comment>歌词</Comment>
+      <DasType>text|0s</DasType>
+      <Position>5</Position>
+    </column>
+    <column id="430" parent="316" name="duration">
+      <Comment>歌曲时长</Comment>
+      <DasType>varchar(10)|0s</DasType>
+      <Position>6</Position>
+    </column>
+    <column id="431" parent="316" name="style">
+      <Comment>歌曲风格</Comment>
+      <DasType>varchar(255)|0s</DasType>
+      <Position>7</Position>
+    </column>
+    <column id="432" parent="316" name="cover_url">
+      <Comment>歌曲封面 url</Comment>
+      <DasType>varchar(255)|0s</DasType>
+      <Position>8</Position>
+    </column>
+    <column id="433" parent="316" name="audio_url">
+      <Comment>歌曲 url</Comment>
+      <DasType>varchar(255)|0s</DasType>
+      <Position>9</Position>
+    </column>
+    <column id="434" parent="316" name="release_time">
+      <Comment>歌曲发行时间</Comment>
+      <DasType>date|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>10</Position>
+    </column>
+    <column id="435" parent="316" name="is_vip">
+      <DasType>tinyint(1)|0s</DasType>
+      <DefaultExpression>0</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>11</Position>
+    </column>
+    <foreign-key id="436" parent="316" name="fk_song_artist_id">
+      <ColNames>artist_id</ColNames>
+      <OnDelete>cascade</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <RefColNames>id</RefColNames>
+      <RefTableName>tb_artist</RefTableName>
+    </foreign-key>
+    <index id="437" parent="316" name="PRIMARY">
+      <ColNames>id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="438" parent="316" name="fk_song_artist_id">
+      <ColNames>artist_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="439" parent="316" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="440" parent="317" name="id">
+      <AutoIncrement>17</AutoIncrement>
+      <Comment>风格 id</Comment>
+      <DasType>bigint|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="441" parent="317" name="name">
+      <Comment>风格名称</Comment>
+      <DasType>varchar(50)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <index id="442" parent="317" name="PRIMARY">
+      <ColNames>id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="443" parent="317" name="name">
+      <ColNames>name</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <key id="444" parent="317" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <key id="445" parent="317" name="name">
+      <UnderlyingIndexName>name</UnderlyingIndexName>
+    </key>
+    <column id="446" parent="318" name="id">
+      <AutoIncrement>148</AutoIncrement>
+      <Comment>用户 id</Comment>
+      <DasType>bigint|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="447" parent="318" name="username">
+      <Comment>用户名</Comment>
+      <DasType>varchar(20)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <column id="448" parent="318" name="password">
+      <Comment>用户密码</Comment>
+      <DasType>varchar(64)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+    </column>
+    <column id="449" parent="318" name="phone">
+      <Comment>用户手机号</Comment>
+      <DasType>varchar(11)|0s</DasType>
+      <Position>4</Position>
+    </column>
+    <column id="450" parent="318" name="email">
+      <Comment>用户邮箱</Comment>
+      <DasType>varchar(128)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+    </column>
+    <column id="451" parent="318" name="user_avatar">
+      <Comment>用户头像</Comment>
+      <DasType>varchar(255)|0s</DasType>
+      <Position>6</Position>
+    </column>
+    <column id="452" parent="318" name="introduction">
+      <Comment>用户简介</Comment>
+      <DasType>varchar(255)|0s</DasType>
+      <Position>7</Position>
+    </column>
+    <column id="453" parent="318" name="create_time">
+      <Comment>用户创建时间</Comment>
+      <DasType>datetime|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>8</Position>
+    </column>
+    <column id="454" parent="318" name="update_time">
+      <Comment>用户修改时间</Comment>
+      <DasType>datetime|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>9</Position>
+    </column>
+    <column id="455" parent="318" name="status">
+      <Comment>用户状态：0-启用，1-禁用</Comment>
+      <DasType>tinyint|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>10</Position>
+    </column>
+    <index id="456" parent="318" name="PRIMARY">
+      <ColNames>id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="457" parent="318" name="username">
+      <ColNames>username</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="458" parent="318" name="phone">
+      <ColNames>phone</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="459" parent="318" name="email">
+      <ColNames>email</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <key id="460" parent="318" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <key id="461" parent="318" name="username">
+      <UnderlyingIndexName>username</UnderlyingIndexName>
+    </key>
+    <key id="462" parent="318" name="phone">
+      <UnderlyingIndexName>phone</UnderlyingIndexName>
+    </key>
+    <key id="463" parent="318" name="email">
+      <UnderlyingIndexName>email</UnderlyingIndexName>
+    </key>
+    <column id="464" parent="319" name="id">
+      <AutoIncrement>525</AutoIncrement>
+      <Comment>id</Comment>
+      <DasType>bigint|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="465" parent="319" name="user_id">
+      <Comment>用户 id</Comment>
+      <DasType>bigint|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <column id="466" parent="319" name="type">
+      <Comment>收藏类型：0-歌曲，1-歌单</Comment>
+      <DasType>tinyint|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+    </column>
+    <column id="467" parent="319" name="song_id">
+      <Comment>收藏歌曲 id</Comment>
+      <DasType>bigint|0s</DasType>
+      <Position>4</Position>
+    </column>
+    <column id="468" parent="319" name="playlist_id">
+      <Comment>收藏歌单 id</Comment>
+      <DasType>bigint|0s</DasType>
+      <Position>5</Position>
+    </column>
+    <column id="469" parent="319" name="create_time">
+      <Comment>创建时间</Comment>
+      <DasType>datetime|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>6</Position>
+    </column>
+    <foreign-key id="470" parent="319" name="fk_user_favorite_user_id">
+      <ColNames>user_id</ColNames>
+      <OnDelete>cascade</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <RefColNames>id</RefColNames>
+      <RefTableName>tb_user</RefTableName>
+    </foreign-key>
+    <foreign-key id="471" parent="319" name="fk_user_favorite_song_id">
+      <ColNames>song_id</ColNames>
+      <OnDelete>cascade</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <RefColNames>id</RefColNames>
+      <RefTableName>tb_song</RefTableName>
+    </foreign-key>
+    <foreign-key id="472" parent="319" name="fk_user_favorite_playlist_id">
+      <ColNames>playlist_id</ColNames>
+      <OnDelete>cascade</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <RefColNames>id</RefColNames>
+      <RefTableName>tb_playlist</RefTableName>
+    </foreign-key>
+    <index id="473" parent="319" name="PRIMARY">
+      <ColNames>id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="474" parent="319" name="fk_user_favorite_user_id">
+      <ColNames>user_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <index id="475" parent="319" name="fk_user_favorite_song_id">
+      <ColNames>song_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <index id="476" parent="319" name="fk_user_favorite_playlist_id">
+      <ColNames>playlist_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="477" parent="319" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="478" parent="320" name="id">
+      <AutoIncrement>11</AutoIncrement>
+      <Comment>用户会员ID</Comment>
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="479" parent="320" name="user_id">
+      <Comment>用户ID</Comment>
+      <DasType>bigint|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <column id="480" parent="320" name="plan_id">
+      <Comment>会员套餐ID</Comment>
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+    </column>
+    <column id="481" parent="320" name="start_date">
+      <Comment>会员开始日期</Comment>
+      <DasType>date|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+    </column>
+    <column id="482" parent="320" name="end_date">
+      <Comment>会员结束日期</Comment>
+      <DasType>date|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+    </column>
+    <column id="483" parent="320" name="status">
+      <Comment>状态(1-有效,0-过期)</Comment>
+      <DasType>tinyint|0s</DasType>
+      <DefaultExpression>1</DefaultExpression>
+      <Position>6</Position>
+    </column>
+    <column id="484" parent="320" name="created_at">
+      <Comment>创建时间</Comment>
+      <DasType>timestamp|0s</DasType>
+      <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
+      <Position>7</Position>
+    </column>
+    <column id="485" parent="320" name="updated_at">
+      <Comment>更新时间</Comment>
+      <DasType>timestamp|0s</DasType>
+      <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
+      <OnUpdate>CURRENT_TIMESTAMP</OnUpdate>
+      <Position>8</Position>
+    </column>
+    <foreign-key id="486" parent="320" name="tb_user_membership_ibfk_1">
+      <ColNames>user_id</ColNames>
+      <RefColNames>id</RefColNames>
+      <RefTableName>tb_user</RefTableName>
+    </foreign-key>
+    <foreign-key id="487" parent="320" name="tb_user_membership_ibfk_2">
+      <ColNames>plan_id</ColNames>
+      <RefColNames>id</RefColNames>
+      <RefTableName>tb_membership_plan</RefTableName>
+    </foreign-key>
+    <index id="488" parent="320" name="PRIMARY">
+      <ColNames>id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="489" parent="320" name="user_id">
+      <ColNames>user_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <index id="490" parent="320" name="plan_id">
+      <ColNames>plan_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="491" parent="320" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="492" parent="321" name="exp_class">
       <Comment>实验类别唯一编号</Comment>
       <DasType>varchar(100)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="312" parent="306" name="experiment_category">
+    <column id="493" parent="321" name="experiment_category">
       <Comment>实验类别名字</Comment>
       <DasType>varchar(255)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <index id="313" parent="306" name="PRIMARY">
+    <index id="494" parent="321" name="PRIMARY">
       <ColNames>exp_class</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="314" parent="306" name="experiment_category">
+    <index id="495" parent="321" name="experiment_category">
       <ColNames>experiment_category</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="315" parent="306" name="idx_name">
+    <index id="496" parent="321" name="idx_name">
       <ColNames>experiment_category</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="316" parent="306" name="PRIMARY">
+    <key id="497" parent="321" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <key id="317" parent="306" name="experiment_category">
+    <key id="498" parent="321" name="experiment_category">
       <UnderlyingIndexName>experiment_category</UnderlyingIndexName>
     </key>
-    <column id="318" parent="307" name="unique_ex_id">
+    <column id="499" parent="322" name="unique_ex_id">
       <Comment>实验唯一编号</Comment>
       <DasType>varchar(100)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="319" parent="307" name="exp_class">
+    <column id="500" parent="322" name="exp_class">
       <Comment>实验类别</Comment>
       <DasType>varchar(100)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <column id="320" parent="307" name="experiment">
+    <column id="501" parent="322" name="experiment">
       <Comment>样本所属实验</Comment>
       <DasType>varchar(255)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
-    <index id="321" parent="307" name="PRIMARY">
+    <index id="502" parent="322" name="PRIMARY">
       <ColNames>unique_ex_id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="322" parent="307" name="PRIMARY">
+    <key id="503" parent="322" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="323" parent="308" name="unique_id">
+    <column id="504" parent="323" name="unique_id">
+      <Comment>sample的 unique_id + gene_id</Comment>
       <DasType>varchar(100)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="324" parent="308" name="sample_id">
+    <column id="505" parent="323" name="sample_real_id">
       <DasType>varchar(255)|0s</DasType>
+      <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <column id="325" parent="308" name="gene_id">
-      <DasType>varchar(10)|0s</DasType>
+    <column id="506" parent="323" name="sample_id">
+      <DasType>varchar(255)|0s</DasType>
       <Position>3</Position>
     </column>
-    <column id="326" parent="308" name="counts">
+    <column id="507" parent="323" name="gene_id">
+      <DasType>varchar(10)|0s</DasType>
+      <Position>4</Position>
+    </column>
+    <column id="508" parent="323" name="counts">
       <DasType>int|0s</DasType>
-      <Position>4</Position>
-    </column>
-    <column id="327" parent="308" name="sample_real_id">
-      <DasType>varchar(255)|0s</DasType>
-      <NotNull>1</NotNull>
       <Position>5</Position>
     </column>
-    <index id="328" parent="308" name="PRIMARY">
+    <index id="509" parent="323" name="PRIMARY">
       <ColNames>unique_id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="329" parent="308" name="idx_sample_id">
+    <index id="510" parent="323" name="idx_sample_real_id">
+      <ColNames>sample_real_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <index id="511" parent="323" name="idx_sample_id">
       <ColNames>sample_id</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="330" parent="308" name="PRIMARY">
+    <key id="512" parent="323" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="331" parent="309" name="unique_id">
+    <column id="513" parent="324" name="unique_id">
+      <Comment>sample的 unique_id + gene_id</Comment>
       <DasType>varchar(100)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="332" parent="309" name="sample_id">
+    <column id="514" parent="324" name="sample_real_id">
       <DasType>varchar(255)|0s</DasType>
+      <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <column id="333" parent="309" name="gene_id">
+    <column id="515" parent="324" name="sample_id">
+      <DasType>varchar(255)|0s</DasType>
+      <Position>3</Position>
+    </column>
+    <column id="516" parent="324" name="gene_id">
       <DasType>varchar(10)|0s</DasType>
-      <Position>3</Position>
-    </column>
-    <column id="334" parent="309" name="tpm">
-      <DasType>float|0s</DasType>
       <Position>4</Position>
     </column>
-    <column id="335" parent="309" name="sample_real_id">
-      <DasType>varchar(255)|0s</DasType>
+    <column id="517" parent="324" name="tpm">
+      <DasType>float|0s</DasType>
       <Position>5</Position>
     </column>
-    <index id="336" parent="309" name="PRIMARY">
+    <index id="518" parent="324" name="PRIMARY">
       <ColNames>unique_id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="337" parent="309" name="idx_sample_id">
+    <index id="519" parent="324" name="idx_sample_real_id">
+      <ColNames>sample_real_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <index id="520" parent="324" name="idx_sample_id">
       <ColNames>sample_id</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="338" parent="309" name="PRIMARY">
+    <key id="521" parent="324" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="339" parent="310" name="unique_id">
+    <column id="522" parent="325" name="unique_id">
       <DasType>varchar(100)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="340" parent="310" name="unique_ex_id">
+    <column id="523" parent="325" name="unique_ex_id">
       <DasType>varchar(100)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <column id="341" parent="310" name="filename">
+    <column id="524" parent="325" name="filename">
       <DasType>varchar(255)|0s</DasType>
       <Position>3</Position>
     </column>
-    <column id="342" parent="310" name="sample_id">
+    <column id="525" parent="325" name="sample_id">
       <DasType>varchar(255)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>4</Position>
     </column>
-    <column id="343" parent="310" name="sample">
+    <column id="526" parent="325" name="sample">
       <DasType>varchar(255)|0s</DasType>
       <Position>5</Position>
     </column>
-    <column id="344" parent="310" name="collection_time">
+    <column id="527" parent="325" name="collection_time">
       <DasType>date|0s</DasType>
       <NotNull>1</NotNull>
       <Position>6</Position>
     </column>
-    <column id="345" parent="310" name="sample_age">
+    <column id="528" parent="325" name="sample_age">
       <DasType>tinyint|0s</DasType>
       <Position>7</Position>
     </column>
-    <column id="346" parent="310" name="collection_part">
+    <column id="529" parent="325" name="collection_part">
       <DasType>varchar(100)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>8</Position>
     </column>
-    <column id="347" parent="310" name="sample_detail">
+    <column id="530" parent="325" name="sample_detail">
       <DasType>text|0s</DasType>
       <Position>9</Position>
     </column>
-    <column id="348" parent="310" name="deposit_database">
+    <column id="531" parent="325" name="deposit_database">
       <DasType>varchar(100)|0s</DasType>
       <Position>10</Position>
     </column>
-    <column id="349" parent="310" name="accession">
+    <column id="532" parent="325" name="accession">
       <DasType>varchar(100)|0s</DasType>
       <Position>11</Position>
     </column>
-    <column id="350" parent="310" name="origin">
+    <column id="533" parent="325" name="origin">
       <DasType>varchar(100)|0s</DasType>
       <Position>12</Position>
     </column>
-    <column id="351" parent="310" name="created_at">
+    <column id="534" parent="325" name="created_at">
       <DasType>datetime|0s</DasType>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <Position>13</Position>
     </column>
-    <column id="352" parent="310" name="updated_at">
+    <column id="535" parent="325" name="updated_at">
       <DasType>datetime|0s</DasType>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <OnUpdate>CURRENT_TIMESTAMP</OnUpdate>
       <Position>14</Position>
     </column>
-    <index id="353" parent="310" name="PRIMARY">
+    <index id="536" parent="325" name="PRIMARY">
       <ColNames>unique_id
 collection_time</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="354" parent="310" name="idx_exp_time">
+    <index id="537" parent="325" name="idx_exp_time">
       <ColNames>unique_ex_id
 collection_time</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="355" parent="310" name="idx_ex">
+    <index id="538" parent="325" name="idx_ex">
       <ColNames>unique_ex_id</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="356" parent="310" name="idx_sample_time">
+    <index id="539" parent="325" name="idx_sample_time">
       <ColNames>sample_id
 collection_time</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="357" parent="310" name="idx_sample_id">
+    <index id="540" parent="325" name="idx_sample_id">
       <ColNames>sample_id</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="358" parent="310" name="idx_time_part">
+    <index id="541" parent="325" name="idx_time_part">
       <ColNames>collection_time
 collection_part</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="359" parent="310" name="PRIMARY">
+    <index id="542" parent="325" name="idx_age_time_part">
+      <ColNames>sample_age
+collection_time
+collection_part</ColNames>
+      <Type>btree</Type>
+    </index>
+    <index id="543" parent="325" name="idx_age_time">
+      <ColNames>sample_age
+collection_time</ColNames>
+      <Type>btree</Type>
+    </index>
+    <index id="544" parent="325" name="idx_age">
+      <ColNames>sample_age</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="545" parent="325" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <partition id="360" parent="310" name="p2020">
+    <partition id="546" parent="325" name="p2020">
       <Position>1</Position>
       <Value>2021</Value>
     </partition>
-    <partition id="361" parent="310" name="p2021">
+    <partition id="547" parent="325" name="p2021">
       <Position>2</Position>
       <Value>2022</Value>
     </partition>
-    <partition id="362" parent="310" name="p2022">
+    <partition id="548" parent="325" name="p2022">
       <Position>3</Position>
       <Value>2023</Value>
     </partition>
-    <partition id="363" parent="310" name="p2023">
+    <partition id="549" parent="325" name="p2023">
       <Position>4</Position>
       <Value>2024</Value>
     </partition>
-    <partition id="364" parent="310" name="p2024">
+    <partition id="550" parent="325" name="p2024">
       <Position>5</Position>
       <Value>2025</Value>
     </partition>
-    <partition id="365" parent="310" name="pmax">
+    <partition id="551" parent="325" name="pmax">
       <Position>6</Position>
       <Value>MAXVALUE</Value>
     </partition>
+    <column id="552" parent="326" name="id">
+      <AutoIncrement>1</AutoIncrement>
+      <Comment>用户 id</Comment>
+      <DasType>bigint|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="553" parent="326" name="username">
+      <Comment>用户名</Comment>
+      <DasType>varchar(20)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <column id="554" parent="326" name="password">
+      <Comment>用户密码</Comment>
+      <DasType>varchar(64)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+    </column>
+    <column id="555" parent="326" name="phone">
+      <Comment>用户手机号</Comment>
+      <DasType>varchar(11)|0s</DasType>
+      <Position>4</Position>
+    </column>
+    <column id="556" parent="326" name="email">
+      <Comment>用户邮箱</Comment>
+      <DasType>varchar(128)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+    </column>
+    <column id="557" parent="326" name="user_avatar">
+      <Comment>用户头像</Comment>
+      <DasType>varchar(255)|0s</DasType>
+      <Position>6</Position>
+    </column>
+    <column id="558" parent="326" name="introduction">
+      <Comment>用户简介</Comment>
+      <DasType>varchar(255)|0s</DasType>
+      <Position>7</Position>
+    </column>
+    <column id="559" parent="326" name="create_time">
+      <Comment>用户创建时间</Comment>
+      <DasType>datetime|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>8</Position>
+    </column>
+    <column id="560" parent="326" name="update_time">
+      <Comment>用户修改时间</Comment>
+      <DasType>datetime|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>9</Position>
+    </column>
+    <column id="561" parent="326" name="status">
+      <Comment>用户状态：0-启用，1-禁用</Comment>
+      <DasType>tinyint|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>10</Position>
+    </column>
+    <index id="562" parent="326" name="PRIMARY">
+      <ColNames>id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="563" parent="326" name="username">
+      <ColNames>username</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="564" parent="326" name="phone">
+      <ColNames>phone</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="565" parent="326" name="email">
+      <ColNames>email</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <key id="566" parent="326" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <key id="567" parent="326" name="username">
+      <UnderlyingIndexName>username</UnderlyingIndexName>
+    </key>
+    <key id="568" parent="326" name="phone">
+      <UnderlyingIndexName>phone</UnderlyingIndexName>
+    </key>
+    <key id="569" parent="326" name="email">
+      <UnderlyingIndexName>email</UnderlyingIndexName>
+    </key>
   </database-model>
 </dataSource>
