@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request, Body, HTTPException
+from fastapi import APIRouter, Request, Body
 import logging
 from typing import Annotated, Any
 from pydantic import BaseModel, Field
@@ -38,7 +38,8 @@ async def _fetch_gene_data(dfilt: DataFilter, kind: InputData) -> pd.DataFrame:
         logger.info(f"Fetched TPM data from database with shape {data.shape}")
     else:
         data = await db.get_gene_counts(unique_id=uids, gene_id=genes, gene_id_is_all=dfilt.all_gene)
-        logger.info(f"Fetched Counts data from database with shape {data.shape}")
+        logger.info(
+            f"Fetched Counts data from database with shape {data.shape}")
     return dataframe_long2wide(data)
 
 
@@ -57,13 +58,14 @@ async def run_analysis(request: Request, payload: Annotated[AnalysisRequest, Bod
         # 参数校验为插件声明的 Pydantic 模型
         params = cls.Params.model_validate(payload.params)
         # 执行
-        logger.info(f"Running analysis: {cls.title} with params {cls.Params.model_dump(params)}")
+        logger.info(
+            f"Running analysis: {cls.title} with params {cls.Params.model_dump(params)}")
         rproc = request.app.state.r_processor
         plugin = cls(df=gene_df, params=params, rproc=rproc)
         result = await plugin.run()
         return Result.ok(data=result, msg="OK")
     except KeyError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+        return Result.error(message=str(e))
     except Exception as e:
-        logger.exception("Analysis failed")
+        logger.warning(f"Running analysis: {cls.title} failed")
         return Result.fail(msg=str(e))

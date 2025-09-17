@@ -3,6 +3,7 @@ import logging
 from contextlib import asynccontextmanager
 import warnings
 from tortoise.contrib.fastapi import register_tortoise
+import os
 
 from backend.db.config.redis_conf import build_redis_pool
 from backend.db.config.tortoise_conf import TORTOISE_ORM
@@ -19,11 +20,14 @@ warnings.filterwarnings("ignore", category=UserWarning)
 # Initialize the global logger
 init_global_logger(config.log_dir)
 
+# Determine the number of R cores to start
+R_CORE = os.cpu_count() if int(config.start_r_core) == 0 else int(config.start_r_core)
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
 
-    app.state.r_processor = RProcessorPoolMP(pool_maxsize=8)
+    app.state.r_processor = RProcessorPoolMP(pool_maxsize=R_CORE)
     logger.info("RProcessor initialized")
     app.state.redis = build_redis_pool()
     logger.info("Redis connection pool initialized")

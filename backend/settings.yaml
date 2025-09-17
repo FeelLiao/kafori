@@ -1,8 +1,20 @@
-upload_rawdata_dir: upload/
-ref_genome: /data/genome/hg38/hg38.fa
-ref_annotation: /data/genome/hg38/hg38.gtf
-upstream_cores: 8
+# ---------- General Settings ----------
 log_dir: backend/kafori_running.log
+start_r_core: 2
+
+# ---------- Upstream Settings ----------
+upstream:
+  upload_rawdata_dir: upload/
+  upstream_cores: 8
+  ref_genome: tests/upstream/ref/Saccharomyces_cerevisiae.fa
+  ref_annotation: tests/upstream/ref/Saccharomyces_cerevisiae.gtf
+
+# ---------- Download Page File ----------
+download:
+  genome: tests/upstream/ref/Saccharomyces_cerevisiae.fa
+  annotation: tests/upstream/ref/Saccharomyces_cerevisiae.gtf
+  sample_sheet: tests/upstream/test.xlsx
+  
 
 # ---------- Redis ----------
 redis:

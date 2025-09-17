@@ -18,10 +18,10 @@ from backend.api.config import config
 
 file_router = APIRouter()
 logger = logging.getLogger(__name__)
-UPLOAD_RAWDATA_PATH = Path(config.upload_rawdata_dir)
-REF_GENOME = Path(config.ref_genome)
-REF_ANNOTATION = Path(config.ref_annotation)
-UPSTREAM_CORES = int(config.upstream_cores)
+UPLOAD_RAWDATA_PATH = Path(config.upstream.upload_rawdata_dir)
+REF_GENOME = Path(config.upstream.ref_genome)
+REF_ANNOTATION = Path(config.upstream.ref_annotation)
+UPSTREAM_CORES = int(config.upstream.upstream_cores)
 Redis_expires = 600  # seconds
 EXECUTOR = ThreadPoolExecutor(max_workers=2)
 
