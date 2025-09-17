@@ -35,14 +35,16 @@ class GenomeDownload(BaseDownload):
         elif isinstance(dl, dict):
             dl_dict = dl
         else:
-            logger.warning("Download value in configuration is not valid, setting to empty dict.")
+            logger.warning(
+                "Download value in configuration is not valid, setting to empty dict.")
             return {}
 
         items = {}
         for name, rel in dl_dict.items():
             p = Path(rel)
             p = (REPO_ROOT / p).resolve() if not p.is_absolute() else p.resolve()
-            media = mimetypes.guess_type(str(p))[0] or "application/octet-stream"
+            media = mimetypes.guess_type(
+                str(p))[0] or "application/octet-stream"
             items[name] = {
                 "filename": p.name,
                 "media_type": media,
@@ -60,7 +62,8 @@ class GenomeDownload(BaseDownload):
         }
 
     def response(self, filename: str) -> FileResponse:
-        raw = getattr(self.__class__, "download_dict", None) or (self.config_phase() or {})
+        raw = getattr(self.__class__, "download_dict",
+                      None) or (self.config_phase() or {})
         if not getattr(self.__class__, "download_dict", None):
             self.__class__.download_dict = raw
 
@@ -70,5 +73,6 @@ class GenomeDownload(BaseDownload):
                 if not p.is_file():
                     raise FileNotFoundError(f"File not found: {p}")
                 media = meta.get("media_type")
+                logger.info(f"Serving file: {filename}, media_type: {media} have been downloaded.")
                 return FileResponse(path=str(p), filename=filename, media_type=media)
         raise FileNotFoundError(f"Unknown filename: {filename}")
