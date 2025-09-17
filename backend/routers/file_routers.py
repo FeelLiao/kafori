@@ -8,16 +8,15 @@ import aiofiles
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
 import pandas as pd
+import os
+import shutil
+from fastapi import Form
 
 from backend.api.files import UploadFileProcessor, FileType, GeneDataType, PutDataBaseWrapper, UpstreamAnalysisWrapper
 from backend.routers.validation import get_current_active_user, User
 from backend.db.result.Result import Result
 from backend.db.interface import PutDataBaseInterface
 from backend.api.config import config
-
-import os, hashlib, shutil
-import aiofiles
-from fastapi import Form
 
 
 file_router = APIRouter()
@@ -164,12 +163,25 @@ async def process_db_upload(user: str, request: Request) -> Tuple[bool, str]:
         return False, str(e)
 
 
-async def upload_file_saving(file: UploadFile, save_path: Path) -> None:
-    save_path = Path(save_path, file.filename)
+def _copy_file_like_to_path(src_file, dest_path: Path, bufsize: int = 8 * 1024 * 1024) -> int:
+    """
+    使用 C 层的 shutil.copyfileobj 拷贝，显著减少 Python 层循环开销。
+    返回写入大小（字节）。
+    """
+    dest_path = Path(dest_path)
+    dest_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(dest_path, "wb", buffering=0) as dst:
+        shutil.copyfileobj(src_file, dst, length=bufsize)
+    return os.path.getsize(dest_path)
 
-    async with aiofiles.open(save_path,  "wb") as f:
-        while chunk := await file.read(8192):
-            await f.write(chunk)
+
+async def upload_file_saving(file: UploadFile, save_dir: Path) -> int:
+    save_dir = Path(save_dir)
+    dest_path = save_dir / file.filename
+    # 直接从 spooled 临时文件复制到目标，放到线程中执行，避免阻塞事件循环
+    size = await asyncio.to_thread(_copy_file_like_to_path, file.file, dest_path)
+    await file.close()
+    return size
 
 
 def _run_upstream_job(user: str,
@@ -338,11 +350,27 @@ async def upload_gene_ex_counts(request: Request,
 # 上传rawdata，将上传的数据存储在本地 upload_rawdata_dir/<user>/file.fastq,
 # 上传完成后利用样本信息表对rawdata的文件进行md5校验，然后返回检验结果给前端
 @file_router.post("/pipeline/rawdata_upload/")
-async def upload_rawdata(current_user: Annotated[User, Depends(get_current_active_user)],
-                         files: list[UploadFile] = File(
-    description="Multiple rawdata files Upload"),
+async def upload_rawdata(
+    files: list[UploadFile] = File(
+        description="Multiple rawdata files Upload"),
 ):
-    pass
+
+    user = "admin"
+    save_dir = Path(UPLOAD_RAWDATA_PATH, user)
+    save_dir.mkdir(parents=True, exist_ok=True)
+
+    # 并发保存（如需限制并发，可用 Semaphore 包裹）
+    tasks = [upload_file_saving(f, save_dir) for f in files if f.filename]
+    sizes = await asyncio.gather(*tasks, return_exceptions=True)
+
+    results = []
+    for f, s in zip(files, sizes):
+        if isinstance(s, Exception):
+            logger.error("Save failed for %s: %s", f.filename, s)
+            results.append({"filename": f.filename, "error": str(s)})
+        else:
+            results.append({"filename": f.filename, "size": s})
+    return Result.ok(data=results, msg="Files uploaded.")
 
 
 # 对rawdata进行转录组上游分析，发送信号过后返回是否成功启动了上游分析流程
@@ -403,11 +431,6 @@ async def put_database(request: Request,
         return Result.fail(msg=rel[1])
 
 
-
-
-
-
-
 @file_router.post("/upload_chunk/")
 async def upload_chunk(
         request: Request,
@@ -435,6 +458,8 @@ async def upload_chunk(
     return {"code": 0, "msg": "分片上传成功"}
 
 # filepath: /home/zhoujunjie/kafori/backend/routers/file_routers.py
+
+
 async def merge_chunks_parallel_async(user, total_chunks, final_path):
     chunk_dir = f"{UPLOAD_RAWDATA_PATH}/{user}"
     async with aiofiles.open(final_path, "wb") as f:
@@ -446,4 +471,3 @@ async def merge_chunks_parallel_async(user, total_chunks, final_path):
                     if not data:
                         break
                     await f.write(data)
-
