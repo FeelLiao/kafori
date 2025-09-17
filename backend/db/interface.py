@@ -182,7 +182,7 @@ class GetDataBaseInterface:
                 result.append(data)
 
         # 返回排序过的结果
-        return Utils.quick_sort(result)
+        return Utils.quick_sort(result)[:10]
 
 
 class PutDataBaseInterface:

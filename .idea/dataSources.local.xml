@@ -13,8 +13,8 @@
         <introspection-scope>
           <node kind="schema">
             <name qname="@" />
-            <name qname="fmusic" />
             <name qname="kafori" />
+            <name qname="fmusic" />
           </node>
         </introspection-scope>
       </schema-mapping>

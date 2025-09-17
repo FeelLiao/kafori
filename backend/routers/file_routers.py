@@ -15,6 +15,10 @@ from backend.db.result.Result import Result
 from backend.db.interface import PutDataBaseInterface
 from backend.api.config import config
 
+import os, hashlib, shutil
+import aiofiles
+from fastapi import Form
+
 
 file_router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -397,3 +401,49 @@ async def put_database(request: Request,
         return Result.ok(msg=rel[1])
     else:
         return Result.fail(msg=rel[1])
+
+
+
+
+
+
+
+@file_router.post("/upload_chunk/")
+async def upload_chunk(
+        request: Request,
+        file: UploadFile,
+        index: int = Form(...),
+        total_chunks: int = Form(...)
+):
+    user = "admin"
+    redis = request.app.state.redis
+
+    os.makedirs(f"{UPLOAD_RAWDATA_PATH}/{user}", exist_ok=True)
+    chunk_path = f"{UPLOAD_RAWDATA_PATH}/{user}/{index}"
+    content = await file.read()
+    async with aiofiles.open(chunk_path, "wb") as f:
+        await f.write(content)
+    # 只在最后一个分片时统计
+    await redis.sadd(f"upload:{user}", index)
+    uploaded = await redis.scard(f"upload:{user}")
+    if uploaded == total_chunks:
+        final_path = f"{UPLOAD_RAWDATA_PATH}/{user}.final"
+        await merge_chunks_parallel_async(user, total_chunks, final_path)
+        shutil.rmtree(f"{UPLOAD_RAWDATA_PATH}/{user}")
+        await redis.delete(f"upload:{user}")
+        return {"code": 0, "msg": "上传成功，文件已合并"}
+    return {"code": 0, "msg": "分片上传成功"}
+
+# filepath: /home/zhoujunjie/kafori/backend/routers/file_routers.py
+async def merge_chunks_parallel_async(user, total_chunks, final_path):
+    chunk_dir = f"{UPLOAD_RAWDATA_PATH}/{user}"
+    async with aiofiles.open(final_path, "wb") as f:
+        for i in range(total_chunks):
+            chunk_path = os.path.join(chunk_dir, str(i))
+            async with aiofiles.open(chunk_path, "rb") as chunk_f:
+                while True:
+                    data = await chunk_f.read(8 * 1024 * 1024)
+                    if not data:
+                        break
+                    await f.write(data)
+

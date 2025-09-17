@@ -134,8 +134,8 @@ class SampleRepositoryImpl(SampleRepository):
 
         # 部位
         if collection_part is not None:
-            conditions.append("collection_part = %s")
-            params.append(collection_part)
+            conditions.append("collection_part LIKE %s")
+            params.append(f"%{collection_part}%")
 
         where_clause = " AND ".join(conditions) if conditions else "1=1"
 
