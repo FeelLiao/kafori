@@ -1,5 +1,9 @@
-from fastapi import APIRouter, UploadFile, File, Depends, Request
-from typing import Tuple
+from __future__ import annotations
+import errno
+from fastapi import (APIRouter,
+                     UploadFile, File, Depends, Request,
+                     Header)
+from typing import Tuple, Optional
 import logging
 from io import BytesIO
 from typing import Annotated
@@ -7,10 +11,14 @@ from pathlib import Path
 import aiofiles
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
+from fastapi.responses import JSONResponse
 import pandas as pd
+import contextlib
 import os
-import shutil
-from fastapi import Form
+try:
+    from starlette.requests import ClientDisconnect
+except Exception:
+    from starlette.exceptions import ClientDisconnect
 
 from backend.api.files import UploadFileProcessor, FileType, GeneDataType, PutDataBaseWrapper, UpstreamAnalysisWrapper
 from backend.routers.validation import get_current_active_user, User
@@ -21,12 +29,21 @@ from backend.api.config import config
 
 file_router = APIRouter()
 logger = logging.getLogger(__name__)
-UPLOAD_RAWDATA_PATH = Path(config.upstream.upload_rawdata_dir)
+
+# upstream settings
 REF_GENOME = Path(config.upstream.ref_genome)
 REF_ANNOTATION = Path(config.upstream.ref_annotation)
 UPSTREAM_CORES = int(config.upstream.upstream_cores)
-Redis_expires = 600  # seconds
 EXECUTOR = ThreadPoolExecutor(max_workers=2)
+
+# redis settings
+Redis_expires = 600  # seconds
+
+# rawdata upload path
+UPLOAD_RAWDATA_PATH = Path(config.upstream.upload_rawdata_dir).resolve()
+UPLOAD_RAWDATA_PATH.mkdir(parents=True, exist_ok=True)
+# 可选：设置一个最大体积（字节），超过则拒绝
+MAX_BYTES: Optional[int] = None  # 例如 10 * 1024**3  # 10 GiB
 
 
 async def sample_sheet_validation(file: BytesIO, user: str, name: str, request: Request) -> Tuple[bool, str]:
@@ -163,27 +180,6 @@ async def process_db_upload(user: str, request: Request) -> Tuple[bool, str]:
         return False, str(e)
 
 
-def _copy_file_like_to_path(src_file, dest_path: Path, bufsize: int = 8 * 1024 * 1024) -> int:
-    """
-    使用 C 层的 shutil.copyfileobj 拷贝，显著减少 Python 层循环开销。
-    返回写入大小（字节）。
-    """
-    dest_path = Path(dest_path)
-    dest_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(dest_path, "wb", buffering=0) as dst:
-        shutil.copyfileobj(src_file, dst, length=bufsize)
-    return os.path.getsize(dest_path)
-
-
-async def upload_file_saving(file: UploadFile, save_dir: Path) -> int:
-    save_dir = Path(save_dir)
-    dest_path = save_dir / file.filename
-    # 直接从 spooled 临时文件复制到目标，放到线程中执行，避免阻塞事件循环
-    size = await asyncio.to_thread(_copy_file_like_to_path, file.file, dest_path)
-    await file.close()
-    return size
-
-
 def _run_upstream_job(user: str,
                       analysis: UpstreamAnalysisWrapper,
                       cores: int,
@@ -295,6 +291,79 @@ async def run_upstream(user: str, request: Request) -> Tuple[bool, str]:
         return False, str(e)
 
 
+def safe_target_path(UPLOAD_DIR: Path, filename: str) -> Path:
+    filename = Path(filename).name.strip().replace("\x00", "")
+    target = (UPLOAD_DIR / filename).resolve()
+    # 防止路径穿越
+    # Python 3.9+ 可用 is_relative_to
+    if not target.is_relative_to(UPLOAD_DIR):
+        raise Exception(f"Invalid filename/path: {filename}")
+    return target
+
+
+async def upload_files(target: Path, request: Request, content_length: Optional[int] = None) -> Tuple[str, int]:
+    tmp = target.with_suffix(target.suffix + ".part")
+    tmp.parent.mkdir(parents=True, exist_ok=True)
+
+    total = 0
+
+    try:
+        async with aiofiles.open(tmp, "wb") as f:
+            logger.info(f"Start uploading to temporary file: {tmp}")
+            async for chunk in request.stream():
+                if not chunk:
+                    continue
+                total += len(chunk)
+                if MAX_BYTES is not None and total > MAX_BYTES:
+                    raise Exception(f"file is too large: {target.name}")
+                await f.write(chunk)
+
+        logger.info(f"Finished uploading to temporary file: {tmp}")
+
+        if content_length is not None and total != int(content_length):
+            with contextlib.suppress(Exception):
+                tmp.unlink()
+            raise Exception(
+                f"Content-Length mismatch: got={total}, expected={content_length}")
+        # 原子落盘：优先硬链接，不覆盖已存在；必要时回退 replace（同分区原子）
+        try:
+            os.link(tmp, target)  # 若目标已存在会抛 FileExistsError
+        except FileExistsError:
+            with contextlib.suppress(Exception):
+                tmp.unlink()
+            raise Exception(f"Target file already exists: {target.name}")
+        except OSError as e:
+            # 跨分区/权限不足等，回退到 replace，仍不覆盖既有文件
+            if e.errno in (errno.EXDEV, errno.EPERM, errno.EACCES):
+                if target.exists():
+                    with contextlib.suppress(Exception):
+                        tmp.unlink()
+                    raise Exception(
+                        f"Target file already exists: {target.name}")
+                tmp.replace(target)  # pathlib 原子替换
+            else:
+                with contextlib.suppress(Exception):
+                    tmp.unlink()
+                raise
+        finally:
+            with contextlib.suppress(Exception):
+                if tmp.exists():
+                    tmp.unlink()
+        logger.info(f"File saved successfully: {target.name}")
+        return target.name, total
+    except ClientDisconnect:
+        with contextlib.suppress(Exception):
+            if tmp.exists():
+                tmp.unlink()
+        raise
+    except Exception:
+        # 发生异常时尽量清理残留
+        with contextlib.suppress(Exception):
+            if tmp.exists():
+                tmp.unlink()
+        raise
+
+
 @file_router.post("/pipeline/sample_sheet/")
 async def upload_sample_sheet(request: Request,
                               current_user: Annotated[User, Depends(get_current_active_user)],
@@ -346,31 +415,49 @@ async def upload_gene_ex_counts(request: Request,
     else:
         return Result.fail(msg=rel[1])
 
-
 # 上传rawdata，将上传的数据存储在本地 upload_rawdata_dir/<user>/file.fastq,
 # 上传完成后利用样本信息表对rawdata的文件进行md5校验，然后返回检验结果给前端
-@file_router.post("/pipeline/rawdata_upload/")
-async def upload_rawdata(
-    files: list[UploadFile] = File(
-        description="Multiple rawdata files Upload"),
+@file_router.put("/pipeline/rawdata_upload")
+async def rawdata_upload(
+    request: Request,
+    # 元数据可从查询参数传递
+    filename: str,
+    # 可选：让客户端传 content length 与哈希方便校验
+    content_length: Optional[int] = Header(
+        default=None, alias="Content-Length"),
+    current_user: Annotated[User, Depends(get_current_active_user)] | None = None
 ):
+    """
+    原始流上传：客户端以 application/octet-stream 直传请求体。
+    例：curl -T bigfile.bin "http://localhost:8000/upload?filename=bigfile.bin" -H 
+    "Content-Type: application/octet-stream"
+    """
+    if request.headers.get("Content-Type", "").split(";")[0].strip().lower() != "application/octet-stream":
+        logger.warning(
+            "Invalid Content-Type, Content-Type must be application/octet-stream")
+        return Result.fail(
+            msg="Content-Type must be application/octet-stream")
 
-    user = "admin"
-    save_dir = Path(UPLOAD_RAWDATA_PATH, user)
-    save_dir.mkdir(parents=True, exist_ok=True)
+    user = (current_user.username if current_user else "admin")
+    rawdata_path = Path(UPLOAD_RAWDATA_PATH, user, "rawdata").resolve()
+    rawdata_path.mkdir(parents=True, exist_ok=True)
+    try:
+        target = safe_target_path(rawdata_path, filename)
 
-    # 并发保存（如需限制并发，可用 Semaphore 包裹）
-    tasks = [upload_file_saving(f, save_dir) for f in files if f.filename]
-    sizes = await asyncio.gather(*tasks, return_exceptions=True)
+        if target.exists():
+            logger.warning("Target file already exists: %s", target.name)
+            return Result.fail(
+                msg=f"Target file already exists: {target.name}")
 
-    results = []
-    for f, s in zip(files, sizes):
-        if isinstance(s, Exception):
-            logger.error("Save failed for %s: %s", f.filename, s)
-            results.append({"filename": f.filename, "error": str(s)})
-        else:
-            results.append({"filename": f.filename, "size": s})
-    return Result.ok(data=results, msg="Files uploaded.")
+        res = await upload_files(target, request, content_length=content_length)
+        logger.info(f"File uploaded successfully: {res[0]}")
+        return Result.ok(msg="File uploaded successfully", data={"filename": res[0], "size": res[1]})
+    except ClientDisconnect:
+        logger.warning("Client disconnected during upload")
+        return JSONResponse(status_code=499, content={"detail": "Client Closed Request"})
+    except Exception as e:
+        logger.warning(str(e))
+        return Result.fail(msg=str(e))
 
 
 # 对rawdata进行转录组上游分析，发送信号过后返回是否成功启动了上游分析流程
@@ -429,45 +516,3 @@ async def put_database(request: Request,
         return Result.ok(msg=rel[1])
     else:
         return Result.fail(msg=rel[1])
-
-
-@file_router.post("/upload_chunk/")
-async def upload_chunk(
-        request: Request,
-        file: UploadFile,
-        index: int = Form(...),
-        total_chunks: int = Form(...)
-):
-    user = "admin"
-    redis = request.app.state.redis
-
-    os.makedirs(f"{UPLOAD_RAWDATA_PATH}/{user}", exist_ok=True)
-    chunk_path = f"{UPLOAD_RAWDATA_PATH}/{user}/{index}"
-    content = await file.read()
-    async with aiofiles.open(chunk_path, "wb") as f:
-        await f.write(content)
-    # 只在最后一个分片时统计
-    await redis.sadd(f"upload:{user}", index)
-    uploaded = await redis.scard(f"upload:{user}")
-    if uploaded == total_chunks:
-        final_path = f"{UPLOAD_RAWDATA_PATH}/{user}.final"
-        await merge_chunks_parallel_async(user, total_chunks, final_path)
-        shutil.rmtree(f"{UPLOAD_RAWDATA_PATH}/{user}")
-        await redis.delete(f"upload:{user}")
-        return {"code": 0, "msg": "上传成功，文件已合并"}
-    return {"code": 0, "msg": "分片上传成功"}
-
-# filepath: /home/zhoujunjie/kafori/backend/routers/file_routers.py
-
-
-async def merge_chunks_parallel_async(user, total_chunks, final_path):
-    chunk_dir = f"{UPLOAD_RAWDATA_PATH}/{user}"
-    async with aiofiles.open(final_path, "wb") as f:
-        for i in range(total_chunks):
-            chunk_path = os.path.join(chunk_dir, str(i))
-            async with aiofiles.open(chunk_path, "rb") as chunk_f:
-                while True:
-                    data = await chunk_f.read(8 * 1024 * 1024)
-                    if not data:
-                        break
-                    await f.write(data)
