@@ -10,7 +10,7 @@ download_router = APIRouter()
 logger = logging.getLogger(__name__)
 
 
-@download_router.get("/download/catalog/")
+@download_router.get("/download/catalog")
 async def download_catalog():
     try:
         res = get_catalog()
@@ -20,7 +20,7 @@ async def download_catalog():
         return Result.error(message=str(e))
 
 
-@download_router.post("/download/{classes}/{filename}/")
+@download_router.post("/download/{classes}/{filename}")
 async def download_file(classes: str, filename: str) -> Response:
     try:
         cls = handle_download(classes)
