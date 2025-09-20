@@ -11,10 +11,10 @@ upstream:
 
 # ---------- Download Page File ----------
 download:
-  genome: tests/upstream/ref/Saccharomyces_cerevisiae.fa
-  annotation: tests/upstream/ref/Saccharomyces_cerevisiae.gtf
-  sample_sheet: tests/upstream/test.xlsx
-  
+  Genome: tests/upstream/ref/Saccharomyces_cerevisiae.fa
+  Annotation: tests/upstream/ref/Saccharomyces_cerevisiae.gtf
+  SampleSheet: tests/upstream/test.xlsx
+
 
 # ---------- Redis ----------
 redis:

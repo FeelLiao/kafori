@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 REPO_ROOT = Path(__file__).resolve().parents[3]
 
 
-@register_download("genomic_data")
+@register_download("Genomic Data")
 class GenomeDownload(BaseDownload):
     """
     Download genomic data implementation class.
