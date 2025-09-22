@@ -12,12 +12,14 @@ NORM_MTH <- if (exists("normalize_method")) as.character(normalize_method)[1] el
 
 # 主函数：对 expression_counts 的所有组做两两对比
 deg_all_contrasts <- function(expression_counts, normalize_method = "TMM") {
-  stopifnot("gene_id" %in% colnames(expression_counts))
-  df <- as.data.frame(expression_counts, stringsAsFactors = FALSE)
+  
+  df <- expression_tpm |>
+  remove_rownames() |>
+  mutate(across(-gene_id, ~ suppressWarnings(as.numeric(.x)))) |>
+  column_to_rownames("gene_id")
 
   # 数值化 counts
   num_cols <- setdiff(colnames(df), "gene_id")
-  for (nm in num_cols) df[[nm]] <- suppressWarnings(as.numeric(df[[nm]]))
 
   # 构造分组（列名中 '-' 前缀为组名；无 '-' 则用完整列名）
   samples <- num_cols
@@ -30,7 +32,7 @@ deg_all_contrasts <- function(expression_counts, normalize_method = "TMM") {
 
   # DGEList
   y <- DGEList(
-    counts = df |> column_to_rownames("gene_id") |> as.matrix(),
+    counts = as.matrix(df),
     group = groups
   )
 

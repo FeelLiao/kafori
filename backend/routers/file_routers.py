@@ -415,17 +415,16 @@ async def upload_gene_ex_counts(request: Request,
     else:
         return Result.fail(msg=rel[1])
 
-# 上传rawdata，将上传的数据存储在本地 upload_rawdata_dir/<user>/file.fastq,
-# 上传完成后利用样本信息表对rawdata的文件进行md5校验，然后返回检验结果给前端
+
 @file_router.put("/pipeline/rawdata_upload")
 async def rawdata_upload(
     request: Request,
     # 元数据可从查询参数传递
     filename: str,
+    current_user: Annotated[User, Depends(get_current_active_user)],
     # 可选：让客户端传 content length 与哈希方便校验
     content_length: Optional[int] = Header(
-        default=None, alias="Content-Length"),
-    current_user: Annotated[User, Depends(get_current_active_user)] | None = None
+        default=None, alias="Content-Length")
 ):
     """
     原始流上传：客户端以 application/octet-stream 直传请求体。
@@ -438,7 +437,7 @@ async def rawdata_upload(
         return Result.fail(
             msg="Content-Type must be application/octet-stream")
 
-    user = (current_user.username if current_user else "admin")
+    user = current_user.username
     rawdata_path = Path(UPLOAD_RAWDATA_PATH, user, "rawdata").resolve()
     rawdata_path.mkdir(parents=True, exist_ok=True)
     try:
@@ -458,6 +457,26 @@ async def rawdata_upload(
     except Exception as e:
         logger.warning(str(e))
         return Result.fail(msg=str(e))
+
+
+# 如果某些文件上传后没有通过校验，用户需要重新上传这些文件
+# 是否将没有通过校验的文件直接删除？方便用户再次上传对的文件？
+# 这里返回没有通过md5校验的文件列表，前端可以提示用户重新上传
+@file_router.post("/pipeline/rawdata_md5_check/")
+async def rawdata_md5_check(request: Request,
+                            current_user: Annotated[User, Depends(get_current_active_user)]):
+    user = current_user.username
+    rawdata_path = Path(UPLOAD_RAWDATA_PATH, user, "rawdata").resolve()
+    sample_sheet = BytesIO(await request.app.state.redis.get(f"{user}_sample_sheet"))
+    sample_sheet_data = UploadFileProcessor.read_file(
+        sample_sheet, file_type=FileType.parquet)
+    logger.info(
+        f"sample sheet file extracted successfully for user {user} in md5 check process.")
+    res = UploadFileProcessor.rawdata_validation(sample_sheet_data, rawdata_path)
+    if res[0]:
+        return Result.ok(msg="All upload rawdata files MD5 check passed.")
+    else:
+        return Result.fail(msg="Some of the upload rawdata files MD5 check failed.", data={"invalid_files": res[1]})
 
 
 # 对rawdata进行转录组上游分析，发送信号过后返回是否成功启动了上游分析流程

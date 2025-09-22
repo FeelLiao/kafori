@@ -198,7 +198,7 @@ class UploadFileProcessor:
         files_dict = {**files1_dict, **files2_dict}
 
         failed_files = []
-        max_workers = min(8, os.cpu_count() or 1)
+        max_workers = max(os.cpu_count() or 1, 2)
         with ProcessPoolExecutor(max_workers=max_workers) as executor:
             futures = {
                 executor.submit(UploadFileProcessor.check_md5, rawdata_path / file_name, md5_checksum): file_name
