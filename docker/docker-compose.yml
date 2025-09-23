@@ -1,11 +1,67 @@
 version: '3.8'
 
 services:
-  kafori:
-    image: kafori:v1.0
-    container_name: kafori
+  mysql:
+    image: mysql:8.4.5
+    container_name: kafori-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: "mysql_zxtASb"
+      MYSQL_DATABASE: "kafori"
+      TZ: "Asia/Shanghai"
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_0900_ai_ci
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ../kafori.sql:/docker-entrypoint-initdb.d/1_kafori.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-hmysql", "-uroot", "-pmysql_zxtASb"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    container_name: kafori-redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--requirepass", "redis_ezDtRP"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "redis_ezDtRP", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  backend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: kafori-backend
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
     ports:
       - "10020:10020"
+    environment:
+      TZ: "Asia/Shanghai"
     volumes:
-      - /opt/kafori/conf/settings.yaml:/opt/kafori/backend/settings.yaml
-    restart: always
+      # 使用容器内专用配置，覆盖默认 settings.yaml（把主机名改成 mysql/redis）
+      - ../backend/settings.docker.yaml:/opt/kafori/backend/settings.yaml:ro
+      # 挂载上传目录（与 settings 中的 upload_rawdata_dir 一致）
+      - ../upload:/opt/kafori/upload
+      # 可选：持久化日志
+      - ../logs:/opt/kafori/backend/logs
+
+volumes:
+  mysql_data:
+  redis_data:

@@ -1,5 +1,3 @@
-# 基于官方 Python 3.13 镜像
-FROM python:3.13-slim
 # 使用anaconda3镜像
 FROM swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/conda/miniconda3:latest
 
@@ -37,4 +35,4 @@ RUN poetry lock && poetry install --no-root
 EXPOSE 10020
 
 # 启动 FastAPI 应用
-CMD ["fastapi", "run", "backend.main:app", "--port", "10020"]
+CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "10020"]
