@@ -1,7 +1,7 @@
 from __future__ import annotations
 import errno
 from fastapi import (APIRouter,
-                     UploadFile, File, Depends, Request,
+                     UploadFile, File, Depends, Request, Body,
                      Header)
 from typing import Tuple, Optional
 import logging
@@ -15,6 +15,9 @@ from fastapi.responses import JSONResponse
 import pandas as pd
 import contextlib
 import os
+import json
+
+from pydantic import BaseModel
 try:
     from starlette.requests import ClientDisconnect
 except Exception:
@@ -69,6 +72,10 @@ async def sample_sheet_validation(file: BytesIO, user: str, name: str, request: 
             await redis.set(f"{user}_sample_sheet", sample_save, ex=Redis_expires)
             logger.info(
                 f"Sample sheet for user {user} saved to redis successfully.")
+            files_md5 = UploadFileProcessor.sample_file_md5(sample_sheet_data)
+            await redis.set(f"{user}_files_md5", json.dumps(files_md5), ex=Redis_expires)
+            logger.info(
+                f"files_md5 for user {user} saved to redis successfully.")
             return valid, "Sample sheet uploaded successfully."
         else:
             return False, "Sample sheet uploaded failed."
@@ -462,21 +469,92 @@ async def rawdata_upload(
 # 如果某些文件上传后没有通过校验，用户需要重新上传这些文件
 # 是否将没有通过校验的文件直接删除？方便用户再次上传对的文件？
 # 这里返回没有通过md5校验的文件列表，前端可以提示用户重新上传
+
+class FilesList(BaseModel):
+    files: list[str]
+
+
 @file_router.post("/pipeline/rawdata_md5_check/")
 async def rawdata_md5_check(request: Request,
-                            current_user: Annotated[User, Depends(get_current_active_user)]):
+                            current_user: Annotated[User, Depends(get_current_active_user)],
+                            files: FilesList = Body(..., description="List of filenames to check MD5")):
     user = current_user.username
     rawdata_path = Path(UPLOAD_RAWDATA_PATH, user, "rawdata").resolve()
-    sample_sheet = BytesIO(await request.app.state.redis.get(f"{user}_sample_sheet"))
-    sample_sheet_data = UploadFileProcessor.read_file(
-        sample_sheet, file_type=FileType.parquet)
-    logger.info(
-        f"sample sheet file extracted successfully for user {user} in md5 check process.")
-    res = UploadFileProcessor.rawdata_validation(sample_sheet_data, rawdata_path)
-    if res[0]:
-        return Result.ok(msg="All upload rawdata files MD5 check passed.")
+
+    # 去重保持顺序
+    files_to_check = files.files
+    seen = set()
+    files_to_check = [f for f in files_to_check if not (
+        f in seen or seen.add(f))]
+
+    redis = request.app.state.redis
+
+    # 从 Redis 读取“文件名->MD5”映射，若无则从样本表重建并缓存
+    md5_blob = await redis.get(f"{user}_files_md5")
+    logger.info(f"files_md5 for user {user} recovered from redis.")
+    if isinstance(md5_blob, (bytes, bytearray)):
+        md5_blob = md5_blob.decode()
+
+    files_md5: dict[str, str] = json.loads(md5_blob)
+    logger.info(f"files_md5 for user {user} loaded successfully.")
+
+    expected_files = set(files_md5.keys())
+
+    # 分类本次请求文件
+    unknown = [f for f in files_to_check if f not in expected_files]
+    missing_on_disk = [f for f in files_to_check
+                       if f in expected_files and not (rawdata_path / f).exists()]
+    checkable = [f for f in files_to_check
+                 if f in expected_files and (rawdata_path / f).exists()]
+
+    # 对可校验文件执行 MD5 校验
+    ok, invalid_md5 = UploadFileProcessor.rawdata_validation(
+        files_md5, rawdata_path, checkable
+    )
+
+    # 删除 MD5 不匹配的已上传文件，提示重新上传
+    deleted = []
+    for f in invalid_md5:
+        p = rawdata_path / f
+        with contextlib.suppress(Exception):
+            if p.exists():
+                p.unlink()
+                deleted.append(f)
+                logger.warning(f"MD5 mismatch: deleted file {p}")
+
+    # 本次通过校验的文件
+    passed = [f for f in checkable if f not in set(invalid_md5)]
+    if passed:
+        await redis.sadd(f"{user}_md5_verified", *passed)
+        # 刷新过期时间
+        await redis.expire(f"{user}_md5_verified", Redis_expires)
+
+    # 已通过集合与剩余待通过文件
+    verified_raw = await redis.smembers(f"{user}_md5_verified")
+    verified = {v.decode() if isinstance(v, (bytes, bytearray)) else str(v)
+                for v in (verified_raw or set())}
+    remaining_files = sorted(list(expected_files - verified))
+
+    # 失败详情（含三类原因）
+    invalid_detail = (
+        [{"file": f, "reason": "not_expected"} for f in unknown] +
+        [{"file": f, "reason": "missing_on_disk"} for f in missing_on_disk] +
+        [{"file": f, "reason": "md5_mismatch"} for f in invalid_md5]
+    )
+
+    progress = {"verified": len(verified), "total": len(expected_files)}
+    data = {
+        "invalid_files": invalid_detail,
+        "remaining_files": remaining_files,
+        "deleted_files": deleted,  # 这些文件已被服务器删除，需要重新上传
+        "progress": progress,
+    }
+
+    if invalid_detail:
+        return Result.fail(msg="Some files failed MD5 check. Mismatched files were deleted, please re-upload.",
+                           data=data)
     else:
-        return Result.fail(msg="Some of the upload rawdata files MD5 check failed.", data={"invalid_files": res[1]})
+        return Result.ok(msg="MD5 check passed for given files.", data=data)
 
 
 # 对rawdata进行转录组上游分析，发送信号过后返回是否成功启动了上游分析流程

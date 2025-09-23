@@ -476,28 +476,56 @@ curl -X PUT \
 ### 5. 原始文件 MD5 校验
 
 - 接口路径: POST /pipeline/rawdata_md5_check/
-- 功能: 根据已上传的样本信息表，从用户目录读取原始文件并进行 MD5 校验；返回未通过校验的文件列表
+- 功能: 根据已上传的样本信息表，从用户目录读取原始文件并对“本次提交的文件列表”进行 MD5 校验；返回本次校验失败列表、已删除列表，以及“尚未通过校验的剩余文件”与进度
 - 权限: 需登录
 - 前置条件: 已成功上传样本信息表（缓存于 Redis）
 
-请求体: 无
-
-成功响应:
+请求体（application/json）:
 ```json
-{ "code": 0, "message": "All upload rawdata files MD5 check passed.", "data": null }
+{ "files": ["SRR001_1.fq.gz", "SRR001_2.fq.gz"] }
 ```
 
-失败响应:
+成功响应（本次提交的文件全部通过；仍返回剩余未通过文件与进度）:
+```json
+{
+  "code": 0,
+  "message": "MD5 check passed for given files.",
+  "data": {
+    "invalid_files": [],
+    "deleted_files": [],
+    "remaining_files": ["SRR003.fq.gz", "SRR004.fq.gz"],
+    "progress": { "verified": 2, "total": 4 }
+  }
+}
+```
+
+失败响应（本次提交存在错误/缺失/不期望的文件）:
 ```json
 {
   "code": 1,
-  "message": "Some of the upload rawdata files MD5 check failed.",
-  "data": { "invalid_files": ["SRR001_1.fq.gz","SRR001_2.fq.gz"] }
+  "message": "Some files failed MD5 check. Mismatched files were deleted, please re-upload.",
+  "data": {
+    "invalid_files": [
+      { "file": "SRR001_1.fq.gz", "reason": "md5_mismatch" },
+      { "file": "SRR009_1.fq.gz", "reason": "not_expected" },
+      { "file": "SRR002_1.fq.gz", "reason": "missing_on_disk" }
+    ],
+    "deleted_files": ["SRR001_1.fq.gz"],
+    "remaining_files": ["SRR003.fq.gz", "SRR004.fq.gz"],
+    "progress": { "verified": 0, "total": 4 }
+  }
 }
 ```
 
 说明:
-- 校验依据由后端根据样本表与用户原始文件目录匹配得到。样本表需包含原始文件标识与MD5信息（具体列以实现为准）。
+- 请求体 `files` 为本次待校验的文件子集；服务端会去重并按顺序处理。
+- `invalid_files.reason` 取值:
+  - `md5_mismatch`: 文件存在但与期望 MD5 不一致（该文件会被服务器删除，需重新上传）
+  - `missing_on_disk`: 在用户目录未找到该文件
+  - `not_expected`: 不在样本表期望列表中
+- `deleted_files`: 本次因 MD5 不匹配被服务器删除的文件名。
+- `remaining_files`: 仍未通过校验的全部文件（从期望全集中减去“已通过集合”），用于前端继续引导用户上传与校验。
+- 进度 `progress`: `verified` 为已通过文件数，`total` 为期望文件总数。
 
 
 ### 6. 触发上游处理流程（比对与定量）

@@ -174,12 +174,30 @@ class UploadFileProcessor:
             return True
 
     @staticmethod
-    def rawdata_validation(df: pd.DataFrame, rawdata_path: Path) -> Tuple[bool, List[str]]:
+    def sample_file_md5(df: pd.DataFrame) -> dict[str, str]:
+        """
+        Get the md5 of sample files from the sample sheet DataFrame.
+        Args:
+            df (pd.DataFrame): The DataFrame containing the sample sheet data.
+        Returns:
+            dict: A dictionary containing the filenames and their corresponding md5 checksums.
+        """
+        files1 = df[["FileName1", "MD5checksum1"]]
+        files2 = df[["FileName2", "MD5checksum2"]]
+        files1_dict = dict(zip(files1["FileName1"], files1["MD5checksum1"]))
+        files2_dict = dict(zip(files2["FileName2"], files2["MD5checksum2"]))
+        files_dict = {**files1_dict, **files2_dict}
+        logger.info("Sample file md5 checksums extracted successfully.")
+        return files_dict
+
+    @staticmethod
+    def rawdata_validation(files_dict: dict, rawdata_path: Path, files_to_check: list[str]) -> Tuple[bool, List[str]]:
         """
         Validate the md5 of raw data.
         Args:
             df (pd.DataFrame): The DataFrame containing the sample sheet data.
             rawdata_path (Path): The path to the raw data directory.
+            files_to_check (list[str]): List of filenames to check MD5.
         Returns:
             Tuple[bool, List[str]]: A tuple containing a boolean indicating
             whether the validation passed and a list of failed files.
@@ -191,18 +209,14 @@ class UploadFileProcessor:
             raise FileNotFoundError(
                 f"Raw data path {rawdata_path} does not exist.")
 
-        files1 = df[["FileName1", "MD5checksum1"]]
-        files2 = df[["FileName2", "MD5checksum2"]]
-        files1_dict = dict(zip(files1["FileName1"], files1["MD5checksum1"]))
-        files2_dict = dict(zip(files2["FileName2"], files2["MD5checksum2"]))
-        files_dict = {**files1_dict, **files2_dict}
-
         failed_files = []
+        files_check = {file: files_dict[file]
+                       for file in files_to_check if file in files_dict}
         max_workers = max(os.cpu_count() or 1, 2)
         with ProcessPoolExecutor(max_workers=max_workers) as executor:
             futures = {
                 executor.submit(UploadFileProcessor.check_md5, rawdata_path / file_name, md5_checksum): file_name
-                for file_name, md5_checksum in files_dict.items()
+                for file_name, md5_checksum in files_check.items()
             }
             for future in as_completed(futures):
                 try:
