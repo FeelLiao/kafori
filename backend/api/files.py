@@ -295,7 +295,7 @@ class PutDataBaseWrapper:
             pd.DataFrame: The DataFrame with additional columns.
         """
         try:
-            df = self.sample_sheet.copy()
+            df = PutDataBaseWrapper.add_row_md5(self.sample_sheet)
             timestamp_int = int(time.time())
             date_str = format(timestamp_int, "x").zfill(8)
 
@@ -319,7 +319,7 @@ class PutDataBaseWrapper:
             logger.error(
                 f"Error occurred while wrapping sample sheet for database: {e}")
 
-        return df
+        return df.drop(columns=["row_md5"])
 
     @staticmethod
     def add_row_md5(df: pd.DataFrame, cols=None) -> pd.DataFrame:
