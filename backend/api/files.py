@@ -1,3 +1,4 @@
+import hashlib
 import time
 import pandas as pd
 from pathlib import Path
@@ -300,16 +301,14 @@ class PutDataBaseWrapper:
 
             # Add a unique identifier for each sample
             hex_ids = [format(i+1, "x").zfill(3) for i in range(len(df))]
-            df["UniqueID"] = ["LRX" + date_str + hex_id for hex_id in hex_ids]
+            hex_series_uid = pd.Series(hex_ids, index=df.index)
+            df["UniqueID"] = "LRX" + df["row_md5"] + hex_series_uid
             logger.info("UniqueID column added to sample sheet.")
 
             # Add a unique experiment ID
-            experiment_groups = df.groupby(
-                "Experiment").ngroup() + 1  # 分组编号从1开始
-            df["UniqueEXID"] = [
-                f"TRCRIE{date_str}{str(idx).zfill(3)}"
-                for idx in experiment_groups
-            ]
+            experiment_groups = df.groupby("Experiment").ngroup() + 1  # 分组编号从1开始
+            grp_suffix = experiment_groups.astype(int).astype(str).str.zfill(3)
+            df["UniqueEXID"] = "TRCRIE" + df["row_md5"].astype(str) + grp_suffix
             logger.info("UniqueEXID column added to sample sheet.")
             exp_class_grp = df.groupby("ExperimentCategory").ngroup() + 1
             df["ExpClass"] = [
@@ -321,6 +320,25 @@ class PutDataBaseWrapper:
                 f"Error occurred while wrapping sample sheet for database: {e}")
 
         return df
+
+    @staticmethod
+    def add_row_md5(df: pd.DataFrame, cols=None) -> pd.DataFrame:
+        # 选择参与计算的列，默认用全部列（固定顺序）
+        cols = list(df.columns) if cols is None else list(cols)
+        out = df.copy()
+
+        # 规范化成字符串：时间→固定格式，其他→string，缺失→空串
+        for c in cols:
+            if pd.api.types.is_datetime64_any_dtype(out[c]):
+                out[c] = out[c].dt.strftime("%Y-%m-%d %H:%M:%S").fillna("")
+            else:
+                out[c] = out[c].astype("string").fillna("")
+
+        sep = "\x1f"  # 罕见分隔符，避免歧义
+        joined = out[cols].agg(sep.join, axis=1)
+        out["row_md5"] = joined.map(
+            lambda s: hashlib.md5(s.encode("utf-8")).hexdigest()[:12])
+        return out
 
     def communicate_id_in_db(self) -> list[dict[str, str]]:
         """
