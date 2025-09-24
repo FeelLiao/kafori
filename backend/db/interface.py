@@ -161,28 +161,19 @@ class GetDataBaseInterface:
             data = await db.gene_counts.model.filter(SampleRealID__in=unique_id, GeneID__in=gene_id).values()
         return pd.DataFrame(data)
 
-
-
     @staticmethod
-    async def get_data_static(expClassDTO: List[ExpClassDTO]) -> List[ExpClassDTO]:
-        result = []
-        for expClass in expClassDTO:
-            samples_counts = 0
-            experiments = await db.experiment.model.filter(ExpClass=expClass.ExpClass).all()
-
-            for experiment in experiments:
-                samples_count = await db.sample.model.filter(UniqueEXID=experiment.UniqueEXID).count()
-                # 创建一个新的 ExpClassDTO 对象
-                data = ExpClassDTO(
-                    ExpClass=expClass.ExpClass,
-                    ExperimentCategory=expClass.ExperimentCategory,
-                    Experiment=experiment.Experiment,
-                    SampleCounts=samples_count
-                )
-                result.append(data)
-
-        # 返回排序过的结果
-        return Utils.quick_sort(result)[:10]
+    async def get_data_static() -> pd.DataFrame:
+        """
+        Get static data by merging experiment, sample, and experimental class data.
+        Returns:
+            pd.DataFrame: containing complete sample information.
+        """
+        expclass = pd.DataFrame(await db.exp_class.getExpClass())
+        exp = pd.DataFrame(await db.experiment.model.all().values())
+        sample = pd.DataFrame(await db.sample.model.all().values())
+        sample_exp = sample.merge(exp, how='inner', on='UniqueEXID')
+        res = sample_exp.merge(expclass, how='inner', on='ExpClass')
+        return res
 
 
 class PutDataBaseInterface:

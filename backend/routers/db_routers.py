@@ -1,18 +1,18 @@
-from fastapi import APIRouter, Body
+from fastapi import APIRouter, Body, Request
+import json
 import logging
 from typing import Annotated
 from pydantic import BaseModel, Field, model_validator
 from enum import StrEnum, auto
 from pandas import DataFrame
-from backend.db.decorator.Cache import cache
 
 from backend.db.interface import GetDataBaseInterface
 from backend.db.result.Result import Result
 
-from backend.db.models.dto.ExpClassDTO import ExpClassDTO
 logger = logging.getLogger(__name__)
 db_router = APIRouter()
 db = GetDataBaseInterface()
+
 
 class QueryType(StrEnum):
     exp_class = auto()
@@ -66,7 +66,38 @@ async def query_transcripts(query: Annotated[TranscriptQuery, Body(...)]) -> Res
         f"Successfully fetched query: {query}")
     return payload
 
-@db_router.post("/transcripts/get_allexp_counts")
-async def get_allexp_counts(expClassDTO: list[ExpClassDTO]) -> Result:
-    res = await db.get_data_static(expClassDTO)
-    return Result.success(res)
+
+@db_router.get("/transcripts/get_allexp_counts")
+async def get_allexp_counts(request: Request) -> Result:
+    """
+    从 Redis 读取预计算结果；若不存在则即时计算一次并写入 Redis 后返回。
+    """
+    redis = request.app.state.redis
+    blob = await redis.get("transcripts_stats:exp_counts")
+    if blob:
+        if isinstance(blob, (bytes, bytearray)):
+            blob = blob.decode()
+        try:
+            data = json.loads(blob)
+            return Result.success(data)
+        except Exception:
+            return Result.error("Failed to parse cached data.")
+    return Result.error("No cached data found.")
+
+
+@db_router.get("/transcripts/get_year_counts")
+async def get_year_counts(request: Request) -> Result:
+    """
+    从 Redis 读取预计算结果；若不存在则即时计算一次并写入 Redis 后返回。
+    """
+    redis = request.app.state.redis
+    blob = await redis.get("transcripts_stats:year_counts")
+    if blob:
+        if isinstance(blob, (bytes, bytearray)):
+            blob = blob.decode()
+        try:
+            data = json.loads(blob)
+            return Result.success(data)
+        except Exception:
+            return Result.error("Failed to parse cached data.")
+    return Result.error("No cached data found.")

@@ -5,8 +5,9 @@ from contextlib import asynccontextmanager
 import warnings
 from tortoise.contrib.fastapi import register_tortoise
 import os
-from backend.db.decorator.Redis import register_redis
+import asyncio
 
+from backend.db.decorator.Redis import register_redis
 from backend.db.config.redis_conf import build_redis_pool
 from backend.db.config.tortoise_conf import TORTOISE_ORM
 from backend.db.exceptions.handlers import ExceptionHandler
@@ -14,6 +15,7 @@ from backend.routers.router import router
 from backend.logger import init_global_logger
 from backend.api.config import config
 from backend.analysis.analysis_base import RProcessorPoolMP
+from backend.db.background_task import start_periodic_refresh
 
 
 logger = logging.getLogger(__name__)
@@ -33,6 +35,8 @@ async def lifespan(app: FastAPI):
     logger.info("RProcessor initialized")
     app.state.redis = build_redis_pool()
     logger.info("Redis connection pool initialized")
+
+    asyncio.create_task(start_periodic_refresh(app))
 
     yield
     app.state.r_processor.close()
@@ -71,8 +75,6 @@ register_redis(
 ExceptionHandler.register(app)
 
 
-
-
 # 配置CORS中间件
 origins = [
     "*"  # 允许的前端域名
@@ -85,6 +87,7 @@ app.add_middleware(
     allow_methods=["*"],  # 允许的HTTP方法
     allow_headers=["*"],  # 允许的头
 )
+
 
 @app.get("/")
 async def root():
