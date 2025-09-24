@@ -452,7 +452,7 @@ async def rawdata_upload(
 
         if target.exists():
             logger.warning("Target file already exists: %s", target.name)
-            return Result.fail(
+            return Result.ok(
                 msg=f"Target file already exists: {target.name}")
 
         res = await upload_files(target, request, content_length=content_length)
