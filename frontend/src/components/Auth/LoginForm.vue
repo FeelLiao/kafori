@@ -12,25 +12,28 @@ const loading = ref(false)
 const loginFormRef = ref<FormInstance>()
 
 const loginForm = reactive({
-  email: '',
+  username: '',
   password: '',
-})
+});
 
-// 表单验证规则
 const loginRules = reactive<FormRules>({
-  email: [
-    { required: true, message: '请输入邮箱', trigger: 'blur' },
-    { type: 'email', message: '请输入正确的邮箱格式', trigger: 'blur' },
+  username: [
+    { required: true, message: '请输入用户名', trigger: 'blur' },
+    {
+      pattern: /^[a-zA-Z0-9_]{5,20}$/,
+      message: '用户名格式：5-20位字母、数字或下划线',
+      trigger: 'blur',
+    },
   ],
   password: [
     { required: true, message: '请输入密码', trigger: 'blur' },
     {
-      pattern: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z\W]{8,18}$/,
+      // pattern: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z\W]{8,18}$/,
       message: '密码格式：8-18位数字、字母、符号的任意两种组合',
       trigger: 'blur',
     },
   ],
-})
+});
 
 // 登录处理
 const handleLogin = async () => {
@@ -68,7 +71,7 @@ function switchToReset() {
 
 <template>
   <div class="login-container">
-    <p class="form-subtitle">输入您的邮箱以登录您的账户</p>
+    <p class="form-subtitle">输入您的用户名以登录您的账户</p>
 
     <el-form
       ref="loginFormRef"
@@ -80,8 +83,8 @@ function switchToReset() {
     >
       <el-form-item prop="email">
         <el-input
-          v-model="loginForm.email"
-          placeholder="邮箱"
+          v-model="loginForm.username"
+          placeholder="用户名"
           :prefix-icon="Message"
         />
       </el-form-item>

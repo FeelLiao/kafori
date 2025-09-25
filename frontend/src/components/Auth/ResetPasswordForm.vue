@@ -19,6 +19,8 @@ const resetForm = reactive({
   repeatPassword: '',
 })
 
+const isDisabled = ref(true); // 控制按钮是否禁用
+
 // 表单验证规则
 const resetRules = reactive<FormRules>({
   email: [
@@ -185,6 +187,7 @@ onUnmounted(() => {
           class="submit-btn"
           type="primary"
           :loading="loading"
+          :disabled="isDisabled"
           @click="handleReset"
         >
           重置密码

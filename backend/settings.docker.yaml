@@ -1,0 +1,53 @@
+# ---------- General Settings ----------
+log_dir: backend/kafori_running.log
+start_r_core: 2
+secret_key: 09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7
+interval_refresh_hours: 12
+enable_cors: true # 是否启用跨域资源共享（CORS）
+
+# ---------- Upstream Settings ----------
+upstream:
+  upload_rawdata_dir: upload/
+  upstream_cores: 8
+  ref_genome: tests/upstream/ref/Saccharomyces_cerevisiae.fa
+  ref_annotation: tests/upstream/ref/Saccharomyces_cerevisiae.gtf
+
+# ---------- Download Page File ----------
+download:
+  Genome: tests/upstream/ref/Saccharomyces_cerevisiae.fa
+  Annotation: tests/upstream/ref/Saccharomyces_cerevisiae.gtf
+  SampleSheet: tests/upstream/test.xlsx
+
+
+# ---------- Redis ----------
+redis:
+  mode: single               # single | sentinel | cluster
+  host: 127.0.0.1
+  port: 6382
+  db: 0
+  password: "redis_ezDtRP"
+  max_connections: 50
+  # 哨兵专用
+  sentinel_nodes:
+    - "sentinel1:26379"
+    - "sentinel2:26379"
+  sentinel_name: mymaster
+  # 集群专用
+  cluster_nodes:
+    - "127.0.0.1:7000"
+    - "127.0.0.1:7001"
+
+# ---------- MySQL ----------
+mysql:
+  host: 127.0.0.1
+  port: 3309
+  user: root
+  password: "mysql_zxtASb"
+  database: kafori
+  charset: utf8mb4
+  pool_size: 10            # 最小连接数
+  max_pool_size: 50        # 最大连接数
+  max_overflow: 10         # 额外溢出
+  pool_recycle: 3600       # 连接回收时间(秒)
+  echo: false              # 是否打印 SQL
+ 

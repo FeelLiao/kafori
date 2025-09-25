@@ -1,16 +1,48 @@
 import { useNavigatorLanguage } from '@vueuse/core'
-
+/*
+*/
+import { getCurrentInstance } from 'vue';
+import { useI18n } from 'vue-i18n'
+import ElementPlus from 'element-plus';
+import zhCn from 'element-plus/dist/locale/zh-cn.mjs';
+import en from 'element-plus/dist/locale/en.mjs';
 /**
  * 获取浏览器语言
  * @returns {string} 当前浏览器的语言代码
  */
-export function getBrowserLang() {
-  const { language } = useNavigatorLanguage()
-  if (['zh-CN'].includes(language.value as string)) {
-    language.value = 'zh'
+
+/**
+ * 定义的全局变量
+ */
+
+
+const elementLocales = { zh: zhCn, en };
+
+
+export function useLangSwitcher() {
+  const { locale } = useI18n(); // 调用 useI18n 钩子
+  const instance = getCurrentInstance();
+
+  function setLang(lang: string) {
+    locale.value = lang; // 更新 locale
+    localStorage.setItem('lang', lang);
+    // instance?.appContext.app.use(ElementPlus, { locale: elementLocales[lang] });
   }
-  return language.value
+
+  function initLang() {
+    const savedLang = localStorage.getItem('lang');
+    if (savedLang && elementLocales[savedLang]) {
+      setLang(savedLang);
+    } else {
+      setLang('en'); // 默认语言
+    }
+  }
+
+  return { setLang, initLang };
 }
+
+
+
 
 export function formatTime(seconds: number): string {
   // 将秒数转换为整数分钟数和剩余秒数

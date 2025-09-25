@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import Header from './components/header/index.vue'
-// import Aside from './components/aside/index.vue'
+// import Aside from './components/aside/index_bak.vue'
 import Main from './components/main/index.vue'
-// import Footer from './components/footer/index.vue'
-// import BG from './components/bg/index.vue'
+// import Footer from './components/footer/index_bak.vue'
+// import BG from './components/bg/index_bak.vue'
 // import { AudioPlayer } from '@/hooks/useAudioPlayer'
 
 // provide('audioPlayer', AudioPlayer())

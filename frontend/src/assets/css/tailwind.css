@@ -1,0 +1,26 @@
+/* src/assets/css/tailwind.css  */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 生物数据专用组件 */
+@layer components {
+    .bio-card {
+        @apply bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden;
+        @apply border-l-4 border-dna-primary;
+        @apply transition-all duration-300 hover:shadow-xl;
+    }
+
+    .dna-button {
+        @apply px-6 py-3 rounded-full font-scientific font-bold;
+        @apply bg-gradient-to-r from-dna-primary to-dna-helix text-white;
+        @apply hover:from-dna-helix hover:to-dna-primary;
+        @apply transition-all duration-500 transform hover:scale-105;
+    }
+
+    .gene-sequence {
+        @apply font-scientific text-sm tracking-widest;
+        @apply bg-gray-100 dark:bg-gray-700 p-4 rounded;
+        @apply overflow-x-auto;
+    }
+}

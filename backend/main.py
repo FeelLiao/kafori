@@ -75,18 +75,19 @@ register_redis(
 ExceptionHandler.register(app)
 
 
-# 配置CORS中间件
-origins = [
-    "*"  # 允许的前端域名
-]
+if config.enable_cors:
+    # 配置CORS中间件
+    origins = [
+        "*"  # 允许的前端域名
+    ]
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,  # 允许的来源
-    allow_credentials=True,  # 允许发送Cookie
-    allow_methods=["*"],  # 允许的HTTP方法
-    allow_headers=["*"],  # 允许的头
-)
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,  # 允许的来源
+        allow_credentials=True,  # 允许发送Cookie
+        allow_methods=["*"],  # 允许的HTTP方法
+        allow_headers=["*"],  # 允许的头
+    )
 
 
 @app.get("/")

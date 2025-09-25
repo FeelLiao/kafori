@@ -4,4 +4,7 @@
     <option name="sdkName" value="3.13 @ Ubuntu-22.04" />
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_22" project-jdk-name="3.13 @ Ubuntu-22.04" project-jdk-type="Python SDK" />
+  <component name="PythonCompatibilityInspectionAdvertiser">
+    <option name="version" value="3" />
+  </component>
 </project>

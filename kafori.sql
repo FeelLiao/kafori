@@ -70,3 +70,29 @@ CREATE TABLE gene_express_tpm (
 ) ENGINE=InnoDB;
 
 
+CREATE TABLE `user` (
+                        `id` bigint NOT NULL AUTO_INCREMENT COMMENT '用户 id',
+                        `username` varchar(20) NOT NULL COMMENT '用户名',
+                        `password` varchar(64) NOT NULL COMMENT '用户密码',
+                        `phone` varchar(11) DEFAULT NULL COMMENT '用户手机号',
+                        `email` varchar(128) NOT NULL COMMENT '用户邮箱',
+                        `user_avatar` varchar(255) DEFAULT NULL COMMENT '用户头像',
+                        `introduction` varchar(255) DEFAULT NULL COMMENT '用户简介',
+                        `create_time` datetime NOT NULL COMMENT '用户创建时间',
+                        `update_time` datetime NOT NULL COMMENT '用户修改时间',
+                        `status` tinyint NOT NULL COMMENT '用户状态：0-启用，1-禁用',
+                        PRIMARY KEY (`id`),
+                        UNIQUE KEY `email` (`email`),
+                        UNIQUE KEY `username` (`username`),
+                        UNIQUE KEY `phone` (`phone`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user`
+--
+
+/*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES (1,'admin','$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW',NULL,'xxxxxxxx@qq.com',NULL,NULL,'2025-09-06 01:50:12','2025-10-06 01:50:17',0);
+
+

@@ -24,13 +24,30 @@ const router = createRouter({
       path: '/',
       component: () => import('@/pages/index.vue'),
     },
+
     {
-      path: '/table',
-      component: () => import('@/pages/table/index.vue'),
+      path: '/Transcripts',
+      component: () => import('@/pages/transcripts/index.vue'),
     },
+
     {
-      path: '/download',
+      path: '/Pipelines',
+      component: () => import('@/pages/pipelines/index.vue'),
+    },
+
+    {
+      path: '/Download',
       component: () => import('@/pages/download/index.vue'),
+    },
+
+    {
+      path: '/Tools',
+      component: () => import('@/pages/tools/index.vue'),
+    },
+
+    {
+      path: '/Contact',
+      component: () => import('@/pages/contact/index.vue'),
     },
 
   ],

@@ -1,13 +1,15 @@
 import axios from 'axios'
+import {UserStore} from "@/stores/modules/user.ts";
 import type {
   AxiosInstance,
   AxiosRequestConfig,
-  // InternalAxiosRequestConfig,
-  // AxiosRequestHeaders,
+  InternalAxiosRequestConfig,
+  AxiosRequestHeaders,
 } from 'axios'
-// import NProgress from '@/config/nprogress'
+import NProgress from 'nprogress';
 import 'nprogress/nprogress.css'
-// import { ElMessage } from 'element-plus'
+import {ElMessage} from "element-plus";
+
 
 const instance: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_API, // 读取 .env 文件配置,设置为后端服务地址
@@ -16,12 +18,94 @@ const instance: AxiosInstance = axios.create({
     Accept: 'application/json, text/plain, */*',
     'Content-Type': 'application/json',
     'X-Requested-With': 'XMLHttpRequest',
+
   },
   withCredentials: false,
 })
 
 
+    // 请求拦截器
+instance.interceptors.request.use(
+    (config: InternalAxiosRequestConfig) => {
+      // 开启进度条
+      NProgress.start()
 
+        console.log("进入拦截器")
+
+      // 只有登录请求不需要添加token
+      if (config.url?.includes('/user/login')) {
+          console.log("用户登录")
+        return config
+      }
+
+      // 从 pinia 中获取token
+      const userStore = UserStore()
+      const token = userStore.userInfo?.token
+      // console.log("token：",token)
+
+      if (token) {
+        // 确保headers对象存在并且是正确的类型
+        if (!config.headers) {
+          config.headers = {} as AxiosRequestHeaders
+        }
+        // 添加Bearer前缀
+        config.headers.Authorization = token
+          console.log("Authorization: ",config.headers.Authorization)
+      }
+
+      // console.log('请求URL:', config.url)
+      // console.log('请求头:', config.headers)
+      return config
+    },
+    (error) => {
+      console.error('请求错误:', error)
+      return Promise.reject(error)
+    }
+)
+
+// 响应拦截器
+instance.interceptors.response.use(
+    (response) => {
+      // 关闭进度条
+      NProgress.done()
+      // console.log(response.data)
+      return response.data
+    },
+    (error) => {
+      // 关闭进度条
+      NProgress.done()
+
+      if (error.response) {
+        switch (error.response.status) {
+          case 401:
+            // 如果不是登录请求，则清除用户信息
+            if (!error.config.url?.includes('/user/login')) {
+              const userStore = UserStore()
+              userStore.clearUserInfo()
+              ElMessage.error('登录已过期，请重新登录')
+            } else {
+              ElMessage.error('邮箱或密码错误')
+            }
+            break
+          case 403:
+            ElMessage.error('没有权限')
+            break
+          case 404:
+            ElMessage.error('请求的资源不存在')
+            break
+          case 500:
+            ElMessage.error('服务器错误')
+            break
+          default:
+            ElMessage.error('网络错误')
+        }
+      } else {
+        ElMessage.error('网络连接失败')
+      }
+
+      return Promise.reject(error)
+    }
+)
 
 
 // 封装request方法

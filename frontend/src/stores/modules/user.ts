@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import piniaPersistConfig from '@/stores/helper/persist'
-import { UserState } from '@/stores/interface'
+import type { UserState } from '@/stores/interface'
 import { login, logout, getUserInfo } from '@/api/system'
 // import { AudioStore } from './audio'
 
@@ -11,9 +11,17 @@ interface UserInfo {
   email?: string
   avatarUrl?: string
   introduction?: string
-  startDate?: string
-  endDate?: string
   token?: string
+}
+
+interface UserVO {
+  Id?: number
+  Username?: string
+  Phone?: string
+  Email?: string
+  UserAvatar?: string
+  Introduction?: string
+  Token?: string
 }
 
 /**
@@ -26,16 +34,14 @@ export const UserStore = defineStore('UserStore', {
   }),
   actions: {
     // 设置用户信息
-    setUserInfo(userInfo: any, token?: string) {
+    setUserInfo(UserVO: any, token?: string) {
       this.userInfo = {
-        userId: userInfo.userId,
-        username: userInfo.username,
-        phone: userInfo.phone,
-        email: userInfo.email,
-        avatarUrl: userInfo.userAvatar,
-        introduction: userInfo.introduction,
-        startDate: userInfo.startDate,
-        endDate: userInfo.endDate,
+        userId: UserVO.Id,
+        username: UserVO.Username,
+        phone: UserVO.Phone,
+        email: UserVO.Email,
+        avatarUrl: UserVO.UserAvatar,
+        introduction: UserVO.Introduction,
         token: token,
       }
       this.isLoggedIn = true
@@ -51,37 +57,30 @@ export const UserStore = defineStore('UserStore', {
       this.userInfo = {}
       this.isLoggedIn = false
 
-      // 清空所有歌曲的喜欢状态
-      const audioStore = AudioStore()
-      // 清空播放列表中的喜欢状态
-      audioStore.trackList.forEach((track) => {
-        track.likeStatus = 0
-      })
-      // 清空当前页面歌曲列表中的喜欢状态
-      if (audioStore.currentPageSongs) {
-        audioStore.currentPageSongs.forEach((song) => {
-          song.likeStatus = 0
-        })
-      }
+      // 清空所有缓存信息
     },
     // 用户登录
-    async userLogin(loginData: { email: string; password: string }) {
+    async userLogin(loginData: { username: string; password: string }) {
       try {
-        const response = await login(loginData)
+        const response = (await login(loginData))
 
         if (response.code === 0) {
           // 先保存token
-          const token = response.data
+          const token= response.data
+
+          console.log(token)
 
           // 设置token到userInfo
-          this.userInfo = { token }
+          this.userInfo.token = token
 
           try {
             // 再获取用户信息
-            const userInfoResponse = await getUserInfo()
-
+            console.log("获取用户信息")
+            const userInfoResponse = (await getUserInfo())
+            console.log(userInfoResponse)
             if (userInfoResponse.code === 0) {
               this.setUserInfo(userInfoResponse.data, token)
+              console.log("userInfo: ", this.userInfo)
               return { success: true, message: '登录成功' }
             }
             return {

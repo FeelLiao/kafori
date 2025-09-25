@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { Icon } from '@iconify/vue'
 import { UserStore } from '@/stores/modules/user'
 import AuthTabs from '@/components/Auth/AuthTabs.vue'
 import FeedbackDialog from '@/components/Common/FeedbackDialog.vue'
@@ -25,7 +26,6 @@ const handleLogout = async () => {
   } catch (error: any) {
     console.error('退出登录错误:', error)
     ElMessage.error(error.message || '退出失败')
-    // 即使请求失败也清除用户信息
     user.clearUserInfo()
   }
 }
@@ -37,45 +37,43 @@ const openFeedbackDialog = () => {
 
 <template>
   <el-dropdown
-    v-if="user.userInfo && user.userInfo.userId"
-    class="cursor-pointer"
+      v-if="user.userInfo && user.userInfo.userId"
+      class="cursor-pointer"
   >
     <span class="flex items-center">
       <el-avatar
-        :src="user.userInfo.avatarUrl || defaultAvatar"
-        class="mr-1"
-        shape="circle"
-        :size="32"
+          :src="user.userInfo.avatarUrl || defaultAvatar"
+          class="mr-1"
+          shape="circle"
+          :size="32"
       />
-      <span class="text-sm font-medium mr-2 ml-1">{{
-        user.userInfo.username
-      }}</span>
-      <icon-uiw:down />
+      <span class="text-sm font-medium mr-2 ml-1">{{ user.userInfo.username }}</span>
+      <Icon icon="uiw:down" />
     </span>
 
     <template #dropdown>
       <el-dropdown-menu>
         <el-dropdown-item @click="router.push('/user')">
-          <icon-mi:user />&ensp;个人中心
+          <Icon icon="mi:user" />&ensp;个人中心
         </el-dropdown-item>
         <el-dropdown-item @click="openFeedbackDialog">
-          <icon-feather:edit />&ensp;意见反馈
+          <Icon icon="feather:edit" />&ensp;意见反馈
         </el-dropdown-item>
         <el-dropdown-item @click="handleLogout">
-          <icon-pajamas:power />&ensp;退出
+          <Icon icon="pajamas:power" />&ensp;退出
         </el-dropdown-item>
       </el-dropdown-menu>
     </template>
   </el-dropdown>
   <el-button
-    class="mr-3 rounded-full"
-    v-else
-    type="primary"
-    @click="showLogin = true"
+      class="mr-3 rounded-full bg-black text-white dark:bg-white dark:text-black"
+      v-else
+      type="primary"
+      @click="showLogin = true"
   >
     <div class="flex items-center gap-1">
-      <icon-ic:baseline-person-pin />
-      登录
+      <Icon icon="ic:baseline-person-pin" class="text-white dark:text-black" />
+      <span class="text-white dark:text-black">登录</span>
     </div>
   </el-button>
   <AuthTabs v-if="showLogin" v-model="showLogin" />
