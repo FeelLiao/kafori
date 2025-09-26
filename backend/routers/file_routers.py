@@ -129,7 +129,7 @@ async def process_gene_ex(file: BytesIO | pd.DataFrame, user: str, name: str,
 
 
 # 是否需要在redis中存储用户选择的上传类别，然后在后续处理时使用？
-async def uprocess_db_upload(user: str, request: Request) -> Tuple[bool, str]:
+async def process_db_upload(user: str, request: Request) -> Tuple[bool, str]:
     try:
         redis = request.app.state.redis
         sample_sheet = BytesIO(await redis.get(f"{user}_sample_sheet"))
