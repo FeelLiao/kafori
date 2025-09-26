@@ -6,6 +6,12 @@
   ],
   "compilerOptions": {
     // ...
-    "types": ["@pureadmin/table/volar"]
+    "types": ["@pureadmin/table/volar"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "jsx": "preserve",
+    "include": ["src/**/*.ts","src/**/*.tsx","src/**/*.vue"]
   }
 }
