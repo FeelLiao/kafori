@@ -2,7 +2,7 @@ __pycache__/
 **/__pycache__/
 .snakemake/
 .vscode/
-.idea
+.idea/
 .pytest_cache/
 .coverage
 tests/upstream/out/
@@ -17,5 +17,4 @@ backend/db/基因表达量表-counts.csv
 backend/kafori_running.log
 
 tests/test_backend_core/conftest.py
-backend/conf/settings.yaml
 
