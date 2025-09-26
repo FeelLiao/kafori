@@ -10,13 +10,13 @@ RUN conda config --add channels https://mirrors.ustc.edu.cn/anaconda/pkgs/main/ 
     conda config --set show_channel_urls yes
 
 # 将项目文件复制到容器中
-COPY ../backend /opt/kafori-backend
+COPY ../backend /opt/backend
 
 # 定位到工作目录
-WORKDIR /opt/kafori-backend
+WORKDIR /opt/
 
 # 创建 Conda 环境
-RUN conda env create -f kafori_conda.yml && \
+RUN conda env create -f backend/kafori_conda.yml && \
     conda clean --all --yes
 
 # 激活 Conda 环境
