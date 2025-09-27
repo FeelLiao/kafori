@@ -21,4 +21,3 @@ def test_pca_analysis_success():
         response = client.post("/transcripts/analysis", json=payload)
     assert response.status_code == 200
     assert response.json()["code"] == 0
-    print(response.json())
