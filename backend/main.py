@@ -14,7 +14,7 @@ from backend.db.exceptions.handlers import ExceptionHandler
 from backend.routers.router import router
 from backend.logger import init_global_logger
 from backend.api.config import config
-from backend.analysis.analysis_base import RProcessorPoolMP
+from backend.analysis.analysis_base import RProcessorPoolCPPE
 from backend.db.background_task import start_periodic_refresh
 
 
@@ -31,7 +31,7 @@ R_CORE = os.cpu_count() if int(config.start_r_core) == 0 else int(config.start_r
 @asynccontextmanager
 async def lifespan(app: FastAPI):
 
-    app.state.r_processor = RProcessorPoolMP(pool_maxsize=R_CORE)
+    app.state.r_processor = RProcessorPoolCPPE(pool_maxsize=R_CORE)
     logger.info("RProcessor initialized")
     app.state.redis = build_redis_pool()
     logger.info("Redis connection pool initialized")

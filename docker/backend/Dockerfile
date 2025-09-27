@@ -25,9 +25,6 @@ ENV CONDA_DEFAULT_ENV=kafori
 ENV CONDA_PREFIX=/opt/conda/envs/kafori
 ENV PATH="$CONDA_PREFIX/bin:$PATH"
 
-# 安装 Poetry
-RUN pip install poetry
-
 
 RUN poetry lock && poetry install --no-root
 

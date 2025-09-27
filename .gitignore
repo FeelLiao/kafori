@@ -8,9 +8,7 @@ __pycache__/
 tests/upstream/out/
 upload/
 
-
-
-backend/settings.yaml
+backend/conf/settings.yaml
 
 backend/db/tests.ipynb
 backend/db/基因表达量表-counts.csv

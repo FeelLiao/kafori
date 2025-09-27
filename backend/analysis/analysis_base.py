@@ -7,9 +7,23 @@ import asyncio
 from contextlib import contextmanager
 import logging
 import functools
-import os
 
 logger = logging.getLogger(__name__)
+
+R_INIT_CODE = """
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(svglite))
+
+plot_to_raw <- function(plot_obj, width=800, height=600) {
+  tf <- tempfile(fileext = ".svg")
+  svglite(file = tf, width = width /72 , height = height /72)
+  print(plot_obj)
+  dev.off()
+  img_raw <- readChar(tf, nchars=file.info(tf)$size, useBytes=TRUE)
+  unlink(tf)
+  return(img_raw)
+}
+"""
 
 
 class DataAnalysis(ABC):
@@ -35,7 +49,7 @@ def isolated_r_environment():
         logger.info("R environment cleaned up")
 
 
-def run_analysis(r_code: str, kwargs: dict) -> ro.RObject:
+def run_analysis(r_code: str, kwargs: dict, init_each_time: bool = True) -> ro.RObject:
     """
     run the R analysis code with the provided arguments.
     Args:
@@ -48,6 +62,13 @@ def run_analysis(r_code: str, kwargs: dict) -> ro.RObject:
     """
     try:
         with isolated_r_environment():
+            if init_each_time:
+                try:
+                    ro.r(R_INIT_CODE)
+                    logger.debug("R init code executed for this task.")
+                except Exception as e:
+                    logger.error(f"Per-task R init failed: {e}")
+                    raise
             for key, value in kwargs.items():
                 ro.globalenv[key] = value
             result = ro.r(r_code)
@@ -57,6 +78,7 @@ def run_analysis(r_code: str, kwargs: dict) -> ro.RObject:
         raise Exception(f"R error: {str(e)}")
     except Exception as e:
         logger.error(f"Unexpected error in R task: {str(e)}")
+        raise
 
 
 class RProcessorPoolMP(DataAnalysis):
@@ -89,20 +111,7 @@ class RProcessorPoolMP(DataAnalysis):
         Initialize a tidyverse R environment in each worker process.
         """
         try:
-            ro.r("""
-                suppressPackageStartupMessages(library(tidyverse))
-                suppressPackageStartupMessages(library(svglite))
-
-                plot_to_raw <- function(plot_obj, width=800, height=600) {
-                tf <- tempfile(fileext = ".svg")
-                svglite(file = tf, width = width /72 , height = height /72)
-                print(plot_obj)
-                dev.off()
-                img_raw <- readChar(tf, nchars=file.info(tf)$size, useBytes=TRUE)
-                unlink(tf)
-                return(img_raw)
-              }
-                 """)
+            ro.r()
             logger.info("R environment initialized in process")
         except Exception as e:
             logger.error(f"Failed to initialize R: {str(e)}")
@@ -125,7 +134,7 @@ class RProcessorPoolMP(DataAnalysis):
             try:
                 result = await asyncio.wait_for(
                     loop.run_in_executor(None, lambda: self.pool.apply(
-                        run_analysis, (r_code, kwargs))),
+                        run_analysis, (r_code, kwargs, True))),
                     timeout=60
                 )
                 return result
@@ -160,7 +169,7 @@ class RProcessorPoolCPPE(RProcessorPoolMP):
     """
 
     def __init__(self, pool_maxsize=4):
-        self.max_pool_size: int = min(pool_maxsize, os.cpu_count(), 2)
+        self.max_pool_size: int = pool_maxsize
         self.executor = None
         self._initialize_executor()
 
@@ -176,7 +185,7 @@ class RProcessorPoolCPPE(RProcessorPoolMP):
         loop = asyncio.get_running_loop()
         for attempt in range(2):
             try:
-                func = functools.partial(run_analysis, r_code, kwargs)
+                func = functools.partial(run_analysis, r_code, kwargs, True)
                 result = await asyncio.wait_for(
                     loop.run_in_executor(self.executor, func),
                     timeout=60
