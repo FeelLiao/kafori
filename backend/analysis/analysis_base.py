@@ -1,206 +1,128 @@
 from abc import ABC, abstractmethod
 import rpy2.robjects as ro
 from rpy2.rinterface_lib.embedded import RRuntimeError
-from multiprocessing import Pool
+# from multiprocessing import Pool  # 不再需要
 from concurrent.futures import ProcessPoolExecutor
 import asyncio
 from contextlib import contextmanager
 import logging
 import functools
+import warnings
 
 logger = logging.getLogger(__name__)
 
 R_INIT_CODE = """
-suppressPackageStartupMessages(library(tidyverse))
-suppressPackageStartupMessages(library(svglite))
-
-plot_to_raw <- function(plot_obj, width=800, height=600) {
-  tf <- tempfile(fileext = ".svg")
-  svglite(file = tf, width = width /72 , height = height /72)
-  print(plot_obj)
-  dev.off()
-  img_raw <- readChar(tf, nchars=file.info(tf)$size, useBytes=TRUE)
-  unlink(tf)
-  return(img_raw)
-}
+  suppressPackageStartupMessages(library(tidyverse))
+  suppressPackageStartupMessages(library(svglite))
+  plot_to_raw <- function(plot_obj, width=800, height=600) {
+    tf <- tempfile(fileext = ".svg")
+    svglite(file = tf, width = width/72, height = height/72)
+    print(plot_obj); dev.off()
+    img_raw <- readChar(tf, nchars=file.info(tf)$size, useBytes=TRUE)
+    unlink(tf); img_raw
+  }
 """
 
 
 class DataAnalysis(ABC):
-    """Base class for data analysis tasks."""
-
     @abstractmethod
     def run_analysis(self):
-        """Run the data analysis."""
         pass
 
 
 @contextmanager
 def isolated_r_environment():
-    """
-    Create an isolated R environment for each task.
-    This ensures that each task runs in a clean R environment.
-    """
     try:
         new_env = ro.globalenv
         yield new_env
     finally:
         ro.r('rm(list=ls())')
-        logger.info("R environment cleaned up")
+        logger.debug("R environment cleaned up")
 
 
-def run_analysis(r_code: str, kwargs: dict, init_each_time: bool = True) -> ro.RObject:
-    """
-    run the R analysis code with the provided arguments.
-    Args:
-        r_code: R code to execute.
-        kwargs: Arguments to pass to the R code.
-    Returns:
-        RObject (rpy2.robjects): Result of the R code execution.
-    Raises:
-        Exception: If there is an error during R code execution.
-    """
+def _task_runner(r_code: str, kwargs: dict, init_each_time: bool) -> ro.RObject:
     try:
         with isolated_r_environment():
             if init_each_time:
-                try:
-                    ro.r(R_INIT_CODE)
-                    logger.debug("R init code executed for this task.")
-                except Exception as e:
-                    logger.error(f"Per-task R init failed: {e}")
-                    raise
-            for key, value in kwargs.items():
-                ro.globalenv[key] = value
-            result = ro.r(r_code)
-            return result
+                # 幂等初始化（第二次以后极快）
+                ro.r(R_INIT_CODE)
+            for k, v in kwargs.items():
+                ro.globalenv[k] = v
+            return ro.r(r_code)
     except RRuntimeError as e:
-        logger.error(f"R runtime error: {str(e)}")
-        raise Exception(f"R error: {str(e)}")
-    except Exception as e:
-        logger.error(f"Unexpected error in R task: {str(e)}")
+        raise Exception(f"R error: {e}")
+    except Exception:
         raise
 
 
-class RProcessorPoolMP(DataAnalysis):
-    """Processor for running R code in a separate process pool.
-    This class initialize `pool_size` R environment when you create an instance
-    and provides methods to run R code asynchronously. You need to call `close()`
-    method to clean up the resources.
-    Attributes:
-        pool_size (int): Number of worker processes in the pool.
+class RProcessorPoolBase(DataAnalysis):
+    """
+    统一的 R 进程池执行器（基于 ProcessPoolExecutor）。
+    兼容旧接口 run_analysis(r_code, **kwargs)。
     """
 
-    def __init__(self, pool_maxsize=1):
-        self.pool = None
-        self.max_pool_size: int = pool_maxsize
-        self._initialize_pool()
-
-    def _initialize_pool(self):
-        """
-        Initialize a process pool for R tasks.
-        """
-
-        self.pool = Pool(processes=self.max_pool_size,
-                         initializer=self._init_r)
-        logger.info(
-            f"Initialized process pool with {self.max_pool_size} workers")
-
-    @staticmethod
-    def _init_r():
-        """
-        Initialize a tidyverse R environment in each worker process.
-        """
-        try:
-            ro.r()
-            logger.info("R environment initialized in process")
-        except Exception as e:
-            logger.error(f"Failed to initialize R: {str(e)}")
-
-    async def run_analysis(self, r_code: str, **kwargs) -> ro.RObject:
-        """
-        Asynchronously run the R analysis code with the provided arguments.
-        The result should be a list with named elements in R.
-        When accessing the result, use `result.rx2('name')` to get the specific element.
-        Args:
-            r_code: R code to execute.
-            kwargs: Arguments to pass to the R code.
-        Returns:
-            RObject (rpy2.robjects): Result of the R code execution.
-        Raises:
-            Exception: If there is an error during R code execution.
-        """
-        loop = asyncio.get_running_loop()
-        for attempt in range(2):
-            try:
-                result = await asyncio.wait_for(
-                    loop.run_in_executor(None, lambda: self.pool.apply(
-                        run_analysis, (r_code, kwargs, True))),
-                    timeout=60
-                )
-                return result
-            except asyncio.TimeoutError:
-                logger.warning(f"Timeout on attempt {attempt + 1} in 60s")
-                continue
-            except Exception as e:
-                logger.error(f"Error on attempt {attempt + 1}: {str(e)}")
-                continue
-        raise Exception("Failed after 2 attempts")
-
-    def close(self):
-        """
-        Close the RProcessor and its process pool.
-        """
-        if self.pool:
-            # stop accepting new tasks
-            self.pool.close()
-            # wait for the worker processes to finish
-            self.pool.join()
-            logger.info("Process pool closed")
-            # reset the pool to None
-            self.pool = None
-
-
-class RProcessorPoolCPPE(RProcessorPoolMP):
-    """Processor for running R code in a separate process pool.
-    This class initialize a R environment when you submit a task
-    and provides methods to run R code asynchronously.
-    Attributes:
-        pool_maxsize (int): Max number of worker processes in the pool.
-    """
-
-    def __init__(self, pool_maxsize=4):
-        self.max_pool_size: int = pool_maxsize
-        self.executor = None
+    def __init__(self, pool_maxsize: int = 2, timeout: int = 60, retries: int = 2, init_each_time: bool = True):
+        self.max_pool_size = pool_maxsize
+        self.timeout = timeout
+        self.retries = retries
+        self.init_each_time = init_each_time
+        self.executor: ProcessPoolExecutor | None = None
         self._initialize_executor()
 
     def _initialize_executor(self):
-        """
-        Initialize a process pool for R tasks.
-        """
         self.executor = ProcessPoolExecutor(
-            max_workers=self.max_pool_size, initializer=self._init_r)
-        logger.info("Initialized R process pool executor")
+            max_workers=self.max_pool_size,
+            # initializer=self._process_level_init
+        )
+        logger.info(f"Initialized R executor with {self.max_pool_size} workers")
+
+    @staticmethod
+    def _process_level_init():
+        # 进程级预热（可选：这里也执行一次，降低首个任务延迟）
+        try:
+            ro.r()
+            logger.info("R process-level init done")
+        except Exception as e:
+            logger.error(f"Process-level R init failed: {e}")
 
     async def run_analysis(self, r_code: str, **kwargs) -> ro.RObject:
+        if not self.executor:
+            raise RuntimeError("Executor not initialized or already closed.")
         loop = asyncio.get_running_loop()
-        for attempt in range(2):
+        last_exc = None
+        for attempt in range(1, self.retries + 1):
             try:
-                func = functools.partial(run_analysis, r_code, kwargs, True)
+                func = functools.partial(_task_runner, r_code, kwargs, self.init_each_time)
                 result = await asyncio.wait_for(
                     loop.run_in_executor(self.executor, func),
-                    timeout=60
+                    timeout=self.timeout
                 )
                 return result
-            except asyncio.TimeoutError:
-                logger.warning(f"Timeout on attempt {attempt + 1} in 60s")
-                continue
+            except asyncio.TimeoutError as e:
+                last_exc = e
+                logger.warning(f"R task timeout (attempt {attempt}/{self.retries}, {self.timeout}s)")
             except Exception as e:
-                logger.error(f"Error on attempt {attempt + 1}: {str(e)}")
-                continue
-        raise Exception("Failed after 2 attempts")
+                last_exc = e
+                logger.error(f"R task error (attempt {attempt}/{self.retries}): {e}")
+        raise Exception(f"R task failed after {self.retries} attempts: {last_exc}")
 
     def close(self):
         if self.executor:
             self.executor.shutdown(wait=True)
-            logger.info("Process pool executor closed")
+            logger.info("R executor closed")
             self.executor = None
+
+
+# 兼容旧类名：保留并发出弃用警告
+class RProcessorPoolCPPE(RProcessorPoolBase):
+    pass
+
+
+class RProcessorPoolMP(RProcessorPoolBase):
+    def __init__(self, *a, **kw):
+        warnings.warn(
+            "RProcessorPoolMP is deprecated; using unified ProcessPool implementation.",
+            DeprecationWarning,
+            stacklevel=2
+        )
+        super().__init__(*a, **kw)
