@@ -51,15 +51,15 @@ class DEGAnalysis(BaseAnalysis):
             })
 
         # 表格：full 与 sig
-        def rlist_to_records(rlist):
+        def rlist_to_records(rlist, prefix=""):
             out: Dict[str, list[dict[str, Any]]] = {}
             for name in list(rlist.names):
                 df = self.r2py(rlist.rx2(name))
-                out[name] = df.to_dict(orient="records")
+                out[prefix + name] = df.to_dict(orient="records")
             return out
 
-        tables_full = rlist_to_records(res.rx2("tables"))
-        tables_sig = rlist_to_records(res.rx2("sig_tables"))
+        tables_full = rlist_to_records(res.rx2("tables"), prefix="full_")
+        tables_sig = rlist_to_records(res.rx2("sig_tables"), prefix="sig_")
 
         meta = {
             "title": self.title,
@@ -72,5 +72,5 @@ class DEGAnalysis(BaseAnalysis):
         return {
             "meta": meta,
             "plots": plots_out,
-            "tables": {"full": tables_full, "sig": tables_sig},
+            "tables": {**tables_full, **tables_sig},
         }

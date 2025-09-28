@@ -61,7 +61,7 @@ class RProcessorPoolBase(DataAnalysis):
     兼容旧接口 run_analysis(r_code, **kwargs)。
     """
 
-    def __init__(self, pool_maxsize: int = 2, timeout: int = 60, retries: int = 2, init_each_time: bool = True):
+    def __init__(self, pool_maxsize: int = 2, timeout: int = 60, retries: int = 1, init_each_time: bool = True):
         self.max_pool_size = pool_maxsize
         self.timeout = timeout
         self.retries = retries

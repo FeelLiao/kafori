@@ -31,3 +31,38 @@ async def test_pca_analysis_concurrent_inprocess():
         assert r.status_code == 200, f"req{i}"
         body = r.json()
         assert body["code"] == 0, f"req{i} body={body}"
+
+
+# 以下为 DEG 分析脚本测试
+deg_payload = {
+    "analysis": "deg",
+    "params": {
+        "width": 900,
+        "height": 600
+    },
+    "data_filter": {
+        "unique_id": ["LRX68bd3639001", "LRX68bd3639002", "LRX68bd3639003",
+                      "LRX68bd3639004", "LRX68bd3639005", "LRX68bd3639006",
+                      "LRX68bd3639007", "LRX68bd3639008", "LRX68bd3639009"],
+        "gene_name": [],
+        "all_gene": True
+    }
+}
+
+
+@pytest.mark.asyncio
+async def test_deg_analysis_concurrent_inprocess():
+    n = 1
+    async with LifespanManager(app):
+        transport = httpx.ASGITransport(app=app)
+        async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+            rs = await asyncio.gather(*[
+                client.post("/transcripts/analysis", json=deg_payload)
+                for _ in range(n)
+            ])
+    for i, r in enumerate(rs):
+        assert r.status_code == 200, f"req{i}"
+        body = r.json()
+        assert body["code"] == 0, f"req{i} body={body}"
+        tables = body["data"]["tables"]
+        assert len(tables) == 6

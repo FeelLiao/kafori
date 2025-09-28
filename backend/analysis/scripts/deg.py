@@ -12,8 +12,8 @@ NORM_MTH <- if (exists("normalize_method")) as.character(normalize_method)[1] el
 
 # 主函数：对 expression_counts 的所有组做两两对比
 deg_all_contrasts <- function(expression_counts, normalize_method = "TMM") {
-  
-  df <- expression_tpm |>
+
+  df <- expression_counts |>
   remove_rownames() |>
   mutate(across(-gene_id, ~ suppressWarnings(as.numeric(.x)))) |>
   column_to_rownames("gene_id")
@@ -32,7 +32,7 @@ deg_all_contrasts <- function(expression_counts, normalize_method = "TMM") {
 
   # DGEList
   y <- DGEList(
-    counts = as.matrix(df),
+    counts = df,
     group = groups
   )
 
@@ -65,8 +65,28 @@ deg_all_contrasts <- function(expression_counts, normalize_method = "TMM") {
     qlf <- glmQLFTest(fit, contrast = contr[, 1, drop = TRUE])
     tt <- topTags(qlf, n = nrow(qlf$table))$table
 
-    full <- as_tibble(tt, rownames = "gene_id") |>
-      transmute(gene_id, logFC, logCPM, PValue, FDR)
+    # 安全获取 rownames 为 gene_id，避免重复列名
+    full <- tt |>
+      as.data.frame()
+
+    if ("gene_id" %in% colnames(full)) {
+      # 已存在 gene_id 列，避免重复
+      colnames(full)[colnames(full) == "gene_id"] <- "gene_id_orig"
+    }
+
+    full <- full |>
+      rownames_to_column(var = "gene_id")
+
+    # 统一去重列名（防御性措施）
+    colnames(full) <- make.unique(colnames(full))
+
+    # 只保留所需列（不同 edgeR 版本表头可能含 F 或 LR）
+    want_cols <- c("gene_id","logFC","logCPM","PValue","FDR")
+    keep <- intersect(want_cols, colnames(full))
+    full <- full[, keep, drop = FALSE]
+
+    full <- full |>
+      dplyr::transmute(across(all_of(keep)))
 
     sig <- full |> filter(FDR < FDR_CUT, abs(logFC) > LFC_CUT)
 
@@ -83,7 +103,7 @@ deg_all_contrasts <- function(expression_counts, normalize_method = "TMM") {
       labs(title = cname, x = "log2FC", y = "-log10(FDR)") +
       theme_bw(base_size = 12)
 
-    svg_txt <- plot_to_svg(p, width = width, height = height)
+    svg_txt <- plot_to_raw(p, width = width, height = height)
 
     list(name = cname, full = full, sig = sig, svg = svg_txt)
   })
