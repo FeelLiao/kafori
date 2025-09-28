@@ -1,6 +1,8 @@
 # ---------- General Settings ----------
 log_dir: backend/kafori_running.log
 start_r_core: 2
+r_timeout: 60        # R 进程超时时间，单位秒
+r_retries: 1         # R 进程重试次数
 secret_key: 09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7
 interval_refresh_hours: 12
 enable_cors: false # 是否启用跨域资源共享（CORS）

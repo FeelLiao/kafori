@@ -26,12 +26,14 @@ init_global_logger(config.log_dir)
 
 # Determine the number of R cores to start
 R_CORE = os.cpu_count() if int(config.start_r_core) == 0 else int(config.start_r_core)
+R_TIMEOUT = int(config.r_timeout)
+R_RETRIES = int(config.r_retries)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
 
-    app.state.r_processor = RProcessorPoolCPPE(pool_maxsize=R_CORE)
+    app.state.r_processor = RProcessorPoolCPPE(pool_maxsize=R_CORE, timeout=R_TIMEOUT, retries=R_RETRIES)
     logger.info("RProcessor initialized")
     app.state.redis = build_redis_pool()
     logger.info("Redis connection pool initialized")
