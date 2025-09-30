@@ -22,32 +22,32 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      component: () => import('@/pages/index.vue'),
+      component: () => import('@/views/index.vue'),
     },
 
     {
       path: '/Transcripts',
-      component: () => import('@/pages/transcripts/index.vue'),
+      component: () => import('@/views/transcripts/index.vue'),
     },
 
     {
       path: '/Pipelines',
-      component: () => import('@/pages/pipelines/index.vue'),
+      component: () => import('@/views/pipelines/index.vue'),
     },
 
     {
       path: '/Download',
-      component: () => import('@/pages/download/index.vue'),
+      component: () => import('@/views/download/index.vue'),
     },
 
     {
       path: '/Tools',
-      component: () => import('@/pages/tools/index.vue'),
+      component: () => import('@/views/tools/index.vue'),
     },
 
     {
       path: '/Contact',
-      component: () => import('@/pages/contact/index.vue'),
+      component: () => import('@/views/contact/index.vue'),
     },
 
   ],

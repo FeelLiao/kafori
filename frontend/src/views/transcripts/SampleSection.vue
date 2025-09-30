@@ -43,7 +43,15 @@
           :data="pagedSamples"
           :columns="sample_columns"
           :row-key="(row:any) => String(row.UniqueID)"
-          :pureTableMinWidth="1700"
+          :full-width="true"
+          auto-column-width
+          expand-to-fit
+          fit
+          :expand-skip-types="true"
+          :min-auto-col-width="50"
+          :max-auto-col-width="1000"
+          :char-pixel="12"
+          single-line
           :height="400"
           :show-pagination="true"
           @page-change="handleSamplePageChange"
@@ -106,7 +114,7 @@ const emits = defineEmits<{
 
 // 分页
 const sample_pagination = ref({
-  pageSize: 5,
+  pageSize: 100,
   currentPage: 1,
   total: props.samples.length,
 });
@@ -175,7 +183,7 @@ watch(
 // 表格列
 const sample_columns =  computed(() => [
   { type: 'selection' },
-  { prop: 'UniqueEXID', label: i18n.global.t('Transcripts_exp_id'), sortable: true },
+  { prop: 'UniqueEXID', label: i18n.global.t('Transcripts_exp_id'),width: 10 },
   { prop: 'SampleID', label: i18n.global.t('Transcripts_sample_id'), slot: 'SampleID' },
   { prop: 'SampleAge', label: i18n.global.t('Transcripts_sample_age') },
   { prop: 'SampleDetail', label: i18n.global.t('Transcripts_sample_detail'), slot: 'SampleDetail' },
@@ -259,7 +267,7 @@ async function submit_transcirpt() {
 
 <style scoped>
 .table-card {
-  max-width: 900px;
+  width: 100%;
   margin-bottom: 24px;
   overflow-x: auto;
   border-radius: 18px;

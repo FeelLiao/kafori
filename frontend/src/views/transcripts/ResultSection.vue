@@ -29,8 +29,15 @@
         <re-pure-table
             :data="tableData"
             :columns="getColumns(tableData)"
-            :pureTableMinWidth="1100"
-            :height="400"
+            :full-width="true"
+            auto-column-width
+            expand-to-fit
+            fit
+            :expand-skip-types="true"
+            :min-auto-col-width="50"
+            :max-auto-col-width="1000"
+            :char-pixel="12"
+            single-line
             :show-pagination="false"
         />
         <el-button type="success" @click="exportCSV(tableKey)">导出 {{ tableKey }} CSV</el-button>

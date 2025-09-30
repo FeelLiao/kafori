@@ -6,17 +6,17 @@
       <template #header>
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-3">
-            <span class="text-base font-semibold">A1｜样本文件上传</span>
+            <span class="text-base font-semibold">A1｜{{$t('Pipelines_sample_upload')}}</span>
             <el-tag
                 :type="is_uploadedA1 ? 'success' : 'info'"
                 effect="dark"
                 round
             >
-              {{ is_uploadedA1 ? '已上传' : '待上传' }}
+              {{ is_uploadedA1 ? $t('Pipelines_uploaded') : $t('Pipelines_pending_upload') }}
             </el-tag>
           </div>
           <div class="text-xs text-gray-500 dark:text-gray-400">
-            完成 A1 后显示 A2/A3（两者二选一继续）
+            {{$t('Pipelines_A1_desc')}}
           </div>
         </div>
       </template>
@@ -35,17 +35,17 @@
             class="w-full"
         >
           <div class="el-upload__text">
-            拖拽文件到此处，或 <em>点击上传</em>
+            {{$t('Pipelines_drag_upload')}} <em>{{$t('Pipelines_click_upload')}}</em>
           </div>
           <template #tip>
             <div class="text-xs text-gray-500 dark:text-gray-400 mt-2">
-              支持 CSV/TSV/Excel/JSON。此处仅为界面预览，未接入上传逻辑。
+              {{$t('Pipelines_A1_file_desc')}}
               <el-button
                   type="primary"
                   @click="uploadFileA1"
                   :loading="uploadingA1"
               >
-                上传文件
+                {{$t('Pipelines_upload')}}
               </el-button>
             </div>
           </template>
@@ -56,7 +56,7 @@
 
     <!-- 分割线 -->
     <el-divider class="!my-2">
-      <span class="text-sm text-gray-500 dark:text-gray-400">A1 完成后继续</span>
+      <span class="text-sm text-gray-500 dark:text-gray-400">{{$t('Pipelines_A1_tip')}}</span>
     </el-divider>
 
     <!-- A2 / A3 容器：默认以“未解锁”样式展示 -->
@@ -74,21 +74,21 @@
         <el-card class="rounded-xl shadow-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
           <template #header>
             <div class="flex items-center justify-between">
-              <span class="text-base font-semibold">A2｜tpm / counts 文件上传</span>
+              <span class="text-base font-semibold">A2｜{{$t('Pipelines_tpm_counts_upload')}}</span>
               <div class="flex items-center gap-2">
                 <el-tag
                     :type="is_uploadedA2_1 ? 'success' : 'info'"
                     effect="dark"
                     round
                 >
-                  {{ is_uploadedA2_1 ? 'tpm已上传' : 'tpm待上传' }}
+                  {{ is_uploadedA2_1 ? $t('Pipelines_tpm_uploaded') : $t('Pipelines_tpm_pending_upload') }}
                 </el-tag>
                 <el-tag
                     :type="is_uploadedA2_2 ? 'success' : 'info'"
                     effect="dark"
                     round
                 >
-                  {{ is_uploadedA2_2 ? 'counts已上传' : 'counts待上传' }}
+                  {{ is_uploadedA2_2 ? $t('Pipelines_counts_uploaded') : $t('Pipelines_counts_pending_upload') }}
                 </el-tag>
 
               </div>
@@ -97,7 +97,7 @@
 
           <div class="space-y-5">
             <div>
-              <div class="mb-2 text-sm font-medium">tpm 文件</div>
+              <div class="mb-2 text-sm font-medium">tpm</div>
               <el-upload
                   drag
                   action="#"
@@ -110,12 +110,14 @@
                   accept=".csv,.tsv,.xlsx,.xls,.mtx,.txt,.json"
                   class="w-full"
               >
-                <div class="el-upload__text">拖拽或 <em>点击上传</em></div>
+                <div class="el-upload__text">
+                  {{$t('Pipelines_drag_upload')}} <em>{{$t('Pipelines_click_upload')}}</em>
+                </div>
               </el-upload>
             </div>
 
             <div>
-              <div class="mb-2 text-sm font-medium">counts 文件</div>
+              <div class="mb-2 text-sm font-medium">counts</div>
               <el-upload
                   drag
                   action="#"
@@ -128,7 +130,9 @@
                   accept=".csv,.tsv,.xlsx,.xls,.mtx,.txt,.json"
                   class="w-full"
               >
-                <div class="el-upload__text">拖拽或 <em>点击上传</em></div>
+                <div class="el-upload__text">
+                  {{$t('Pipelines_drag_upload')}} <em>{{$t('Pipelines_click_upload')}}</em>
+                </div>
               </el-upload>
             </div>
 
@@ -138,9 +142,9 @@
                   @click="uploadFileA2_1(); uploadFileA2_2()"
                   :loading="uploadingA2_1 && uploadingA2_2"
               >
-                上传文件
+                {{$t('Pipelines_upload')}}
               </el-button>
-              <el-button type="primary" :disabled="!(is_uploadedA2_1 && is_uploadedA2_2)" @click="putDatabase">写入数据库</el-button>
+              <el-button type="primary" :disabled="!(is_uploadedA2_1 && is_uploadedA2_2)" @click="putDatabase">{{$t('Pipelines_btn_put_database')}}</el-button>
             </div>
           </div>
         </el-card>
@@ -159,12 +163,12 @@
         <el-card class="rounded-xl shadow-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
           <template #header>
             <div class="flex items-center justify-between">
-              <span class="text-base font-semibold">A3｜Rawdata 文件上传（支持断点续传）</span>
+              <span class="text-base font-semibold">A3｜{{$t('Pipelines_rawdata_upload')}}</span>
 
               <el-tag :type="is_uploadedA3 ? 'success' : 'info'"
                       effect="dark" round
               >
-                {{ is_uploadedA3 ? '已上传' : '待上传' }}
+                {{ is_uploadedA3 ? $t('Pipelines_uploaded') : $t('Pipelines_pending_upload') }}
               </el-tag>
             </div>
           </template>
@@ -183,10 +187,12 @@
                 accept=".fastq,.fastq.gz,.fq,.fq.gz,.bam,.cram,.fast5,.zip,.tar,.gz"
                 class="w-full"
             >
-              <div class="el-upload__text">拖拽多个大文件，或 <em>点击上传</em></div>
+              <div class="el-upload__text">
+                {{$t('Pipelines_drag_upload')}} <em>{{$t('Pipelines_click_upload')}}</em>
+              </div>
               <template #tip>
                 <div class="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                  建议分片上传（≥ 5MB）。此处仅为界面展示，未接入真实断点续传逻辑。
+                  {{$t('Pipelines_file_size')}}
                 </div>
               </template>
             </el-upload>
@@ -197,33 +203,33 @@
                   @click="upload_rawdata_md5_check"
                   :loading="uploadingA3"
               >
-                上传文件
+                {{$t('Pipelines_upload')}}
               </el-button>
-              <el-button type="primary" :disabled="!(is_uploadedA3 && check_md5)" @click="raw_processing">启动上游分析</el-button>
-              <el-button :disabled="!(upstream_loading)" @click="getRawdataStatus">状态查询</el-button>
-              <el-button type="success" :disabled="!(upstream_success)" @click="handle_upstream_result">获取上游分析结果</el-button>
-              <el-button type="primary" :disabled="!(upstream_success)" @click="putDatabase">写入数据库</el-button>
+              <el-button type="primary" :disabled="!(is_uploadedA3 && check_md5)" @click="raw_processing">{{$t('Pipelines_btn_start_upstream')}}</el-button>
+              <el-button :disabled="!(upstream_loading)" @click="getRawdataStatus">{{$t('Pipelines_btn_upstream_status')}}</el-button>
+              <el-button type="success" :disabled="!(upstream_success)" @click="handle_upstream_result">{{$t('Pipelines_btn_upstream_result')}}</el-button>
+              <el-button type="primary" :disabled="!(upstream_success)" @click="putDatabase">{{$t('Pipelines_btn_put_database')}}</el-button>
             </div>
 
             <el-descriptions :column="1" size="small" class="mt-2">
-              <el-descriptions-item label="会话 ID">-</el-descriptions-item>
-              <el-descriptions-item label="分析状态">
+<!--              <el-descriptions-item label="会话 ID">-</el-descriptions-item>-->
+              <el-descriptions-item :label="$t('Pipelines_analysis_status')">
                 <el-tag
-                    :type="upstream_status === 'unknown' ? 'info' : (upstream_status === 'running' ? 'warning' : 'success')"
+                    :type="upstream_status === 'unknown' ? 'info' : (upstream_status === 'running' || 'pending' ? 'warning' : 'success')"
                     round
                 >
-                  {{ upstream_status === 'unknown' ? '未开始' : (upstream_status === 'running' ? '分析中' : '已完成') }}
+                  {{ upstream_status === 'unknown' ? $t('Pipelines_unknown') : upstream_status === 'running' ? $t('Pipelines_running') : upstream_status === 'pending' ? $t('Pipelines_pending') : upstream_status === 'failed' ? $t('Pipelines_failed') : $t('Pipelines_finished') }}
                 </el-tag>
 
 
               </el-descriptions-item>
-              <el-descriptions-item label="结果准备">
+              <el-descriptions-item :label="$t('Pipelines_pre_result')">
 
                 <el-tag
                     :type="upstream_success ? 'success' : 'info'"
                     round
                 >
-                  {{ upstream_success ? '已就绪' : '未就绪' }}
+                  {{ upstream_success ? $t('Pipelines_ready') : $t('Pipelines_not_ready') }}
                 </el-tag>
 
               </el-descriptions-item>
@@ -235,7 +241,7 @@
 
     <!-- 说明 -->
     <div class="text-xs text-gray-500 dark:text-gray-400">
-      注：当前为界面初版预览，未接入 TypeScript/业务逻辑。后续可按需解锁 A2/A3、开启分片上传、轮询分析状态与写库。
+
     </div>
   </div>
 
@@ -354,7 +360,7 @@ const upstream_loading = ref(false);
 
 const upstream_success = ref(false);
 
-type UpstreamStatus = 'unknown' | 'running' | 'finished';
+type UpstreamStatus = 'unknown' | 'pending' | 'running' | 'finished';
 
 const upstream_status = ref<UpstreamStatus>("unknown");
 

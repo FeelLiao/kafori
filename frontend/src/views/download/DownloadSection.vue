@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, computed, nextTick } from 'vue';
 import type { UploadInstance, UploadProps } from 'element-plus';
+import i18n from '@/i18n/index.ts'
 import RePureTable from '@/components/re-pure-table.vue';
 import { downloadFile } from '@/api/system.ts';
 import type { Sample } from '@/api/interface.ts';
@@ -81,11 +82,11 @@ watch(
 );
 
 // 表格列
-const sample_columns = ref<any[]>([
-  { prop: 'classes', label: '类别' },
-  { prop: 'item_type', label: '文件' },
-  { prop: 'filename', label: '文件名' },
-  { prop: 'action', label: '操作', slot: 'action' }
+const sample_columns = computed(() =>[
+  { prop: 'classes', label: i18n.global.t('Download_file_category') },
+  { prop: 'item_type', label: i18n.global.t('Download_file') },
+  { prop: 'filename', label: i18n.global.t('Download_file_name') },
+  { prop: 'action', label: i18n.global.t('Download_file_action'), slot: 'action' }
 ]);
 
 async function editRow(row: any) {
@@ -103,48 +104,53 @@ async function editRow(row: any) {
   a.remove();
   URL.revokeObjectURL(url);
 }
-
-
-
 </script>
 
 <template>
-  <re-pure-table
-      ref="reTableRef"
-      :data="pagedSamples"
-      :columns="sample_columns"
-      :row-key="(row:any) => String(row.UniqueID)"
-      :pureTableMinWidth="600"
-      :height="400"
-      :show-pagination="true"
-      @page-change="handleSamplePageChange"
-      @page-size-change="handleSampleSizeChange"
-      @select="onSelectRow"
-      @select-all="onSelectAll"
-      :pagination="{
-      currentPage: sample_pagination.currentPage,
-      pageSize: sample_pagination.pageSize,
-      total: props.samples.length,
-      layout: 'total, prev, pager, next, jumper'
-    }"
-  >
-    <template #header>
-      <div class="flex items-center gap-2">
-            <span class="card-title text-blue-700 dark:text-blue-300 flex items-center">
-              🧬 下载列表
-            </span>
-      </div>
-    </template>
-    <template #action="{ row }">
-      <el-button type="primary" @click="editRow(row)">下载</el-button>
-    </template>
-  </re-pure-table>
+  <div class="download-section-center">
+    <re-pure-table
+        ref="reTableRef"
+        :data="pagedSamples"
+        :columns="sample_columns"
+        :row-key="(row:any) => String(row.UniqueID)"
+        fit
+        :pureTableMinWidth="600"
+        :height="400"
+        :show-pagination="true"
+        @page-change="handleSamplePageChange"
+        @page-size-change="handleSampleSizeChange"
+        @select="onSelectRow"
+        @select-all="onSelectAll"
+        :pagination="{
+        currentPage: sample_pagination.currentPage,
+        pageSize: sample_pagination.pageSize,
+        total: props.samples.length,
+        layout: 'total, prev, pager, next, jumper'
+      }"
+    >
+      <template #header>
+        <div class="flex items-center gap-2">
+              <span class="card-title text-blue-700 dark:text-blue-300 flex items-center">
+                🧬 {{$t('Download_list')}}
+              </span>
+        </div>
+      </template>
+      <template #action="{ row }">
+        <el-button type="primary" @click="editRow(row)">{{$t('Download_btn_download')}}</el-button>
+      </template>
+    </re-pure-table>
+  </div>
 </template>
 
 <style scoped>
+.download-section-center {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+}
 .table-card {
-  min-width: 1000px;
-  max-width: 900px;
+  width: 70%;
   margin-bottom: 24px;
   overflow-x: auto;
   border-radius: 18px;
