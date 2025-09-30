@@ -40,7 +40,15 @@
           :data="pagedExperiments"
           :columns="columns"
           :row-key="(row:any) => String(row.UniqueEXID)"
-          :pureTableMinWidth="600"
+          :full-width="true"
+          auto-column-width
+          expand-to-fit
+          fit
+          :expand-skip-types="true"
+          :min-auto-col-width="parentWidth"
+          :max-auto-col-width="480"
+          :char-pixel="12"
+          single-line
           :height="400"
           :show-pagination="true"
           @select="onSelectRow"
@@ -48,31 +56,35 @@
           @page-change="handleExperimentPageChange"
           @page-size-change="handleExperimentSizeChange"
           :pagination="{
-          currentPage: experiment_pagination.currentPage,
-          pageSize: experiment_pagination.pageSize,
-          total: experimentData.length,
-          layout: 'total, prev, pager, next, jumper'
-        }"
+      currentPage: experiment_pagination.currentPage,
+      pageSize: experiment_pagination.pageSize,
+      total: experimentData.length,
+      layout: 'total, prev, pager, next, jumper'
+    }"
       >
         <template #header>
           <div class="flex items-center gap-2">
-            <span class="card-title text-blue-700 dark:text-blue-300 flex items-center">
-              🧪 {{$t('Transcripts_experiment_list')}}
-            </span>
-            <el-button type="primary" @click="emitFetchSamples">{{$t('Transcripts_search')}}</el-button>
+        <span class="card-title text-blue-700 dark:text-blue-300 flex items-center">
+          🧪 {{$t('Transcripts_experiment_list')}}
+        </span>
+            <el-button type="primary" @click="emitFetchSamples">
+              {{$t('Transcripts_search')}}
+            </el-button>
           </div>
         </template>
 
         <template #experimentCategory="{ row }">
-          <span :title="getExpCategory(row.ExpClass)" class="ellipsis-cell dark:text-gray-100">
-            {{ getExpCategory(row.ExpClass) }}
-          </span>
+      <span :title="getExpCategory(row.ExpClass)" class="ellipsis-cell dark:text-gray-100">
+        {{ getExpCategory(row.ExpClass) }}
+      </span>
         </template>
+
         <template #experiment="{ row }">
-          <span :title="row.Experiment" class="ellipsis-cell dark:text-gray-100">
-            {{ row.Experiment }}
-          </span>
+      <span :title="row.Experiment" class="ellipsis-cell dark:text-gray-100">
+        {{ row.Experiment }}
+      </span>
         </template>
+
         <template #action="{ row }">
           <el-button type="primary" size="small" @click="emitFetchSamples">
             检索
@@ -84,7 +96,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed, nextTick } from 'vue';
+import { ref, watch, computed, nextTick, onMounted } from 'vue';
 import i18n from '@/i18n/index.ts'
 import RePureTable from '@/components/re-pure-table.vue';
 import type { CheckboxValueType } from 'element-plus';
@@ -103,6 +115,10 @@ const categoryValue = ref<CheckboxValueType[]>([]);
 
 const expData = ref<ExpClassDTO[]>([]);
 const experimentData = ref<Experiment[]>([]);
+
+const parentWidth = computed(() => {
+  return document.querySelector('.table-card')?.clientWidth ?? 200;
+});
 
 async function fetchExpData() {
   expData.value = await transcriptsQuery('exp_class');
@@ -138,7 +154,7 @@ async function searchExperiments() {
 
 // 分页
 const experiment_pagination = ref({
-  pageSize: 5,
+  pageSize: 100,
   currentPage: 1
 });
 const pagedExperiments = computed(() => {
@@ -216,7 +232,7 @@ function getExpCategory(expClass: string) {
 
 const columns = computed(() => [
   { type: 'selection' },
-  { prop: 'UniqueEXID', label: i18n.global.t('Transcripts_exp_id'), sortable: true },
+  { prop: 'UniqueEXID', label: i18n.global.t('Transcripts_exp_id'),width: 20},
   { prop: 'ExperimentCategory', label: i18n.global.t('Transcripts_exp_category'), slot: 'experimentCategory' },
   { prop: 'Experiment', label: i18n.global.t('Transcripts_exp_name'), slot: 'experiment' },
   { prop: 'action', label: i18n.global.t('Transcripts_exp_action'), slot: 'action' }
@@ -225,7 +241,7 @@ const columns = computed(() => [
 
 <style scoped>
 .table-card {
-  max-width: 900px;
+  width: 100%;
   margin-bottom: 24px;
   overflow-x: auto;
   border-radius: 18px;

@@ -45,7 +45,7 @@ const messages = {
         home_sample_mapDesc: 'The distribution of the number of samples, only top 10 experiments are shown here.',
 
         Transcripts_nav: 'Navigation',
-        Transcripts_exp_category: 'Experiment Category',
+        Transcripts_exp_category: 'ExperimentCategory',
         Transcripts_experiment: 'Experiment',
         Transcripts_sample: 'Sample',
         Transcripts_result: 'Result',
@@ -57,7 +57,6 @@ const messages = {
         Transcripts_page: 'page',
 
         Transcripts_exp_id: 'UniqueEXID',
-        Transcripts_exp_category: 'ExperimentCategory',
         Transcripts_exp_name: 'ExperimentName',
         Transcripts_exp_action: 'Action',
 
@@ -74,6 +73,77 @@ const messages = {
         Transcripts_search: 'Search',
         Transcripts_upload: 'Upload',
         Transcripts_analysis: 'Analysis',
+
+        Pipelines_sample_upload: 'Sample Upload',
+        Pipelines_tpm_counts_upload: 'Tpm / Counts Upload',
+        Pipelines_rawdata_upload: 'Rawdata Upload',
+
+        Pipelines_pending_upload: 'Pending upload',
+        Pipelines_uploaded: 'Uploaded',
+        Pipelines_tpm_pending_upload: 'Tpm Pending upload',
+        Pipelines_tpm_uploaded: 'Tpm Uploaded',
+        Pipelines_counts_pending_upload: 'Counts Pending upload',
+        Pipelines_counts_uploaded: 'Counts Uploaded',
+
+        Pipelines_drag_upload: 'drag file to here or',
+        Pipelines_click_upload: 'click to upload',
+
+        Pipelines_A1_desc: 'After completing A1, proceed with A2/A3(only one)',
+        Pipelines_A1_file_desc: 'Supports CSV, TSV, Excel and JSON; must be uploaded according to the standard format.',
+
+        Pipelines_upload: 'Upload File',
+
+        Pipelines_A1_tip: 'A1 finished to continue',
+
+        Pipelines_btn_start_upstream: 'start upstream analysis',
+        Pipelines_btn_upstream_status: 'Status Inquiry',
+        Pipelines_btn_upstream_result: 'Get Analysis Results',
+        Pipelines_btn_put_database: 'Put into Database',
+
+        Pipelines_file_size: 'One File Size <= 10GB',
+        Pipelines_file_example: '下载示例文件',
+
+
+        Pipelines_analysis_status: 'Analysis Status',
+        Pipelines_pre_result: 'Result Preview',
+
+        Pipelines_unknown: 'unknown',
+        Pipelines_pending: 'pending',
+        Pipelines_running: 'running',
+        Pipelines_failed: 'failed',
+        Pipelines_finished: 'finished',
+
+        Pipelines_ready: 'ready',
+        Pipelines_not_ready: 'not ready',
+
+
+        Download_list: 'Download List',
+        Download_file_category: 'Category',
+        Download_file_name: 'FileName',
+        Download_file: 'File',
+        Download_file_action: 'Action',
+        Download_btn_download: 'Download',
+
+        Contact_lwf_name: 'Wan-Feng Li',
+        Contact_lwf_introduction: 'Wan-Feng Li is a Researcher and Master’s Supervisor at the Institute of Forestry, Chinese Academy of Forestry. He holds a Ph.D. in Botany from Peking University. His main research interests include breeding techniques and regulation of forest trees, molecular mechanisms of phase transitions in trees, and genetic improvement of conifers such as larch. Since joining the institute in 2009, he has led several national major research projects and conducted a postdoctoral fellowship at University of Natural Resources and Life Sciences, Vienna',
+
+        Contact_ltq_name: 'Tang-Quan Liao',
+        Contact_ltq_introduction: 'Tang-Quan Liao has served as the project leader, overseeing system architecture design and backend development. He received his Bachelor’s degree from Hunan Agricultural University and is currently pursuing a Master’s degree at the Institute of Forestry, Chinese Academy of Forestry, where he researches reproductive phase transitions in Japanese larch (Larix kaempferi) under the supervision of Professor Wan-Feng Li. With a strong passion for data analysis and visualization, he aims to continue contributing to data-driven biological research.',
+
+        Contact_zjj_name: 'Jun-Jie Zhou',
+        Contact_zjj_introduction: 'Jun-Jie Zhou is mainly responsible for front - end development, database design, and deployment. He graduated from Jishou University Zhangjiajie College with a bachelor\'s degree in Computer Science, where he focused on web development and operations. He has a strong passion for data visualization and continuously explores the construction and maintenance of cloud platforms.',
+
+        Contact_team: 'Our Team',
+        Contact_team_desc: 'We are committed to promoting the integration of forestry science and information technology. We welcome more like-minded partners to join us in exploring new directions for data-driven biological research.',
+
+        footer_analytics: 'Transcriptome Data Analysis',
+        footer_desc: 'A professional visualization platform exploring the mysteries of the genome, providing data support for biological research.',
+        footer_platform: 'Platform',
+        footer_resource: 'Resource',
+        footer_support: 'Support',
+        footer_support_desc: 'Open source is not easy. Follow github/gitee to get the latest updates. Hope to give a little star to support.',
+        footer_copy: '© 2025 Transcriptome Data Analysis Platform. All rights reserved.',
+        footer_copy_txt: 'Copyright 2025 The Institute of Forestry, Chinese Academy of Forestry',
 
     },
 
@@ -131,7 +201,6 @@ const messages = {
         Transcripts_page: '页',
 
         Transcripts_exp_id: '实验编号',
-        Transcripts_exp_category: '实验类别',
         Transcripts_exp_name: '实验名称',
         Transcripts_exp_action: '操作',
 
@@ -148,6 +217,77 @@ const messages = {
         Transcripts_search: '检索',
         Transcripts_upload: '上传',
         Transcripts_analysis: '分析',
+
+        Pipelines_sample_upload: '样本文件上传',
+        Pipelines_tpm_counts_upload: 'Tpm / Counts 文件上传',
+        Pipelines_rawdata_upload: 'Rawdata 文件上传',
+
+        Pipelines_pending_upload: '待上传',
+        Pipelines_uploaded: '已上传',
+        Pipelines_tpm_pending_upload: 'Tpm待上传',
+        Pipelines_tpm_uploaded: 'Tpm已上传',
+        Pipelines_counts_pending_upload: 'Counts待上传',
+        Pipelines_counts_uploaded: 'Counts已上传',
+        Pipelines_drag_upload: '拖拽文件到此处，或',
+        Pipelines_click_upload: '点击上传',
+
+        Pipelines_upload: '上传文件',
+
+        Pipelines_A1_desc: '完成 A1 后操作 A2/A3（两者二选一继续）',
+        Pipelines_A1_file_desc: '支持 CSV，TSV，Excel，JSON，需要按照标准格式上传。',
+        Pipelines_A1_tip: 'A1 完成后继续',
+
+        Pipelines_btn_start_upstream: '启动下游分析',
+        Pipelines_btn_upstream_status: '状态查询',
+        Pipelines_btn_upstream_result: '获取上游分析结果',
+        Pipelines_btn_put_database: '写入数据库',
+
+
+        Pipelines_file_format: '支持扩展名：.csv, .xls, .xlsx, .txt',
+        Pipelines_file_size: '单个文件 <= 10GB',
+        Pipelines_analysis_status: '分析状态',
+        Pipelines_pre_result: '结果准备',
+
+        Pipelines_unknown: '未开始',
+        Pipelines_pending: '挂载中',
+        Pipelines_running: '分析中',
+        Pipelines_failed: '分析失败',
+        Pipelines_finished: '已完成',
+
+        Pipelines_ready: '已就绪',
+        Pipelines_not_ready: '未就绪',
+
+        Download_list: '下载列表',
+        Download_file_category: '种类',
+        Download_file_name: '文件名',
+        Download_file: '文件',
+        Download_file_action: '操作',
+        Download_btn_download: '下载',
+
+
+        Contact_lwf_name: '李万峰',
+        Contact_lwf_introduction: '李万峰，北京大学植物学博士，中国林业科学研究院林业研究所研究员、硕士生导师。主要研究方向为林木繁育技术与调控、生殖阶段转变以及落叶松等针叶树的分子育种与细胞遗传机制。2009年加入林业研究所，曾在奥地利维也纳农业与科学大学进行博士后研究。 曾主持多个国家级和重大科研项目，在国际林业与植物生物学领域有较高学术影响力。',
+
+        Contact_ltq_name: '廖堂全',
+        Contact_ltq_introduction: '担任此网站开发的负责人，主要负责项目架构设计和后端代码开发。本科毕业于湖南农业大学，硕士阶段在中国林业科学研究院林业研究所，跟随李万峰老师开展日本落叶松生殖阶段转变相关研究。对数据分析和可视化充满兴趣，希望能在数据驱动的生物研究中不断探索与创造价值。',
+
+        Contact_zjj_name: '周俊杰',
+        Contact_zjj_introduction: '周俊杰，主要负责项目的前端开发，数据库设计和部署工作，本科毕业于吉首大学张家界学院计算机专业，期间主要致力于Web开发和运维方向，热爱数据可视化，并不断探索云平台建设与维护。',
+
+        Contact_team: '我们的团队',
+        Contact_team_desc: '我们致力于推动林业科学与信息技术的融合，欢迎更多志同道合的伙伴加入我们，共同探索数据驱动的生物研究新方向。',
+
+
+        footer_analytics: '转录组分析',
+        footer_platform: '平台',
+        footer_resource: '资源',
+        footer_support: '支持',
+        footer_support_desc: '开源不易，关注github/gitee，获取最新动态，希望给个小星星支持一下。',
+        footer_copy: '© 2025 转录组分析平台. 保留所有权利.',
+        footer_desc: '探索基因组奥秘的专业可视化平台，为生物研究提供数据支持。',
+        footer_copy_txt: '版权所有 2025 中国林业科学研究院林业研究所',
+
+
 
     }
 }

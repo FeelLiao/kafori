@@ -1,41 +1,25 @@
 <template>
   <div class="min-h-screen font-sans antialiased bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-100 flex relative transition-colors">
-    <!-- 左侧导航 -->
-    <Aside :active-section="activeSection" @navigate="scrollToSection" />
 
     <!-- 主内容区 -->
-    <main class="flex-1 pl-64 px-8 py-10 bg-transparent">
-      <!-- 实验列表部分 -->
-      <div ref="experimentSectionEl">
-        <ExperimentSection
-            @update:selectedExperimentIds="(ids) => (selectedExperimentIds = ids as any)"
-            @fetch-samples="handleFetchSamples"
-        />
-      </div>
+    <main class="flex-1 py-10 bg-transparent">
 
       <!-- 样本列表部分 -->
-      <div ref="sampleSectionEl">
-        <SampleSection
+      <div ref="DownloadSectionEl">
+        <DownloadSection
             :samples="sampleData"
             @analyzed="handleAnalyzed"
         />
       </div>
 
-      <!-- 实验结果部分 -->
-      <div ref="resultSectionEl">
-        <ResultSection :res="transcriptRes" :width="plotWidth" :height="plotHeight" />
-      </div>
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import Aside from './aside.vue';
-import ExperimentSection from './ExperimentSection.vue';
-import SampleSection from './SampleSection.vue';
-import ResultSection from './ResultSection.vue';
-import { transcriptsQuery } from '@/api/index.ts';
+import DownloadSection from './DownloadSection.vue';
+import { transcriptsQuery,getDownloadCatalog } from '@/api/index.ts';
 import type { Sample } from '@/api/interface.ts';
 
 const activeSection = ref<'experiment' | 'sample' | 'result'>('experiment');
@@ -58,9 +42,17 @@ let selectedExperimentIds = [] as Array<string | number>;
 const sampleData = ref<Sample[]>([]);
 
 async function handleFetchSamples() {
-  // 基于实验选择检索样本
-  sampleData.value = await transcriptsQuery('sample_id', selectedExperimentIds);
-}
+  const data = await getDownloadCatalog();
+
+  sampleData.value = data.flatMap(entry =>
+      Object.entries(entry.items).map(([item_type, item]) => ({
+        classes: entry.classes,
+        item_type,
+        filename: item.filename,
+        media_type: item.media_type,
+      }))
+  );
+  }
 
 // 分析结果
 const transcriptRes = ref<any>(null);
@@ -74,4 +66,7 @@ function handleAnalyzed(payload: { res: any; width: number; height: number }) {
   // 切换到结果区域
   scrollToSection('result');
 }
+
+handleFetchSamples();
+
 </script>
