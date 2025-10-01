@@ -6,6 +6,7 @@ import warnings
 from tortoise.contrib.fastapi import register_tortoise
 import os
 import asyncio
+from pathlib import Path
 
 from backend.db.decorator.Redis import register_redis
 from backend.db.config.redis_conf import build_redis_pool
@@ -22,7 +23,7 @@ logger = logging.getLogger(__name__)
 warnings.filterwarnings("ignore", category=UserWarning)
 
 # Initialize the global logger
-init_global_logger(config.log_dir)
+init_global_logger(Path(config.log_dir))
 
 # Determine the number of R cores to start
 R_CORE = os.cpu_count() if int(config.start_r_core) == 0 else int(config.start_r_core)
