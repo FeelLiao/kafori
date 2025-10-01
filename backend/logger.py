@@ -26,6 +26,7 @@ def init_global_logger(log_file: Path,
         logger.addHandler(console_handler)
 
     if enable_file:
+        log_file.parent.mkdir(parents=True, exist_ok=True)
         file_handler = logging.FileHandler(log_file)
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
