@@ -15,8 +15,6 @@ import '@/assets/css/tailwind.css'  // 确保引入路径正确
 import "@pureadmin/table/dist/style.css";
 import PureTable from "@pureadmin/table";
 
-import 'vxe-table/lib/style.css';
-import VXETable from 'vxe-table';
 
 import VueECharts from 'vue-echarts'
 import 'echarts' // 只需要安装，不需要手动import
@@ -57,7 +55,6 @@ app.use(ElementPlus, { locale: i18n.global.locale })
 
 
 app.use(PureTable, { locale: i18n.global.locale })
-app.use(VXETable, { locale: i18n.global.locale })
 
 
 app.component('v-chart', VueECharts)
