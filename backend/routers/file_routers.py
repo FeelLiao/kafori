@@ -138,12 +138,10 @@ async def process_db_upload(user: str, request: Request) -> Tuple[bool, str]:
         logger.info(
             f"sample sheet file extracted successfully for user {user}.")
         gene_tpm = BytesIO(await redis.get(f"{user}_gene_{GeneDataType.tpm}"))
-        gene_tpm_data = UploadFileProcessor.read_file(
-            gene_tpm, file_type=FileType.parquet)
+        gene_tpm_data = UploadFileProcessor.read_file_v2(gene_tpm)
         logger.info(f"gene tpm file extracted successfully for user {user}.")
         gene_counts = BytesIO(await redis.get(f"{user}_gene_{GeneDataType.counts}"))
-        gene_counts_data = UploadFileProcessor.read_file(
-            gene_counts, file_type=FileType.parquet)
+        gene_counts_data = UploadFileProcessor.read_file_v2(gene_counts)
         logger.info(
             f"gene counts file extracted successfully for user {user}.")
 
@@ -156,7 +154,7 @@ async def process_db_upload(user: str, request: Request) -> Tuple[bool, str]:
 
         exp_sheet, sample_sheet = data_base_wrapper.db_insert(
             exp_class_communication_r)
-        tpm, counts = data_base_wrapper.expression_wrapper(sample_sheet)
+        expression = data_base_wrapper.expression_wrapper_v2(sample_sheet)
 
         exp_valid = await PutDataBaseInterface.put_experiment(exp_sheet)
         if exp_valid:
@@ -167,10 +165,9 @@ async def process_db_upload(user: str, request: Request) -> Tuple[bool, str]:
         if sample_valid:
             logger.info(
                 f"Sample data has been put into database successfully for user {user}.")
-        tpm_valid = await PutDataBaseInterface.put_gene_tpm(tpm)
-        if tpm_valid:
-            logger.info(
-                f"Gene TPM data has been put into database successfully for user {user}.")
+
+        # TODO: 重写 PutDataBaseInterface 的方法，支持 polars DataFrame，
+        # 将expression直接写入数据库
         counts_valid = await PutDataBaseInterface.put_gene_counts(counts)
         if counts_valid:
             logger.info(

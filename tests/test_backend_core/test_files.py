@@ -2,6 +2,8 @@ import io
 import pytest
 import pandas as pd
 from pathlib import Path
+import polars as pl
+import time
 
 from backend.api.files import UploadFileProcessor, FileType, PutDataBaseWrapper, UpstreamAnalysisWrapper
 from backend.db.interface import PutDataBaseInterface
@@ -192,3 +194,53 @@ def test_run_analysis_success(sample_xlsx, valid_paths):
     assert fastp_status is True
     assert align_report.shape[0] > 0 and align_report.shape[1] > 0
     assert fastp_report.shape[0] > 0 and fastp_report.shape[1] > 0
+
+
+# test_sample = "upload/dormancy-active.xlsx"
+# counts = "upload/gene_count_renamed.csv"
+# tpm = "upload/gene_tpm_renamed.csv"
+
+
+# @pytest.fixture
+# def sample_xlsx_v2():
+#     with open(test_sample, "rb") as f:
+#         sample_xlsx = io.BytesIO(f.read())
+#     return sample_xlsx
+
+
+# @pytest.fixture
+# def tpm_in_v2():
+#     return tpm
+
+
+# @pytest.fixture
+# def counts_in_v2():
+#     return counts
+
+
+def test_expression_wrapper_v2(sample_xlsx, tpm_in, counts_in):
+    start_time = time.time()
+    sample_sheet_data = UploadFileProcessor.read_file(
+        sample_xlsx, FileType.xlsx)
+    gene_tpm_data = UploadFileProcessor.read_file(tpm_in, FileType.csv)
+    gene_counts_data = UploadFileProcessor.read_file(counts_in, FileType.csv)
+    gene_tpm_io = io.BytesIO()
+    gene_tpm_data.to_parquet(gene_tpm_io)
+    gene_tpm_io.seek(0)
+    gene_tpm_data = UploadFileProcessor.read_file_v2(gene_tpm_io)
+    gene_counts_io = io.BytesIO()
+    gene_counts_data.to_parquet(gene_counts_io)
+    gene_counts_io.seek(0)
+    gene_counts_data = UploadFileProcessor.read_file_v2(gene_counts_io)
+
+    data_base_wrapper = PutDataBaseWrapper(
+        sample_sheet_data, gene_tpm_data, gene_counts_data)
+    expression = data_base_wrapper.expression_wrapper_v2()
+
+    end_time = time.time()
+    print(f"Execution time: {end_time - start_time} seconds")
+    assert isinstance(expression, pl.DataFrame)
+    assert "UniqueID" in expression.columns
+    assert "SampleID" in expression.columns
+    assert "TPMBlob" in expression.columns
+    assert "CountsBlob" in expression.columns

@@ -7,6 +7,14 @@ from tortoise.contrib.fastapi import register_tortoise
 import os
 import asyncio
 from pathlib import Path
+import multiprocessing as mp
+
+# 全局 multiprocessing 启动方式（避免 fork 警告）
+try:
+    mp.set_start_method("spawn", force=True)
+except RuntimeError:
+    # 已经设置过则忽略
+    pass
 
 from backend.db.decorator.Redis import register_redis
 from backend.db.config.redis_conf import build_redis_pool

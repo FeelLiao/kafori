@@ -11,8 +11,11 @@ import os
 from io import BytesIO
 from enum import StrEnum, auto
 import modin.pandas as mpd
+import polars as pl
+import numpy as np
+import zstd
 
-from backend.api.utils import dataframe_t, dataframe_wide2long
+from backend.api.utils import dataframe_t, dataframe_wide2long, deprecated
 from backend.analysis.upstream import UpstreamAnalysis
 
 
@@ -43,7 +46,10 @@ class UploadFileProcessor:
     @staticmethod
     def read_file(file: BytesIO, file_type: FileType) -> pd.DataFrame:
         """
-        Read file and return a DataFrame.
+        Read file and return a DataFrame using pandas.
+        Args:
+            file (BytesIO): The file to read.
+            file_type (FileType): The type of the file.
         Returns:
             pd.DataFrame: The DataFrame containing the file data.
         Raises:
@@ -59,6 +65,30 @@ class UploadFileProcessor:
                     df = pd.read_csv(file, header=0)
                 case FileType.parquet:
                     df = pd.read_parquet(file)
+            logger.info(
+                f"{file_type} file successfully read")
+            return df
+        except Exception as e:
+            logger.error(
+                f"Error reading {file_type} file", exc_info=True)
+            raise RuntimeError(
+                f"Error reading or parsing {file_type} file: {e}"
+            )
+
+    @staticmethod
+    def read_file_v2(file: BytesIO, file_type: FileType = FileType.parquet) -> pl.DataFrame:
+        """
+        Read parquet file and return a DataFrame using polars.
+        Args:
+            file (BytesIO): The file to read.
+            file_type (FileType): Only parquet files are supported.
+        Returns:
+            pl.DataFrame: The DataFrame containing the file data.
+        Raises:
+            RuntimeError: If there is an error reading or parsing the file.
+        """
+        try:
+            df = pl.read_parquet(file)
             logger.info(
                 f"{file_type} file successfully read")
             return df
@@ -280,8 +310,8 @@ class PutDataBaseWrapper:
 
     def __init__(self,
                  sample_sheet: pd.DataFrame,
-                 gene_expression_tpm: pd.DataFrame,
-                 gene_expression_counts: pd.DataFrame):
+                 gene_expression_tpm: pl.DataFrame,
+                 gene_expression_counts: pl.DataFrame):
         self.sample_sheet = sample_sheet
         self.gene_expression_tpm = gene_expression_tpm
         self.gene_expression_counts = gene_expression_counts
@@ -306,9 +336,11 @@ class PutDataBaseWrapper:
             logger.info("UniqueID column added to sample sheet.")
 
             # Add a unique experiment ID
-            experiment_groups = df.groupby("Experiment").ngroup() + 1  # 分组编号从1开始
+            experiment_groups = df.groupby(
+                "Experiment").ngroup() + 1  # 分组编号从1开始
             grp_suffix = experiment_groups.astype(int).astype(str).str.zfill(3)
-            df["UniqueEXID"] = "TRCRIE" + df["row_md5"].astype(str) + grp_suffix
+            df["UniqueEXID"] = "TRCRIE" + \
+                df["row_md5"].astype(str) + grp_suffix
             logger.info("UniqueEXID column added to sample sheet.")
             exp_class_grp = df.groupby("ExperimentCategory").ngroup() + 1
             df["ExpClass"] = [
@@ -387,6 +419,9 @@ class PutDataBaseWrapper:
 
         return exp_sheet, sample_sheet
 
+    @deprecated(replace="expression_wrapper_v2",
+                remove_in="v3.0",
+                since="v2.0")
     def expression_wrapper(self, sample_sheet: pd.DataFrame) -> mpd.DataFrame:
         """
         Wrap the gene expression DataFrame with "UniqueID" column for database insertion.
@@ -410,6 +445,102 @@ class PutDataBaseWrapper:
         logger.info("Gene expression data converted to long format.")
 
         return tpm, counts
+
+    @staticmethod
+    def _sort_gene_id_pl(df: pl.DataFrame) -> pl.DataFrame:
+        """
+        按 gene_id 中的数字部分排序 (g123 -> 123)，保持行顺序一致。
+        假设 gene_id 形如 g<number>，否则被提取为 NA 会排在前面，必要时可再过滤。
+        Args:
+            df (pl.DataFrame): 包含 gene_id 列的 DataFrame。
+        Returns:
+            pl.DataFrame: 按 gene_id 中的数字部分排序后的 DataFrame。
+        """
+        df_sorted = df.with_columns(
+            pl.col("gene_id").str.extract(
+                r"g(\d+)").cast(pl.Int32).alias("gene_num")
+        ).sort("gene_num").drop("gene_num")
+        return df_sorted
+
+    @staticmethod
+    def _compress_expression_task(task: tuple[str, str, bytes, bytes, int]) -> dict:
+        """
+        进程池任务：压缩单个样本的 TPM / Counts 字节
+        task: (SampleID, UniqueID, tpm_bytes, counts_bytes, compression_level)
+        """
+        sid, uid, t_bytes, c_bytes, level = task
+        t_blob = zstd.compress(t_bytes, level)
+        c_blob = zstd.compress(c_bytes, level)
+        return {
+            "SampleID": sid,
+            "UniqueID": uid,
+            "TPMBlob": t_blob,
+            "CountsBlob": c_blob
+        }
+
+    def expression_wrapper_v2(self, sample_sheet: pd.DataFrame | None = None,
+                              processes: int | None = None,
+                              compression_level: int = 3) -> pl.DataFrame:
+        """
+        Wrap the gene expression DataFrame with "UniqueID" column for database insertion.
+        Returns:
+            pl.DataFrame: The DataFrame with additional columns.
+        """
+
+        logger.info(
+            "Start building gene expression blob table for database insertion.")
+
+        tpm_df = PutDataBaseWrapper._sort_gene_id_pl(self.gene_expression_tpm)
+        counts_df = PutDataBaseWrapper._sort_gene_id_pl(
+            self.gene_expression_counts)
+
+        logger.info("Gene expression data sorted by gene ID.")
+
+        if tpm_df.height != counts_df.height:
+            raise ValueError("TPM / Counts gene row mismatch")
+
+        if tpm_df["gene_id"].to_list() != counts_df["gene_id"].to_list():
+            raise ValueError("TPM / Counts gene_id mismatch")
+
+        sample_ids = [c for c in tpm_df.columns if c != "gene_id"]
+        if sample_sheet is None:
+            sample_sheet = self.sample_sheet_wrapped
+        id_map = dict(zip(sample_sheet["SampleID"], sample_sheet["UniqueID"]))
+
+        np_dtype = np.float32
+        tpm_bytes_map = {
+            sid: tpm_df[sid].to_numpy().astype(np_dtype).tobytes()
+            for sid in sample_ids
+        }
+        counts_bytes_map = {
+            sid: counts_df[sid].to_numpy().astype(np_dtype).tobytes()
+            for sid in sample_ids
+        }
+
+        # 任务列表: (SampleID, UniqueID, t_bytes, c_bytes, compression_level)
+        tasks = [
+            (sid, id_map.get(sid, ""),
+             tpm_bytes_map[sid], counts_bytes_map[sid], compression_level)
+            for sid in sample_ids
+        ]
+
+        max_workers = processes or min(len(tasks), os.cpu_count() or 1)
+        if max_workers <= 1:
+            rows = [PutDataBaseWrapper._compress_expression_task(
+                tk) for tk in tasks]
+        else:
+            with ProcessPoolExecutor(max_workers=max_workers) as pool:
+                rows = list(
+                    pool.map(PutDataBaseWrapper._compress_expression_task, tasks))
+
+        unified_df = pl.DataFrame(rows)
+        logger.info(
+            "Unified blob build done: samples=%d avg_tpm_blob=%dB avg_counts_blob=%dB",
+            len(sample_ids),
+            int(np.mean([len(r['TPMBlob']) for r in rows])) if rows else 0,
+            int(np.mean([len(r['CountsBlob']) for r in rows])) if rows else 0,
+        )
+        return unified_df
 
 
 class UpstreamAnalysisWrapper:
