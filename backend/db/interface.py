@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from datetime import date
 from typing import List, Tuple, Dict
 import pandas as pd
+import polars as pl
 
 from backend.db.utils import Utils
 
@@ -175,6 +176,21 @@ class GetDataBaseInterface:
         res = sample_exp.merge(expclass, how='inner', on='ExpClass')
         return res
 
+    # TODO: 这个函数后续需要实现
+    @staticmethod
+    async def _get_expression_v2() -> pl.DataFrame:
+        """
+        Get gene expression data as a Polars DataFrame.
+        Returns:
+            pl.DataFrame: containing gene expression data in TPM format.
+            The DataFrame should have the following columns:
+                UniqueID: Unique identifier for the sample.
+                SampleID: Name of the sample.
+                TPMBlob: Expression level of the gene in TPM format as a blob.
+                CountsBlob: Expression level of the gene in counts.
+        """
+        pass
+
 
 class PutDataBaseInterface:
     """
@@ -297,6 +313,23 @@ class PutDataBaseInterface:
         except Exception as e:
             return False
 
+    # TODO: 这个函数后续需要实现
+    @staticmethod
+    async def put_expression_v2(data: pl.DataFrame) -> bool:
+        """
+        A placeholder for inserting gene expression data as a Polars DataFrame.
+        Args:
+            data (pl.DataFrame): Polars DataFrame containing gene expression data in Blob format.
+            The DataFrame should have the following columns:
+                UniqueID: Unique identifier for the sample.
+                SampleID: Name of the sample.
+                TPMBlob: Expression level of the gene in TPM format as a blob.
+                CountsBlob: Expression level of the gene in counts format as a blob.
+        Returns:
+            bool: True if the operation was successful, False otherwise.
+        """
+        pass
+
     @staticmethod
     async def exclass_processing(
             exclass: list[dict[str, str]]) -> tuple[list[bool], List[Dict[str, str]]]:
@@ -325,9 +358,3 @@ class PutDataBaseInterface:
                 exclass[i] = exists[0]
             results_bool.append(not exists)  # 如果不存在，返回 True；否则返回 False
         return results_bool, exclass
-
-
-
-
-
-

@@ -8,6 +8,14 @@ import json
 import shutil
 import modin.pandas as mpd
 import time
+import warnings
+from functools import wraps
+try:
+    # Python 3.13 或装了 typing_extensions 才可用
+    from typing import deprecated as _typing_deprecated
+except ImportError:
+    _typing_deprecated = None
+
 
 logger = logging.getLogger(__name__)
 
@@ -302,3 +310,41 @@ def dataframe_long2wide(df: pd.DataFrame, type: str | None = None) -> pd.DataFra
     ori_df = ori_df.iloc[2:]         # 去掉第一行
     results = ori_df.rename(columns={'SampleID': 'gene_id'})
     return results._to_pandas()
+
+
+def deprecated(replace: str = "", remove_in: str = "", since: str = ""):
+    """
+    标记函数已弃用。
+    replace: 建议替代实现名称
+    remove_in: 计划移除版本（如 'v1.4'）
+    since: 自哪个版本开始弃用
+    """
+    msg_tpl = "Function {name} is deprecated"
+
+    def decorator(fn):
+        base_msg = msg_tpl.format(name=fn.__name__)
+        if since:
+            base_msg += f" since {since}"
+        if remove_in:
+            base_msg += f" and will be removed in {remove_in}"
+        if replace:
+            base_msg += f". Use {replace} instead."
+        base_msg += "."
+        # 为类型检查器再包装一层（若可用）
+        target = fn
+        if _typing_deprecated is not None:
+            target = _typing_deprecated(base_msg)(fn)
+
+        @wraps(target)
+        def wrapper(*a, **kw):
+            warnings.warn(base_msg, DeprecationWarning, stacklevel=2)
+            return target(*a, **kw)
+        # 在 docstring 追加说明
+        note = f"\n\nDeprecated: {base_msg}"
+        if wrapper.__doc__:
+            if "Deprecated:" not in wrapper.__doc__:
+                wrapper.__doc__ += note
+        else:
+            wrapper.__doc__ = note
+        return wrapper
+    return decorator

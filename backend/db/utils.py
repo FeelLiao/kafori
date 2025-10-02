@@ -7,6 +7,7 @@ from backend.db.models.entity.GeneExpressCounts import GeneExpressCounts
 
 from backend.db.models.dto.ExpClassDTO import ExpClassDTO
 
+
 class Utils:
     @staticmethod
     def to_exp_class(data: pd.DataFrame) -> list[ExpClass]:
@@ -57,3 +58,4 @@ class Utils:
         middle = [x for x in arr if x.SampleCounts == pivot]
         right = [x for x in arr if x.SampleCounts < pivot]
         return Utils.quick_sort(left) + middle + Utils.quick_sort(right)
+
