@@ -13,6 +13,7 @@ from backend.db.repositories.impl.ExperimentRepositoryImpl import ExperimentRepo
 from backend.db.repositories.impl.SampleRepositoryImpl import SampleRepositoryImpl
 from backend.db.repositories.impl.GeneExpressTpmRepositoryImpl import GeneExpressTpmRepositoryImpl
 from backend.db.repositories.impl.GeneExpressCountsRepositoryImpl import GeneExpressCountsRepositoryImpl
+from backend.db.repositories.impl.GeneExpressRepositoryImpl import GeneExpressRepositoryImpl
 from backend.db.repositories.impl.UserRepositoryImpl import UserRepositoryImpl
 
 
@@ -25,6 +26,7 @@ class DataBase:
         self.sample = SampleRepositoryImpl()
         self.gene_tpm = GeneExpressTpmRepositoryImpl()
         self.gene_counts = GeneExpressCountsRepositoryImpl()
+        self.gene_express = GeneExpressRepositoryImpl()
         self.user = UserRepositoryImpl()
 
 
@@ -178,9 +180,11 @@ class GetDataBaseInterface:
 
     # TODO: 这个函数后续需要实现
     @staticmethod
-    async def _get_expression_v2() -> pl.DataFrame:
+    async def _get_expression_v2(unique_id: tuple[str]) -> pl.DataFrame:
         """
         Get gene expression data as a Polars DataFrame.
+        Args:
+            unique_id (tuple[str]): A tuple of unique sample identifiers.
         Returns:
             pl.DataFrame: containing gene expression data in TPM format.
             The DataFrame should have the following columns:
@@ -189,7 +193,8 @@ class GetDataBaseInterface:
                 TPMBlob: Expression level of the gene in TPM format as a blob.
                 CountsBlob: Expression level of the gene in counts.
         """
-        pass
+        data = await db.gene_express.model.filter(UniqueID__in=unique_id).values()
+        return pl.DataFrame(data)
 
 
 class PutDataBaseInterface:
@@ -328,7 +333,17 @@ class PutDataBaseInterface:
         Returns:
             bool: True if the operation was successful, False otherwise.
         """
-        pass
+        try:
+            # 将 DataFrame 转换为Experiment格式
+            records = Utils.to_gene_express(data)
+
+            # 使用 bulk_create 方法批量创建记录
+            await db.gene_express.model.bulk_create(records)
+
+            return True
+
+        except Exception as e:
+            return False
 
     @staticmethod
     async def exclass_processing(

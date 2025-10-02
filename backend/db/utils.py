@@ -1,9 +1,11 @@
 import pandas as pd
+import polars as pl
 from backend.db.models.entity.ExpClass import ExpClass
 from backend.db.models.entity.Experiment import Experiment  # tortoise 模型
 from backend.db.models.entity.Sample import Sample
 from backend.db.models.entity.GeneExpressTpm import GeneExpressTpm
 from backend.db.models.entity.GeneExpressCounts import GeneExpressCounts
+from backend.db.models.entity.GeneExpress import GeneExpress
 
 from backend.db.models.dto.ExpClassDTO import ExpClassDTO
 
@@ -48,6 +50,13 @@ class Utils:
             GeneExpressCounts(**row)
             for row in data.to_dict('records')
         ]
+
+    @staticmethod
+    def to_gene_express(data: pl.DataFrame) -> list[GeneExpress]:
+        # 快速批量转换：Polars 内部一次性生成 list[dict]
+        if data.is_empty():
+            return []
+        return [GeneExpress(**row) for row in data.to_dicts()]
 
     @staticmethod
     def quick_sort(arr: list[ExpClassDTO]) -> list[ExpClassDTO]:
