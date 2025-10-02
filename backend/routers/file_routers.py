@@ -166,14 +166,12 @@ async def process_db_upload(user: str, request: Request) -> Tuple[bool, str]:
             logger.info(
                 f"Sample data has been put into database successfully for user {user}.")
 
-        # TODO: 重写 PutDataBaseInterface 的方法，支持 polars DataFrame，
-        # 将expression直接写入数据库
-        counts_valid = await PutDataBaseInterface.put_gene_counts(counts)
-        if counts_valid:
+        expression_valid = await PutDataBaseInterface.put_expression_v2(expression)
+        if expression_valid:
             logger.info(
-                f"Gene Counts data has been put into database successfully for user {user}.")
+                f"Gene Expression data has been put into database successfully for user {user}.")
 
-        valid = [exp_valid, sample_valid, tpm_valid, counts_valid]
+        valid = [exp_valid, sample_valid, expression_valid]
         if all(valid):
             return True, "Database data uploaded successfully."
         else:
