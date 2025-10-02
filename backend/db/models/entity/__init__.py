@@ -4,4 +4,4 @@ from backend.db.models.entity.Sample import Sample
 from backend.db.models.entity.GeneExpressCounts import GeneExpressCounts
 from backend.db.models.entity.GeneExpressTpm import GeneExpressTpm
 from backend.db.models.entity.User import User
-__all__ = ["ExpClass", "Experiment", "Sample", "GeneExpressCounts", "GeneExpressTpm", "User"]
+__all__ = ["ExpClass", "Experiment", "Sample", "GeneExpress", "GeneExpressCounts", "GeneExpressTpm", "User"]
