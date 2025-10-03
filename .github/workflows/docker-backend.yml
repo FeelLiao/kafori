@@ -3,7 +3,7 @@ name: Build and push (tag)
 on:
   push:
     tags:
-      - '*'          # 如只想语义版本，用 v* 或 v[0-9]+.[0-9]+.[0-9]+
+      - '*'          # 可按需改为 v[0-9]+.[0-9]+.[0-9]+
 
 permissions:
   contents: read
@@ -26,7 +26,8 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build & Push
+      - name: Build, Push and Export tar
+        id: build
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -40,3 +41,29 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/kafori-backend:${{ github.ref_name }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          outputs: |
+            type=registry
+            type=docker,dest=/tmp/kafori-backend.tar
+
+      - name: GZip exported image
+        run: |
+          gzip -9 /tmp/kafori-backend.tar
+          mv /tmp/kafori-backend.tar.gz kafori-backend-${{ github.ref_name }}.tar.gz
+          echo "${{ steps.build.outputs.digest }}" > image-digest.txt
+          echo "IMAGE_FILE=kafori-backend-${{ github.ref_name }}.tar.gz" >> $GITHUB_ENV
+
+      - name: Upload image tar.gz
+        uses: actions/upload-artifact@v4
+        with:
+          name: kafori-backend-${{ github.ref_name }}.tar.gz
+            # 已 gzip，关闭再次压缩
+          path: ${{ env.IMAGE_FILE }}
+          compression-level: 0
+          retention-days: 7
+
+      - name: Upload digest
+        uses: actions/upload-artifact@v4
+        with:
+          name: image-digest-${{ github.ref_name }}
+          path: image-digest.txt
+          retention-days: 30
