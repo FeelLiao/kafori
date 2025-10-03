@@ -24,10 +24,11 @@ jobs:
       - name: Decide image tags
         id: decide
         run: |
+          set -e
           IMAGE="${{ secrets.DOCKERHUB_USERNAME }}/kafori-backend"
           if [ "${GITHUB_REF_TYPE}" = "branch" ]; then
             case "${GITHUB_REF_NAME}" in
-              main)
+              master)
                 echo "TAGS=${IMAGE}:latest" >> $GITHUB_OUTPUT
                 echo "APP_VERSION=latest" >> $GITHUB_OUTPUT
                 ;;
