@@ -27,8 +27,11 @@ ENV PATH=/opt/conda/envs/kafori/bin:$PATH
 # 再复制剩余代码
 COPY . .
 
+ENV POETRY_VIRTUALENVS_CREATE=false POETRY_NO_INTERACTION=1
 WORKDIR /app/backend
 RUN poetry install --no-root
+
+WORKDIR /app
 
 ARG APP_VERSION=dev
 ARG GIT_COMMIT=unknown
@@ -38,4 +41,4 @@ LABEL org.opencontainers.image.title="kafori-backend" \
       org.opencontainers.image.source="https://github.com/FeelLiao/kafori"
 
 EXPOSE 10020
-CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "10020"]
+CMD ["conda", "run", "-n", "kafori", "uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "10020"]
