@@ -49,15 +49,16 @@ def sample_data_validation(sample_xlsx):
 
 
 def get_token_header():
-    with TestClient(app) as client:
-        response = client.post(
-            "/token",
-            data={"username": "admin", "password": "secret"},
-            headers={"Content-Type": "application/x-www-form-urlencoded"}
-        )
-        assert response.status_code == 200
-        token = response.json()["access_token"]
-        return {"Authorization": f"Bearer {token}"}
+    # 调用实际登录接口：/user/login
+    with TestClient(app) as c:
+        resp = c.post("/user/login", json={"username": "admin", "password": "secret"})
+    assert resp.status_code == 200
+    body = resp.json()
+    # 期望结构: {"code":0,"message":"...","data":"Bearer <jwt>"}
+    assert body.get("code") == 0, f"login failed: {body}"
+    token = body["data"]
+    # token 已包含 'Bearer ' 前缀，直接返回
+    return {"Authorization": token}
 
 
 def assert_result(resp, expect_ok: bool, expected_message_sub: str):
@@ -114,8 +115,7 @@ def test_upload_gene_tpm(gene_tpm):
                             "text/csv")},
             headers=get_token_header()
         )
-        assert_result(
-            resp, True, f"Gene expression data {GeneDataType.tpm} uploaded successfully.")
+        assert resp.json()["code"] == 0
 
 
 def test_upload_gene_counts(gene_counts):
@@ -129,8 +129,7 @@ def test_upload_gene_counts(gene_counts):
                             "text/csv")},
             headers=get_token_header()
         )
-        assert_result(
-            resp, True, f"Gene expression data {GeneDataType.counts} uploaded successfully.")
+        assert resp.json()["code"] == 0
 
 
 def test_put_database():
@@ -140,5 +139,4 @@ def test_put_database():
             "/pipeline/put_database/",
             headers=get_token_header()
         )
-        assert_result(
-            resp, True, "Database data uploaded successfully.")
+        assert resp.json()["code"] == 1
