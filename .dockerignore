@@ -7,4 +7,6 @@ __pycache__
 .env.*
 .vscode
 .idea
-**/tests
+tests/
+frontend/
+docs/

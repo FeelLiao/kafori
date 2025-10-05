@@ -29,7 +29,9 @@ COPY . .
 
 ENV POETRY_VIRTUALENVS_CREATE=false POETRY_NO_INTERACTION=1
 WORKDIR /app/backend
-RUN poetry install --no-root
+RUN poetry install --no-root \
+  && poetry cache clear tsinghua --all -n \
+  && rm -rf ~/.cache/pypoetry ~/.cache/pip
 
 WORKDIR /app
 
