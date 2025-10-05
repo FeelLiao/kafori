@@ -6,7 +6,6 @@ import pandas as pd
 
 from backend.analysis.framework import get_analysis, catalog, InputData
 from backend.db.interface import GetDataBaseInterface
-from backend.api.utils import dataframe_long2wide
 from backend.db.result.Result import Result  # 你的统一返回封装
 # 确保在 app 启动时 import 一次插件目录，完成注册
 import backend.analysis.plugins.pca  # noqa: F401
@@ -33,15 +32,11 @@ class AnalysisRequest(BaseModel):
 async def _fetch_gene_data(dfilt: DataFilter, kind: InputData) -> pd.DataFrame:
     db = GetDataBaseInterface()
     uids = tuple(dfilt.unique_id)
-    genes = tuple(dfilt.gene_name)
-    if kind == InputData.tpm:
-        data = await db.get_gene_tpm(unique_id=uids, gene_id=genes, gene_id_is_all=dfilt.all_gene)
-        logger.info(f"Fetched TPM data from database with shape {data.shape}")
-    else:
-        data = await db.get_gene_counts(unique_id=uids, gene_id=genes, gene_id_is_all=dfilt.all_gene)
-        logger.info(
-            f"Fetched Counts data from database with shape {data.shape}")
-    return dataframe_long2wide(data)
+    genes = None if dfilt.all_gene else tuple(dfilt.gene_name)
+    data_pl = await db.get_expression_v2(unique_id=uids, gene_id=genes, type=kind)
+    data_pd = data_pl.to_pandas()
+    logger.info(f"Fetched {kind.value} data from database with shape {data_pd.shape}")
+    return data_pd
 
 
 @analysis_router.get("/transcripts/analysis/catalog", description="List available analyses and param schemas")

@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from datetime import date
+import logging
 import os
 from typing import List, Dict
 import pandas as pd
@@ -219,7 +220,7 @@ class GetDataBaseInterface:
         df = await GetDataBaseInterface._get_expression_v2(unique_id)
         if df is None or df.is_empty():
             raise ValueError("No expression data found for the given unique IDs.")
-        blob_col = "TPMBlob" if type == InputData.TPM else "CountsBlob"
+        blob_col = "TPMBlob" if type == InputData.tpm else "CountsBlob"
 
         rows = list(df.iter_rows(named=True))
 
@@ -285,6 +286,7 @@ class PutDataBaseInterface:
             return True
 
         except Exception as e:
+            logging.error(f"Error in put_experiment: {e}")
             return False
 
     @staticmethod
@@ -318,6 +320,7 @@ class PutDataBaseInterface:
             return True
 
         except Exception as e:
+            logging.error(f"Error in put_sample: {e}")
             return False
 
     @staticmethod
@@ -346,6 +349,7 @@ class PutDataBaseInterface:
             return True
 
         except Exception as e:
+            logging.error(f"Error in put_gene_tpm: {e}")
             return False
 
     @staticmethod
@@ -374,6 +378,7 @@ class PutDataBaseInterface:
             return True
 
         except Exception as e:
+            logging.error(f"Error in put_gene_counts: {e}")
             return False
 
     # TODO: 这个函数后续需要实现
@@ -401,6 +406,7 @@ class PutDataBaseInterface:
             return True
 
         except Exception as e:
+            logging.error(f"Error in put_expression_v2: {e}")
             return False
 
     @staticmethod

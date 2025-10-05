@@ -4,11 +4,9 @@ import pytest
 from backend.main import app
 import pandas as pd
 
-from backend.api.files import GeneDataType
-
-test_sample = "tests/upstream/test.xlsx"
-test_tpm = "tests/upstream/samples_merged_tpm.csv"
-test_counts = "tests/upstream/samples_merged_counts.csv"
+test_sample = "upload/dormancy-active.xlsx"
+test_tpm = "upload/gene_tpm_renamed.csv"
+test_counts = "upload/gene_count_renamed.csv"
 rawdata_dir = "tests/upstream/ngs-test-data"
 
 
