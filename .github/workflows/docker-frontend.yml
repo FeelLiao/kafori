@@ -1,4 +1,4 @@
-name: Build and push frontend (branches & tags)
+name: frontend-docker
 
 on:
   push:

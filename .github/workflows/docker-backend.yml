@@ -1,4 +1,4 @@
-name: Build and push (branches & tags)
+name: backend-docker
 
 on:
   push:

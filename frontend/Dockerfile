@@ -6,10 +6,10 @@ ARG NPM_REGISTRY=https://registry.npmmirror.com
 RUN if [ -n "$NPM_REGISTRY" ]; then npm config set registry "$NPM_REGISTRY"; fi
 
 # 复制前端代码
-COPY . /app
+COPY ./frontend /app
 
 # 定位到前端工作目录
-WORKDIR /app
+WORKDIR /app/
 
 # 使用npm并开始构建
 RUN --mount=type=cache,target=/root/.npm \
