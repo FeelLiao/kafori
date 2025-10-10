@@ -1,0 +1,99 @@
+name: Build and push frontend (branches & tags)
+
+on:
+  push:
+    branches:
+      - master
+      - 2.0dev
+    tags:
+      - '*'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Decide image tags
+        id: decide
+        run: |
+          set -e
+          IMAGE="${{ secrets.DOCKERHUB_USERNAME }}/kafori-frontend"
+          if [ "${GITHUB_REF_TYPE}" = "branch" ]; then
+            case "${GITHUB_REF_NAME}" in
+              master)
+                echo "TAGS=${IMAGE}:latest" >> $GITHUB_OUTPUT
+                echo "APP_VERSION=latest" >> $GITHUB_OUTPUT
+                ;;
+              2.0dev)
+                echo "TAGS=${IMAGE}:2.0dev" >> $GITHUB_OUTPUT
+                echo "APP_VERSION=2.0dev" >> $GITHUB_OUTPUT
+                ;;
+              *)
+                echo "Unsupported branch ${GITHUB_REF_NAME}" >&2
+                exit 1
+                ;;
+            esac
+          else
+            # tag push
+            echo "TAGS=${IMAGE}:${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
+            echo "APP_VERSION=${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
+          fi
+          echo "Resolved tags: $(grep TAGS= $GITHUB_OUTPUT || true)"
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build, Push and Export tar
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: frontend/Dockerfile
+          platforms: linux/amd64
+          push: true
+          build-args: |
+            APP_VERSION=${{ steps.decide.outputs.APP_VERSION }}
+            NPM_REGISTRY=${{ vars.NPM_REGISTRY }}
+            FRONTEND_BUILD_DIR=dist
+          tags: ${{ steps.decide.outputs.TAGS }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          outputs: |
+            type=registry
+            type=docker,dest=/tmp/kafori-frontend.tar
+
+      - name: GZip exported image
+        run: |
+          gzip -9 /tmp/kafori-frontend.tar
+          OUT="kafori-frontend-${{ steps.decide.outputs.APP_VERSION }}.tar.gz"
+          mv /tmp/kafori-frontend.tar.gz "$OUT"
+          echo "${{ steps.build.outputs.digest }}" > image-digest.txt
+          echo "IMAGE_FILE=$OUT" >> $GITHUB_ENV
+
+      - name: Upload image tar.gz
+        uses: actions/upload-artifact@v4
+        with:
+          name: kafori-frontend-${{ steps.decide.outputs.APP_VERSION }}.tar.gz
+          path: ${{ env.IMAGE_FILE }}
+          compression-level: 0
+          retention-days: 7
+
+      - name: Upload digest
+        uses: actions/upload-artifact@v4
+        with:
+          name: image-digest-${{ steps.decide.outputs.APP_VERSION }}
+          path: image-digest.txt
+          retention-days: 30
