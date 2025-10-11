@@ -291,7 +291,7 @@ export const getDownloadCatalog = () => {
 }
 
 export const downloadFile = (classes:string,filename:string) => {
-  return http<Blob>('post', `/download/${classes}/${filename}`)
+  return http<Blob>('get', `/download/${classes}/${filename}`)
 }
 
 
