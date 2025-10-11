@@ -90,7 +90,7 @@ const sample_columns = computed(() =>[
 ]);
 
 async function editRow(row: any) {
-  const href = buildDownloadUrl(row.classes, row.filename);
+  const href = downloadFile(row.classes, row.filename);
   const a = document.createElement('a');
   a.href = href;
   a.rel = 'noopener';
