@@ -6,6 +6,7 @@ r_retries: 1         # R 进程重试次数
 secret_key: 09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7
 interval_refresh_hours: 12
 enable_cors: true # 是否启用跨域资源共享（CORS）
+sequenceserver_url: http://sequenceserver:4567
 
 # ---------- Upstream Settings ----------
 upstream:
