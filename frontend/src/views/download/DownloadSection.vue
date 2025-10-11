@@ -90,19 +90,36 @@ const sample_columns = computed(() =>[
 ]);
 
 async function editRow(row: any) {
-  let fileData = await downloadFile(row.classes, row.filename);
-  // 如果不是 Blob，假设是 ArrayBuffer，转成 Blob
-  if (!(fileData instanceof Blob)) {
-    fileData = new Blob([fileData]);
+  try {
+    const blob = await downloadFile(row.classes, row.filename);
+
+    // 如果后端返回的是错误 JSON，提示后返回
+    if (blob && (blob as any).type && (blob as any).type.includes('application/json')) {
+      const txt = await (blob as Blob).text().catch(() => '');
+      try {
+        const json = JSON.parse(txt);
+        console.error('Download error:', json?.message || txt);
+        // 这里可换成你们项目的消息组件
+        alert(json?.message || 'Download failed');
+      } catch {
+        alert('Download failed');
+      }
+      return;
+    }
+
+    const url = URL.createObjectURL(blob instanceof Blob ? blob : new Blob([blob]));
+    const a = document.createElement('a');
+    a.href = url;
+    // 从后端已设置的 Content-Disposition 会优先生效；这里兜底用表格里的文件名
+    a.download = row.filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  } catch (e) {
+    console.error('Download failed:', e);
+    alert('Download failed');
   }
-  const url = URL.createObjectURL(fileData);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = row.filename;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
 }
 </script>
 

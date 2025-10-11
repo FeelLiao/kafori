@@ -290,9 +290,14 @@ export const getDownloadCatalog = () => {
   return http<Result>('get', `/download/catalog`)
 }
 
-export const downloadFile = (classes:string,filename:string) => {
-  return http<Blob>('get', `/download/${classes}/${filename}`)
-}
+export const downloadFile = (classes: string, filename: string) => {
+  const cls = encodeURIComponent(classes);
+  const fn = encodeURIComponent(filename);
+  return http<Blob>('get', `/download/${cls}/${fn}`, {
+    responseType: 'blob',
+    timeout: 0
+  });
+};
 
 
 export const putDatabase = () => {
