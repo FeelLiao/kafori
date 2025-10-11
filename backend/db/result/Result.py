@@ -18,7 +18,7 @@ class Result(BaseModel, Generic[T]):
 
     # ---------- 静态工厂方法 ----------
     @staticmethod
-    def success(data: T | None = None,message: str = "操作成功") -> "Result[T]":
+    def success(data: T | None = None, message: str = "操作成功") -> "Result[T]":
         return Result(code=0, message=message, data=data)
 
     @staticmethod
