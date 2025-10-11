@@ -291,12 +291,10 @@ export const getDownloadCatalog = () => {
 }
 
 export const downloadFile = (classes: string, filename: string) => {
+  const API_BASE = ((import.meta as any).env?.VITE_APP_BASE_API || '').replace(/\/$/, '')
   const cls = encodeURIComponent(classes);
   const fn = encodeURIComponent(filename);
-  return http<Blob>('get', `/download/${cls}/${fn}`, {
-    responseType: 'blob',
-    timeout: 0
-  });
+  return `${API_BASE}/download/${cls}/${fn}`;
 };
 
 

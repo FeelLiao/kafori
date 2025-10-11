@@ -90,35 +90,18 @@ const sample_columns = computed(() =>[
 ]);
 
 async function editRow(row: any) {
-  try {
-    const blob = await downloadFile(row.classes, row.filename);
-
-    // 如果后端返回的是错误 JSON，提示后返回
-    if (blob && (blob as any).type && (blob as any).type.includes('application/json')) {
-      const txt = await (blob as Blob).text().catch(() => '');
-      try {
-        const json = JSON.parse(txt);
-        console.error('Download error:', json?.message || txt);
-        // 这里可换成你们项目的消息组件
-        alert(json?.message || 'Download failed');
-      } catch {
-        alert('Download failed');
-      }
-      return;
-    }
-
-    const url = URL.createObjectURL(blob instanceof Blob ? blob : new Blob([blob]));
-    const a = document.createElement('a');
-    a.href = url;
-    // 从后端已设置的 Content-Disposition 会优先生效；这里兜底用表格里的文件名
+  const href = buildDownloadUrl(row.classes, row.filename);
+  const a = document.createElement('a');
+  a.href = href;
+  a.rel = 'noopener';
+  // 同域时可设置 download 属性以保持当前页；跨域通常依赖后端的 Content-Disposition
+  if (href.startsWith(location.origin) || href.startsWith('/')) {
     a.download = row.filename;
     document.body.appendChild(a);
     a.click();
     a.remove();
-    URL.revokeObjectURL(url);
-  } catch (e) {
-    console.error('Download failed:', e);
-    alert('Download failed');
+  } else {
+    window.open(href, '_blank', 'noopener');
   }
 }
 </script>
