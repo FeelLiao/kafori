@@ -1,0 +1,111 @@
+
+name: docker-images
+
+on:
+  push:
+    branches: [ master, 2.0dev ]
+    tags: [ '*' ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [ backend, frontend ]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+
+      - name: Decide version
+        id: decide
+        run: |
+          if [ "${GITHUB_REF_TYPE}" = "branch" ]; then
+            case "${GITHUB_REF_NAME}" in
+              master)  echo "APP_VERSION=latest" >> $GITHUB_OUTPUT ;;
+              2.0dev)  echo "APP_VERSION=2.0dev" >> $GITHUB_OUTPUT ;;
+              *) echo "Unsupported branch ${GITHUB_REF_NAME}" >&2; exit 1 ;;
+            esac
+          else
+            echo "APP_VERSION=${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Set component vars
+        id: comp
+        run: |
+          if [ "${{ matrix.target }}" = "backend" ]; then
+            echo "IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/kafori-backend" >> $GITHUB_OUTPUT
+            echo "DOCKERFILE=backend/Dockerfile" >> $GITHUB_OUTPUT
+            {
+              echo "EXTRA_BUILD_ARGS<<EOF"
+              echo "GIT_COMMIT=${GITHUB_SHA}"
+              echo "EOF"
+            } >> $GITHUB_OUTPUT
+            echo "EXPORT_NAME=kafori-backend" >> $GITHUB_OUTPUT
+          else
+            echo "IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/kafori-frontend" >> $GITHUB_OUTPUT
+            echo "DOCKERFILE=frontend/Dockerfile" >> $GITHUB_OUTPUT
+            {
+              echo "EXTRA_BUILD_ARGS<<EOF"
+              echo "NPM_REGISTRY=${{ vars.NPM_REGISTRY }}"
+              echo "FRONTEND_BUILD_DIR=dist"
+              echo "EOF"
+            } >> $GITHUB_OUTPUT
+            echo "EXPORT_NAME=kafori-frontend" >> $GITHUB_OUTPUT
+          fi
+          echo "TAGS=${{ steps.comp.outputs.IMAGE }}:${{ steps.decide.outputs.APP_VERSION }}" >> $GITHUB_OUTPUT
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build, Push and Export tar
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ${{ steps.comp.outputs.DOCKERFILE }}
+          platforms: linux/amd64
+          push: true
+          build-args: |
+            APP_VERSION=${{ steps.decide.outputs.APP_VERSION }}
+            ${{ steps.comp.outputs.EXTRA_BUILD_ARGS }}
+          tags: ${{ steps.comp.outputs.TAGS }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          outputs: |
+            type=registry
+            type=docker,dest=/tmp/${{ steps.comp.outputs.EXPORT_NAME }}.tar
+
+      - name: GZip exported image
+        run: |
+          gzip -9 /tmp/${{ steps.comp.outputs.EXPORT_NAME }}.tar
+          OUT="${{ steps.comp.outputs.EXPORT_NAME }}-${{ steps.decide.outputs.APP_VERSION }}.tar.gz"
+          mv /tmp/${{ steps.comp.outputs.EXPORT_NAME }}.tar.gz "$OUT"
+          echo "${{ steps.build.outputs.digest }}" > image-digest.txt
+          echo "IMAGE_FILE=$OUT" >> $GITHUB_ENV
+
+      - name: Upload image tar.gz
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.comp.outputs.EXPORT_NAME }}-${{ steps.decide.outputs.APP_VERSION }}.tar.gz
+          path: ${{ env.IMAGE_FILE }}
+          compression-level: 0
+          retention-days: 7
+
+      - name: Upload digest
+        uses: actions/upload-artifact@v4
+        with:
+          name: image-digest-${{ steps.comp.outputs.EXPORT_NAME }}-${{ steps.decide.outputs.APP_VERSION }}
+          path: image-digest.txt
+          retention-days: 30
