@@ -169,6 +169,15 @@ class UploadFileProcessor:
         else:
             logger.info(f"{name} SampleID is unique.")
 
+        not_nullable_columns = ["SampleID", "CollectionTime", "CollectionPart"]
+        # 必填列不得为缺失
+        null_mask = df[not_nullable_columns].isna().any(axis=1)
+        if null_mask.any():
+            bad = df.loc[null_mask, not_nullable_columns].head(5)
+            logger.error(
+                f"Required fields contain NULL in {name} file: \n{bad.to_string(index=False)}")
+            raise ValueError(f"Required fields contain NULL: \n{bad.to_string(index=False)}")
+
         return True
 
     @staticmethod
@@ -336,11 +345,8 @@ class PutDataBaseWrapper:
             logger.info("UniqueID column added to sample sheet.")
 
             # Add a unique experiment ID
-            experiment_groups = df.groupby(
-                "Experiment").ngroup() + 1  # 分组编号从1开始
-            grp_suffix = experiment_groups.astype(int).astype(str).str.zfill(3)
-            df["UniqueEXID"] = "TRCRIE" + \
-                df["row_md5"].astype(str) + grp_suffix
+            exp_md5 = df.groupby("Experiment")["row_md5"].transform("min")
+            df["UniqueEXID"] = "TRCRIE" + exp_md5
             logger.info("UniqueEXID column added to sample sheet.")
             exp_class_grp = df.groupby("ExperimentCategory").ngroup() + 1
             df["ExpClass"] = [
@@ -357,19 +363,17 @@ class PutDataBaseWrapper:
     def add_row_md5(df: pd.DataFrame, cols=None) -> pd.DataFrame:
         # 选择参与计算的列，默认用全部列（固定顺序）
         cols = list(df.columns) if cols is None else list(cols)
-        out = df.copy()
-
-        # 规范化成字符串：时间→固定格式，其他→string，缺失→空串
+        norm = pd.DataFrame(index=df.index)
         for c in cols:
-            if pd.api.types.is_datetime64_any_dtype(out[c]):
-                out[c] = out[c].dt.strftime("%Y-%m-%d %H:%M:%S").fillna("")
+            s = df[c]
+            if pd.api.types.is_datetime64_any_dtype(s):
+                norm[c] = s.dt.strftime("%Y-%m-%d %H:%M:%S").fillna("")
             else:
-                out[c] = out[c].astype("string").fillna("")
-
-        sep = "\x1f"  # 罕见分隔符，避免歧义
-        joined = out[cols].agg(sep.join, axis=1)
-        out["row_md5"] = joined.map(
-            lambda s: hashlib.md5(s.encode("utf-8")).hexdigest()[:12])
+                norm[c] = s.astype("string").fillna("")
+        sep = "\x1f"
+        joined = norm[cols].agg(sep.join, axis=1)
+        out = df.copy()
+        out["row_md5"] = joined.map(lambda s: hashlib.md5(s.encode("utf-8")).hexdigest()[:12])
         return out
 
     def communicate_id_in_db(self) -> list[dict[str, str]]:
@@ -415,6 +419,13 @@ class PutDataBaseWrapper:
                      "FileName2", "MD5checksum1", "MD5checksum2"])
         sample_sheet["FileName"] = None
         sample_sheet["Sample"] = None
+
+        nullable_cols = [
+            "FileName", "Sample", "SampleAge",
+            "SampleDetail", "DepositDatabase", "Accession", "Origin"
+        ]
+        for col in (c for c in nullable_cols if c in sample_sheet.columns):
+            sample_sheet[col] = sample_sheet[col].where(pd.notna(sample_sheet[col]), None)
         logger.info("Sample sheet extracted from original sample sheet.")
 
         return exp_sheet, sample_sheet

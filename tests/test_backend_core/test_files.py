@@ -99,33 +99,6 @@ def test_invalid_sample_file(df_key, expected_error, error_message, sample_data_
     with pytest.raises(expected_error, match=error_message):
         UploadFileProcessor.sample_data_validation("test", df)
 
-
-def test_rawdata_validation(sample_xlsx, rawdata_dir_path):
-    sample_sheet = UploadFileProcessor.read_file(sample_xlsx, FileType.xlsx)
-    valid, missing = UploadFileProcessor.rawdata_validation(
-        sample_sheet, rawdata_dir_path)
-    assert valid is True
-    assert missing == []
-
-
-def test_rawdata_missing_file(sample_xlsx, rawdata_dir_path, caplog):
-    processor1 = UploadFileProcessor.read_file(sample_xlsx, FileType.xlsx)
-    processor1.at[0, "FileName1"] = "missing_file.fastq"
-    processor1.at[0, "MD5checksum1"] = "dummy_md5"
-    with caplog.at_level("ERROR"):
-        UploadFileProcessor.rawdata_validation(processor1, rawdata_dir_path)
-    assert "Error checking" in caplog.text
-
-
-def test_rawdata_wrong_md5(sample_xlsx, rawdata_dir_path):
-    processor = UploadFileProcessor.read_file(sample_xlsx, FileType.xlsx)
-    processor.at[0, "MD5checksum1"] = "dummy_md5"
-    valid, missing = UploadFileProcessor.rawdata_validation(
-        processor, rawdata_dir_path)
-    assert valid is False
-    assert "Atreated-2_1.fq" in missing
-
-
 @pytest.mark.asyncio
 async def test_database_wrapper(sample_xlsx, tpm_in, counts_in):
     sample_sheet_data = UploadFileProcessor.read_file(

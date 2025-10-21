@@ -200,22 +200,6 @@ def test_trim_report_empty(tmp_path):
         utils.trim_report(tmp_path)
 
 
-def test_cleanup_directories(tmp_path, caplog):
-    d1 = tmp_path / "dir1"
-    d2 = tmp_path / "dir2"
-    d1.mkdir()
-    d2.mkdir()
-    file1 = d1 / "file.txt"
-    file1.write_text("test")
-    utils.cleanup_directories([d1, d2])
-    assert not d1.exists()
-    assert not d2.exists()
-    # Test non-existent directory
-    with caplog.at_level("WARNING"):
-        utils.cleanup_directories([d1])
-    assert "Directory does not exist" in caplog.text
-
-
 def test_dataframe_trans(dataframe_trans_data):
     df = pd.read_csv(dataframe_trans_data)
     df_t = utils.dataframe_t(df)

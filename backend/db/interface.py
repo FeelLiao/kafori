@@ -1,13 +1,15 @@
 from dataclasses import dataclass
 from datetime import date
-from typing import List, Tuple, Dict
+import logging
+import os
+from typing import List, Dict
 import pandas as pd
 import polars as pl
+import numpy as np
+import zstd
+from concurrent.futures import ThreadPoolExecutor
 
 from backend.db.utils import Utils
-
-from backend.db.models.dto.ExpClassDTO import ExpClassDTO
-
 from backend.db.repositories.impl.ExpClassRepositoryImpl import ExpClassRepositoryImpl
 from backend.db.repositories.impl.ExperimentRepositoryImpl import ExperimentRepositoryImpl
 from backend.db.repositories.impl.SampleRepositoryImpl import SampleRepositoryImpl
@@ -15,6 +17,7 @@ from backend.db.repositories.impl.GeneExpressTpmRepositoryImpl import GeneExpres
 from backend.db.repositories.impl.GeneExpressCountsRepositoryImpl import GeneExpressCountsRepositoryImpl
 from backend.db.repositories.impl.GeneExpressRepositoryImpl import GeneExpressRepositoryImpl
 from backend.db.repositories.impl.UserRepositoryImpl import UserRepositoryImpl
+from backend.analysis.framework import InputData
 
 
 class DataBase:
@@ -196,6 +199,62 @@ class GetDataBaseInterface:
         data = await db.gene_express.model.filter(UniqueID__in=unique_id).values()
         return pl.DataFrame(data)
 
+    @staticmethod
+    def _decompress_blob(row: dict, blob_col: str) -> tuple[str, str, np.ndarray]:
+        arr = np.frombuffer(
+            zstd.decompress(row[blob_col]),
+            dtype=np.float32
+        )
+        return row["SampleID"], row["UniqueID"], arr
+
+    @staticmethod
+    async def get_expression_v2(unique_id: tuple[str],
+                                type: InputData,
+                                gene_id: tuple[str] | None = None,
+                                threads: int | None = None) -> pl.DataFrame:
+        """
+        还原单一类型 (TPM 或 COUNTS) 的宽表:
+            gene_id | sampleA | sampleB | ...
+        gene_id 直接生成: g1..gN
+        """
+        df = await GetDataBaseInterface._get_expression_v2(unique_id)
+        if df is None or df.is_empty():
+            raise ValueError("No expression data found for the given unique IDs.")
+        blob_col = "TPMBlob" if type == InputData.tpm else "CountsBlob"
+
+        rows = list(df.iter_rows(named=True))
+
+        def task(r):
+            return GetDataBaseInterface._decompress_blob(r, blob_col)
+        if len(rows) == 1:
+            decompressed = [task(rows[0])]
+        else:
+            max_workers = threads or min(len(rows), os.cpu_count() or 1)
+            with ThreadPoolExecutor(max_workers=max_workers) as executor:
+                decompressed = list(executor.map(task, rows))
+
+        sample_ids = [sid for sid, _, _ in decompressed]
+        arrays = [arr for _, _, arr in decompressed]
+
+        # 校验长度一致
+        gene_len = arrays[0].size
+        for sid, arr in zip(sample_ids, arrays):
+            if arr.size != gene_len:
+                raise ValueError(f"Sample {sid} : {arr.size} != {gene_len}")
+
+        matrix = np.column_stack(arrays)
+
+        gene_ids = [f"g{i}" for i in range(1, matrix.shape[0] + 1)]
+
+        data_dict: Dict[str, object] = {"gene_id": gene_ids}
+        for sid, arr in zip(sample_ids, arrays):
+            data_dict[sid] = arr
+
+        df_rest = pl.DataFrame(data_dict)
+        if gene_id is not None:
+            df_rest = df_rest.filter(pl.col("gene_id").is_in(gene_id))
+        return df_rest
+
 
 class PutDataBaseInterface:
     """
@@ -227,6 +286,7 @@ class PutDataBaseInterface:
             return True
 
         except Exception as e:
+            logging.error(f"Error in put_experiment: {e}")
             return False
 
     @staticmethod
@@ -260,6 +320,7 @@ class PutDataBaseInterface:
             return True
 
         except Exception as e:
+            logging.error(f"Error in put_sample: {e}")
             return False
 
     @staticmethod
@@ -288,6 +349,7 @@ class PutDataBaseInterface:
             return True
 
         except Exception as e:
+            logging.error(f"Error in put_gene_tpm: {e}")
             return False
 
     @staticmethod
@@ -316,6 +378,7 @@ class PutDataBaseInterface:
             return True
 
         except Exception as e:
+            logging.error(f"Error in put_gene_counts: {e}")
             return False
 
     # TODO: 这个函数后续需要实现
@@ -343,6 +406,7 @@ class PutDataBaseInterface:
             return True
 
         except Exception as e:
+            logging.error(f"Error in put_expression_v2: {e}")
             return False
 
     @staticmethod
