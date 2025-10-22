@@ -13,7 +13,9 @@
       </div>
 
     </main>
+
   </div>
+  <PageFooter/>
 </template>
 
 <script setup lang="ts">
@@ -21,6 +23,7 @@ import { ref } from 'vue';
 import DownloadSection from './DownloadSection.vue';
 import { transcriptsQuery,getDownloadCatalog } from '@/api/index.ts';
 import type { Sample } from '@/api/interface.ts';
+import PageFooter from "@/components/page_footer.vue";
 
 const activeSection = ref<'experiment' | 'sample' | 'result'>('experiment');
 

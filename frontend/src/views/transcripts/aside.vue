@@ -29,7 +29,7 @@
             :class="{ 'bg-gray-100 dark:bg-gray-800': activeSection === 'result' }"
             @click="$emit('navigate', 'result')"
         >
-          📊 {{$t('Transcripts_result')}}
+          📊 {{$t('Transcripts_analysis')}}
         </button>
       </li>
     </ul>

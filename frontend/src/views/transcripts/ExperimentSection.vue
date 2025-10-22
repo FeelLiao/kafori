@@ -55,6 +55,7 @@
           @select-all="onSelectAll"
           @page-change="handleExperimentPageChange"
           @page-size-change="handleExperimentSizeChange"
+          @sort-change="handleSortChange"
           :pagination="{
       currentPage: experiment_pagination.currentPage,
       pageSize: experiment_pagination.pageSize,
@@ -67,7 +68,7 @@
         <span class="card-title text-blue-700 dark:text-blue-300 flex items-center">
           🧪 {{$t('Transcripts_experiment_list')}}
         </span>
-            <el-button type="primary" @click="emitFetchSamples">
+            <el-button type="primary" @click="emitFetchSamples(selectedExperimentIds)">
               {{$t('Transcripts_search')}}
             </el-button>
           </div>
@@ -80,14 +81,14 @@
         </template>
 
         <template #experiment="{ row }">
-      <span :title="row.Experiment" class="ellipsis-cell dark:text-gray-100">
+      <span :title="row.Experiment" class="dark:text-gray-100">
         {{ row.Experiment }}
       </span>
         </template>
 
         <template #action="{ row }">
-          <el-button type="primary" size="small" @click="emitFetchSamples">
-            检索
+          <el-button type="primary" size="small" @click="emitFetchSamples([row.UniqueEXID])">
+            {{$t('Transcripts_search')}}
           </el-button>
         </template>
       </re-pure-table>
@@ -146,9 +147,12 @@ function handleCheckAll(val: CheckboxValueType) {
   }
 }
 
+// 1. 保存原始数据
+const originalExperimentData = ref<Experiment[]>([]);
 async function searchExperiments() {
-  experimentData.value = await transcriptsQuery('exp_name', categoryValue.value);
-  // 数据变更后重置分页到第 1 页
+  const data = await transcriptsQuery('exp_name', categoryValue.value);
+  experimentData.value = data;
+  originalExperimentData.value = [...data]; // 保存原始顺序
   experiment_pagination.value.currentPage = 1;
 }
 
@@ -222,18 +226,44 @@ watch(
 );
 
 // 其它
-function emitFetchSamples() {
-  emits('fetch-samples');
+function emitFetchSamples(ids: Array<string | number>) {
+  emits('fetch-samples', ids);
 }
 function getExpCategory(expClass: string) {
   const found = expData.value.find(item => item.ExpClass === expClass);
   return found ? found.ExperimentCategory : '-';
 }
 
+
+const sortState = ref({ prop: '', order: '' });
+
+
+// 2. 排序逻辑完善
+function handleSortChange({ prop, order }: { prop: string; order: string }) {
+  sortState.value = { prop, order };
+  if (prop === 'ExperimentCategory') {
+    if (!order) {
+      // 恢复原始顺序
+      experimentData.value = [...originalExperimentData.value];
+    } else {
+      experimentData.value.sort((a, b) => {
+        const catA = getExpCategory(a.ExpClass) || '';
+        const catB = getExpCategory(b.ExpClass) || '';
+        if (order === 'ascending') {
+          return catA.localeCompare(catB);
+        } else if (order === 'descending') {
+          return catB.localeCompare(catA);
+        }
+        return 0;
+      });
+    }
+  }
+}
+
 const columns = computed(() => [
   { type: 'selection' },
-  { prop: 'UniqueEXID', label: i18n.global.t('Transcripts_exp_id'),width: 20},
-  { prop: 'ExperimentCategory', label: i18n.global.t('Transcripts_exp_category'), slot: 'experimentCategory' },
+  // { prop: 'UniqueEXID', label: i18n.global.t('Transcripts_exp_id'),width: 20},
+  { prop: 'ExperimentCategory', label: i18n.global.t('Transcripts_exp_category'), slot: 'experimentCategory' ,width: 20, sortable: true},
   { prop: 'Experiment', label: i18n.global.t('Transcripts_exp_name'), slot: 'experiment' },
   { prop: 'action', label: i18n.global.t('Transcripts_exp_action'), slot: 'action' }
 ]);

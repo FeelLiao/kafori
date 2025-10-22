@@ -8,7 +8,7 @@
       <!-- 实验列表部分 -->
       <div ref="experimentSectionEl" class="section">
         <ExperimentSection
-            @update:selectedExperimentIds="(ids) => (selectedExperimentIds = ids as any)"
+            @update:selectedExperimentIds="(ids) => (selectedExperimentIds.value = ids as any)"
             @fetch-samples="handleFetchSamples"
         />
       </div>
@@ -17,13 +17,20 @@
       <div ref="sampleSectionEl" class="section">
         <SampleSection
             :samples="sampleData"
+            @update:selectedSampleIds="handleSelectedSampleIds"
             @analyzed="handleAnalyzed"
         />
       </div>
 
       <!-- 实验结果部分 -->
       <div ref="resultSectionEl" class="section result-section">
-        <ResultSection :res="transcriptRes" :width="plotWidth" :height="plotHeight" />
+        <ResultSection
+            :res="transcriptRes"
+            @analyzed="handleAnalyzed"
+            :selectedSampleIds="selectedSampleIds"
+            :width="plotWidth"
+            :height="plotHeight"
+        />
       </div>
     </main>
   </div>
@@ -57,7 +64,7 @@
 
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import Aside from './aside.vue';
 import ExperimentSection from './ExperimentSection.vue';
 import SampleSection from './SampleSection.vue';
@@ -81,13 +88,26 @@ function scrollToSection(section: 'experiment' | 'sample' | 'result') {
 }
 
 // 与样本检索相关的状态
-let selectedExperimentIds = [] as Array<string | number>;
+const selectedExperimentIds = ref<Array<string | number>>([]);
+const selectedSampleIds = ref<Array<string | number>>([]);
+
 const sampleData = ref<Sample[]>([]);
 
-async function handleFetchSamples() {
-  // 基于实验选择检索样本
-  sampleData.value = await transcriptsQuery('sample_id', selectedExperimentIds);
+async function handleFetchSamples(ids: Array<string | number>) {
+  // ids 可以是勾选的，也可以是单个 UniqueEXID
+  sampleData.value = await transcriptsQuery('sample_id', ids);
 }
+
+// 监听变化并输出
+// watch(selectedExperimentIds, (newVal, oldVal) => {
+//   console.log('selectedExperimentIds8 变化:', newVal);
+// });
+//
+//
+// // 监听变化并输出
+// watch(selectedSampleIds, (newVal, oldVal) => {
+//   console.log('selectedSampleIds 变化:', newVal);
+// });
 
 // 分析结果
 const transcriptRes = ref<any>(null);
@@ -100,5 +120,11 @@ function handleAnalyzed(payload: { res: any; width: number; height: number }) {
   plotHeight.value = payload.height;
   // 切换到结果区域
   scrollToSection('result');
+}
+
+// ... 其余不变 ...
+function handleSelectedSampleIds(ids: Array<string | number>) {
+  // console.log('[Parent] 收到 selectedSampleIds ->', ids); // <- 增加日志确认
+  selectedSampleIds.value = ids;
 }
 </script>
