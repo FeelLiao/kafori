@@ -5,6 +5,7 @@ __pycache__/
 .idea/
 .pytest_cache/
 .coverage
+kafori.iml
 tests/upstream/out/
 upload/
 

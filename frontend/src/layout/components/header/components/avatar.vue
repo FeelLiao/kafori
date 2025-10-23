@@ -53,12 +53,12 @@ const openFeedbackDialog = () => {
 
     <template #dropdown>
       <el-dropdown-menu>
-        <el-dropdown-item @click="router.push('/user')">
-          <Icon icon="mi:user" />&ensp;个人中心
-        </el-dropdown-item>
-        <el-dropdown-item @click="openFeedbackDialog">
-          <Icon icon="feather:edit" />&ensp;意见反馈
-        </el-dropdown-item>
+<!--        <el-dropdown-item @click="router.push('/user')">-->
+<!--          <Icon icon="mi:user" />&ensp;个人中心-->
+<!--        </el-dropdown-item>-->
+<!--        <el-dropdown-item @click="openFeedbackDialog">-->
+<!--          <Icon icon="feather:edit" />&ensp;意见反馈-->
+<!--        </el-dropdown-item>-->
         <el-dropdown-item @click="handleLogout">
           <Icon icon="pajamas:power" />&ensp;退出
         </el-dropdown-item>

@@ -114,232 +114,197 @@
       </section>
 
       <!-- 基因序列展示（满屏） -->
-      <section class="section-full bg-white dark:bg-gray-900">
-        <div class="container mx-auto px-4 h-full flex items-center">
-          <div class="w-full">
-            <h2 class="text-3xl font-bold text-center mb-12">基因序列<span class="text-lime-500">浏览器</span></h2>
-            <div class="bg-gray-800 rounded-lg p-4 overflow-hidden">
-              <div class="flex justify-between items-center mb-4">
-                <div class="text-gray-300 font-mono">Chr1: 15,000-15,500</div>
-                <div class="flex space-x-2">
-                  <button class="px-3 py-1 bg-gray-700 text-gray-300 rounded hover:bg-gray-600">
-                    <i class="fas fa-search"></i>
-                  </button>
-                  <button class="px-3 py-1 bg-gray-700 text-gray-300 rounded hover:bg-gray-600">
-                    <i class="fas fa-download"></i>
-                  </button>
-                </div>
-              </div>
-              <div class="overflow-x-auto">
-                <div class="sequence-scroll inline-block whitespace-nowrap">
-                  <div class="inline-block courier-new text-sm text-gray-100">
-                    <span class="text-lime-300">ATG</span>
-                    <span class="text-cyan-300">CGA</span>
-                    <span class="text-amber-300">TTA</span>
-                    <span class="text-purple-300">GCT</span>
-                    <span class="text-lime-300">AAC</span>
-                    <span class="text-cyan-300">GGA</span>
-                    <span class="text-amber-300">TCC</span>
-                    <span class="text-purple-300">GTA</span>
-                    <span class="text-lime-300">ATG</span>
-                    <span class="text-cyan-300">CGA</span>
-                    <span class="text-amber-300">TTA</span>
-                    <span class="text-purple-300">GCT</span>
-                    <span class="text-lime-300">AAC</span>
-                    <span class="text-cyan-300">GGA</span>
-                    <span class="text-amber-300">TCC</span>
-                    <span class="text-purple-300">GTA</span>
-                    <span class="text-lime-300">ATG</span>
-                    <span class="text-cyan-300">CGA</span>
-                    <span class="text-amber-300">TTA</span>
-                    <span class="text-purple-300">GCT</span>
-                    <span class="text-lime-300">AAC</span>
-                    <span class="text-cyan-300">GGA</span>
-                    <span class="text-amber-300">TCC</span>
-                    <span class="text-purple-300">GTA</span>
-                    <span class="text-lime-300">ATG</span>
-                    <span class="text-cyan-300">CGA</span>
-                    <span class="text-amber-300">TTA</span>
-                    <span class="text-purple-300">GCT</span>
-                    <span class="text-lime-300">AAC</span>
-                    <span class="text-cyan-300">GGA</span>
-                    <span class="text-amber-300">TCC</span>
-                    <span class="text-purple-300">GTA</span>
-                  </div>
-                </div>
-              </div>
-              <div class="mt-4 flex justify-between text-xs text-gray-400">
-                <div>正向链</div>
-                <div>500 bp</div>
-              </div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
-              <div class="bg-gray-50 dark:bg-gray-800 dark:text-gray-100 rounded-lg p-6">
-                <h3 class="text-xl font-semibold mb-4">序列特征分析</h3>
-                <div class="prose">
-                  <p class="dark:text-gray-300">DNA序列特征分析可以揭示基因组的编码潜力、重复序列分布以及进化关系等信息。</p>
-                  <p>不同颜色的三联密码子代表不同类型的氨基酸编码特性：</p>
-                  <ul class="list-disc pl-5 space-y-2">
-                    <li><span class="text-lime-500">绿色</span>：疏水性氨基酸</li>
-                    <li><span class="text-cyan-500">青色</span>：极性不带电氨基酸</li>
-                    <li><span class="text-amber-500">橙色</span>：酸性氨基酸</li>
-                    <li><span class="text-purple-500">紫色</span>：碱性氨基酸</li>
-                  </ul>
-                </div>
-              </div>
-              <div class="bg-gray-50 dark:bg-gray-800 dark:text-gray-100 rounded-lg p-6">
-                <h3 class="text-xl font-semibold mb-4">功能注释</h3>
-                <div class="prose">
-                  <p class="dark:text-gray-300">通过生物信息学方法预测的序列功能注释可以帮助研究者快速识别潜在的功能区域。</p>
-                  <div class="mt-4">
-                    <div class="flex justify-between text-sm mb-1">
-                      <span>编码区(CDS)</span>
-                      <span>42%</span>
-                    </div>
-                    <div class="w-full bg-gray-200 rounded-full h-2">
-                      <div class="bg-lime-400 h-2 rounded-full" style="width: 42%"></div>
-                    </div>
-                  </div>
-                  <div class="mt-4">
-                    <div class="flex justify-between text-sm mb-1">
-                      <span>调控区</span>
-                      <span>18%</span>
-                    </div>
-                    <div class="w-full bg-gray-200 rounded-full h-2">
-                      <div class="bg-cyan-400 h-2 rounded-full" style="width: 18%"></div>
-                    </div>
-                  </div>
-                  <div class="mt-4">
-                    <div class="flex justify-between text-sm mb-1">
-                      <span>重复序列</span>
-                      <span>25%</span>
-                    </div>
-                    <div class="w-full bg-gray-200 rounded-full h-2">
-                      <div class="bg-amber-400 h-2 rounded-full" style="width: 25%"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+<!--      <section class="section-full bg-white dark:bg-gray-900">-->
+<!--        <div class="container mx-auto px-4 h-full flex items-center">-->
+<!--          <div class="w-full">-->
+<!--            <h2 class="text-3xl font-bold text-center mb-12">基因序列<span class="text-lime-500">浏览器</span></h2>-->
+<!--            <div class="bg-gray-800 rounded-lg p-4 overflow-hidden">-->
+<!--              <div class="flex justify-between items-center mb-4">-->
+<!--                <div class="text-gray-300 font-mono">Chr1: 15,000-15,500</div>-->
+<!--                <div class="flex space-x-2">-->
+<!--                  <button class="px-3 py-1 bg-gray-700 text-gray-300 rounded hover:bg-gray-600">-->
+<!--                    <i class="fas fa-search"></i>-->
+<!--                  </button>-->
+<!--                  <button class="px-3 py-1 bg-gray-700 text-gray-300 rounded hover:bg-gray-600">-->
+<!--                    <i class="fas fa-download"></i>-->
+<!--                  </button>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--              <div class="overflow-x-auto">-->
+<!--                <div class="sequence-scroll inline-block whitespace-nowrap">-->
+<!--                  <div class="inline-block courier-new text-sm text-gray-100">-->
+<!--                    <span class="text-lime-300">ATG</span>-->
+<!--                    <span class="text-cyan-300">CGA</span>-->
+<!--                    <span class="text-amber-300">TTA</span>-->
+<!--                    <span class="text-purple-300">GCT</span>-->
+<!--                    <span class="text-lime-300">AAC</span>-->
+<!--                    <span class="text-cyan-300">GGA</span>-->
+<!--                    <span class="text-amber-300">TCC</span>-->
+<!--                    <span class="text-purple-300">GTA</span>-->
+<!--                    <span class="text-lime-300">ATG</span>-->
+<!--                    <span class="text-cyan-300">CGA</span>-->
+<!--                    <span class="text-amber-300">TTA</span>-->
+<!--                    <span class="text-purple-300">GCT</span>-->
+<!--                    <span class="text-lime-300">AAC</span>-->
+<!--                    <span class="text-cyan-300">GGA</span>-->
+<!--                    <span class="text-amber-300">TCC</span>-->
+<!--                    <span class="text-purple-300">GTA</span>-->
+<!--                    <span class="text-lime-300">ATG</span>-->
+<!--                    <span class="text-cyan-300">CGA</span>-->
+<!--                    <span class="text-amber-300">TTA</span>-->
+<!--                    <span class="text-purple-300">GCT</span>-->
+<!--                    <span class="text-lime-300">AAC</span>-->
+<!--                    <span class="text-cyan-300">GGA</span>-->
+<!--                    <span class="text-amber-300">TCC</span>-->
+<!--                    <span class="text-purple-300">GTA</span>-->
+<!--                    <span class="text-lime-300">ATG</span>-->
+<!--                    <span class="text-cyan-300">CGA</span>-->
+<!--                    <span class="text-amber-300">TTA</span>-->
+<!--                    <span class="text-purple-300">GCT</span>-->
+<!--                    <span class="text-lime-300">AAC</span>-->
+<!--                    <span class="text-cyan-300">GGA</span>-->
+<!--                    <span class="text-amber-300">TCC</span>-->
+<!--                    <span class="text-purple-300">GTA</span>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--              <div class="mt-4 flex justify-between text-xs text-gray-400">-->
+<!--                <div>正向链</div>-->
+<!--                <div>500 bp</div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">-->
+<!--              <div class="bg-gray-50 dark:bg-gray-800 dark:text-gray-100 rounded-lg p-6">-->
+<!--                <h3 class="text-xl font-semibold mb-4">序列特征分析</h3>-->
+<!--                <div class="prose">-->
+<!--                  <p class="dark:text-gray-300">DNA序列特征分析可以揭示基因组的编码潜力、重复序列分布以及进化关系等信息。</p>-->
+<!--                  <p>不同颜色的三联密码子代表不同类型的氨基酸编码特性：</p>-->
+<!--                  <ul class="list-disc pl-5 space-y-2">-->
+<!--                    <li><span class="text-lime-500">绿色</span>：疏水性氨基酸</li>-->
+<!--                    <li><span class="text-cyan-500">青色</span>：极性不带电氨基酸</li>-->
+<!--                    <li><span class="text-amber-500">橙色</span>：酸性氨基酸</li>-->
+<!--                    <li><span class="text-purple-500">紫色</span>：碱性氨基酸</li>-->
+<!--                  </ul>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--              <div class="bg-gray-50 dark:bg-gray-800 dark:text-gray-100 rounded-lg p-6">-->
+<!--                <h3 class="text-xl font-semibold mb-4">功能注释</h3>-->
+<!--                <div class="prose">-->
+<!--                  <p class="dark:text-gray-300">通过生物信息学方法预测的序列功能注释可以帮助研究者快速识别潜在的功能区域。</p>-->
+<!--                  <div class="mt-4">-->
+<!--                    <div class="flex justify-between text-sm mb-1">-->
+<!--                      <span>编码区(CDS)</span>-->
+<!--                      <span>42%</span>-->
+<!--                    </div>-->
+<!--                    <div class="w-full bg-gray-200 rounded-full h-2">-->
+<!--                      <div class="bg-lime-400 h-2 rounded-full" style="width: 42%"></div>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                  <div class="mt-4">-->
+<!--                    <div class="flex justify-between text-sm mb-1">-->
+<!--                      <span>调控区</span>-->
+<!--                      <span>18%</span>-->
+<!--                    </div>-->
+<!--                    <div class="w-full bg-gray-200 rounded-full h-2">-->
+<!--                      <div class="bg-cyan-400 h-2 rounded-full" style="width: 18%"></div>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                  <div class="mt-4">-->
+<!--                    <div class="flex justify-between text-sm mb-1">-->
+<!--                      <span>重复序列</span>-->
+<!--                      <span>25%</span>-->
+<!--                    </div>-->
+<!--                    <div class="w-full bg-gray-200 rounded-full h-2">-->
+<!--                      <div class="bg-amber-400 h-2 rounded-full" style="width: 25%"></div>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </section>-->
 
       <!-- 3D DNA结构（满屏） -->
-      <section class="section-full bg-gray-100 dark:bg-gray-900">
-        <div class="container mx-auto px-4 h-full flex items-center">
-          <div class="grid grid-cols-1 md:grid-cols-12 gap-8 w-full">
-            <div class="md:col-span-7">
-              <div ref="dna3dChartRef" style="width:100%;min-height:320px;background:#f8fafc;"></div>
-            </div>
-            <div class="md:col-span-5">
-              <h3 class="text-2xl font-semibold mb-4">交互式DNA双螺旋</h3>
-              <div class="prose">
-                <p class="dark:text-gray-300">通过鼠标拖拽可以旋转查看DNA双螺旋结构的三维模型，滚轮可缩放观察细节。</p>
-                <p>模型展示了DNA分子的主要结构特征：</p>
-                <ul class="list-disc pl-5 space-y-2">
-                  <li>大沟和小沟的周期性变化</li>
-                  <li>碱基对的平面堆叠</li>
-                  <li>磷酸骨架的走向</li>
-                  <li>螺旋的右手性</li>
-                </ul>
-              </div>
-              <div class="mt-6 grid grid-cols-2 gap-4">
-                <div class="bg-white dark:bg-gray-800 dark:text-cyan-300 p-4 rounded-lg shadow-sm">
-                  <div class="text-cyan-500 dark:text-cyan-300 text-xl font-bold">10.5</div>
-                  <div class="text-sm text-gray-600 dark:text-gray-400">每圈碱基数</div>
-                </div>
-                <div class="bg-white dark:bg-gray-800 dark:text-lime-300 p-4 rounded-lg shadow-sm">
-                  <div class="text-lime-500 dark:text-lime-300 text-xl font-bold">3.4nm</div>
-                  <div class="text-sm text-gray-600 dark:text-gray-400">每圈高度</div>
-                </div>
-                <div class="bg-white dark:bg-gray-800 dark:text-purple-300 p-4 rounded-lg shadow-sm">
-                  <div class="text-purple-500 dark:text-purple-300 text-xl font-bold">2nm</div>
-                  <div class="text-sm text-gray-600 dark:text-gray-400">双螺旋直径</div>
-                </div>
-                <div class="bg-white dark:bg-gray-800 dark:text-amber-300 p-4 rounded-lg shadow-sm">
-                  <div class="text-amber-500 dark:text-amber-300 text-xl font-bold">0.34nm</div>
-                  <div class="text-sm text-gray-600 dark:text-gray-400">碱基间距</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+<!--      <section class="section-full bg-gray-100 dark:bg-gray-900">-->
+<!--        <div class="container mx-auto px-4 h-full flex items-center">-->
+<!--          <div class="grid grid-cols-1 md:grid-cols-12 gap-8 w-full">-->
+<!--            <div class="md:col-span-7">-->
+<!--              <div ref="dna3dChartRef" style="width:100%;min-height:320px;background:#f8fafc;"></div>-->
+<!--            </div>-->
+<!--            <div class="md:col-span-5">-->
+<!--              <h3 class="text-2xl font-semibold mb-4">交互式DNA双螺旋</h3>-->
+<!--              <div class="prose">-->
+<!--                <p class="dark:text-gray-300">通过鼠标拖拽可以旋转查看DNA双螺旋结构的三维模型，滚轮可缩放观察细节。</p>-->
+<!--                <p>模型展示了DNA分子的主要结构特征：</p>-->
+<!--                <ul class="list-disc pl-5 space-y-2">-->
+<!--                  <li>大沟和小沟的周期性变化</li>-->
+<!--                  <li>碱基对的平面堆叠</li>-->
+<!--                  <li>磷酸骨架的走向</li>-->
+<!--                  <li>螺旋的右手性</li>-->
+<!--                </ul>-->
+<!--              </div>-->
+<!--              <div class="mt-6 grid grid-cols-2 gap-4">-->
+<!--                <div class="bg-white dark:bg-gray-800 dark:text-cyan-300 p-4 rounded-lg shadow-sm">-->
+<!--                  <div class="text-cyan-500 dark:text-cyan-300 text-xl font-bold">10.5</div>-->
+<!--                  <div class="text-sm text-gray-600 dark:text-gray-400">每圈碱基数</div>-->
+<!--                </div>-->
+<!--                <div class="bg-white dark:bg-gray-800 dark:text-lime-300 p-4 rounded-lg shadow-sm">-->
+<!--                  <div class="text-lime-500 dark:text-lime-300 text-xl font-bold">3.4nm</div>-->
+<!--                  <div class="text-sm text-gray-600 dark:text-gray-400">每圈高度</div>-->
+<!--                </div>-->
+<!--                <div class="bg-white dark:bg-gray-800 dark:text-purple-300 p-4 rounded-lg shadow-sm">-->
+<!--                  <div class="text-purple-500 dark:text-purple-300 text-xl font-bold">2nm</div>-->
+<!--                  <div class="text-sm text-gray-600 dark:text-gray-400">双螺旋直径</div>-->
+<!--                </div>-->
+<!--                <div class="bg-white dark:bg-gray-800 dark:text-amber-300 p-4 rounded-lg shadow-sm">-->
+<!--                  <div class="text-amber-500 dark:text-amber-300 text-xl font-bold">0.34nm</div>-->
+<!--                  <div class="text-sm text-gray-600 dark:text-gray-400">碱基间距</div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </section>-->
 
       <!-- 关于平台（满屏） -->
       <section class="section-full bg-white dark:bg-gray-900">
         <div class="container mx-auto px-4 h-full flex items-center">
           <div class="w-full">
-            <h2 class="text-3xl font-bold text-center mb-12">关于<span class="text-lime-500">平台</span></h2>
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
-              <div class="md:col-span-7">
-                <div class="prose">
-                  <h3 class="text-2xl font-semibold mb-4">技术架构</h3>
-                  <p class="dark:text-gray-300">本平台采用现代Web技术构建，主要技术栈包括：</p>
-                  <ul class="list-disc pl-5 space-y-2">
-                    <li>前端框架：React + Tailwind CSS</li>
-                    <li>可视化库：D3.js + ECharts</li>
-                    <li>3D渲染：Three.js</li>
-                    <li>数据分析：Python + Biopython</li>
-                    <li>数据存储：MongoDB + PostgreSQL</li>
-                  </ul>
-                  <h3 class="text-2xl font-semibold mt-8 mb-4">数据来源</h3>
-                  <p class="dark:text-gray-300">平台整合了多个公共数据库的基因组数据，包括：</p>
-                  <ul class="list-disc pl-5 space-y-2">
-                    <li>NCBI GenBank</li>
-                    <li>Ensembl Genome Browser</li>
-                    <li>UCSC Genome Browser</li>
-                    <li>DNA Data Bank of Japan (DDBJ)</li>
+            <h2 class="text-3xl font-bold text-center mb-12"><span class="text-lime-500">{{$t('home_about_platform')}}</span></h2>
+            <div class="flex flex-col md:flex-row justify-center items-stretch gap-8">
+              <div class="md:w-1/2 w-full flex flex-col justify-center h-full">
+                <div class="prose max-w-md mx-auto">
+                  <h3 class="dark:text-gray-300 text-2xl font-semibold mb-4">{{ $t('home_technical_architecture') }}</h3>
+                  <p class="dark:text-gray-300">{{ $t('home_technical_architecture_introduction') }}</p>
+                  <ul class="dark:text-gray-300 list-disc pl-5 space-y-2">
+                    <li>{{ $t('home_tech_1') }}：{{ $t('home_tech_1_desc') }}</li>
+                    <li>{{ $t('home_tech_4') }}：{{ $t('home_tech_4_desc') }}</li>
+                    <li>{{ $t('home_tech_2') }}：{{ $t('home_tech_2_desc') }}</li>
+                    <li>{{ $t('home_tech_3') }}：{{ $t('home_tech_3_desc') }}</li>
                   </ul>
                 </div>
               </div>
-              <div class="md:col-span-5">
-                <div class="bg-gray-50 dark:bg-gray-800 dark:text-gray-100 p-6 rounded-lg">
-                  <h3 class="text-xl font-semibold mb-4">获取数据</h3>
-                  <form class="space-y-4">
-                    <div>
-                      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">基因组版本</label>
-                      <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500">
-                        <option>GRCh38 (hg38)</option>
-                        <option>GRCh37 (hg19)</option>
-                        <option>NCBI36 (hg18)</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">染色体</label>
-                      <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500">
-                        <option>1号染色体</option>
-                        <option>2号染色体</option>
-                        <option>X染色体</option>
-                        <option>Y染色体</option>
-                        <option>线粒体DNA</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">起始位置</label>
-                      <input type="number" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500" />
-                    </div>
-                    <div>
-                      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">结束位置</label>
-                      <input type="number" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500" />
-                    </div>
-                    <button type="submit" class="w-full py-2 px-4 bg-gradient-to-r from-lime-400 to-cyan-400 text-white rounded-md shadow hover:shadow-md transition">
-                      获取序列数据
-                    </button>
-                  </form>
+              <div class="md:w-1/2 w-full flex flex-col justify-center h-full">
+                <div class="prose max-w-md mx-auto">
+                  <h3 class="dark:text-gray-300 text-2xl font-semibold mb-4">{{ $t('home_data_source') }}</h3>
+                  <p class="dark:text-gray-300">{{ $t('home_data_source_desc') }}</p>
+                  <ul class="dark:text-gray-300 list-disc pl-5 space-y-2">
+                    <li>{{ $t('home_db_1') }}</li>
+                    <li>{{ $t('home_db_2') }}</li>
+                    <li>{{ $t('home_db_3') }}</li>
+                  </ul>
                 </div>
               </div>
             </div>
-            <div class="border-t border-gray-200 dark:border-gray-700 mt-8 pt-8 text-center text-sm">
-              <p>© 2025 转录组分析平台. 保留所有权利.</p>
-              <p class="mt-2 text-gray-500" style="font-size:16pt">Copyright 2025，Feeliao/Feelzhou</p>
-            </div>
+
           </div>
         </div>
       </section>
+
     </main>
   </div>
+  <PageFooter/>
 </template>
 
 <script setup lang="ts">
@@ -347,6 +312,7 @@ import { ref, onMounted, onBeforeUnmount, computed, watch } from 'vue'
 import * as echarts from 'echarts'
 import type { ExpClassDTO } from '@/api/interface.ts'
 import { getAllExpCounts, getYearCounts, transcriptsQuery } from '@/api/index.ts'
+import PageFooter from "@/components/page_footer.vue";
 
 /* DOM refs */
 const basePairChartRef = ref<HTMLElement | null>(null)

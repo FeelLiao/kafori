@@ -243,6 +243,7 @@
     <div class="text-xs text-gray-500 dark:text-gray-400">
 
     </div>
+
   </div>
 
   <!-- 悬浮上传进度栏 -->
@@ -322,6 +323,7 @@
       </el-icon>
     </el-button>
   </div>
+  <PageFooter/>
 </template>
 
 <style scoped>
@@ -348,6 +350,7 @@ import {putDatabase, getRawdataResults} from '@/api/index.ts'
 import {CaretRight, VideoPause} from "@element-plus/icons-vue";
 import * as system from "@/api/system.ts";
 import {ElNotification} from "element-plus";
+import PageFooter from "@/components/page_footer.vue";
 
 // 轮询定时器
 const pollingTimer = ref<number | null>(null);

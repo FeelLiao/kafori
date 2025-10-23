@@ -1,6 +1,7 @@
 from datetime import date
 
 import pandas as pd
+import polars as pl
 import pytest
 from backend.db.repositories.impl.SampleRepositoryImpl import SampleRepositoryImpl
 
@@ -94,6 +95,20 @@ async def test_put_counts():
     }
 
     res = await put_db.put_gene_counts(pd.DataFrame.from_dict(test_data))
+    print(res)
+
+
+
+@pytest.mark.asyncio
+async def test_put_express():
+    test_data = pl.DataFrame({
+        "UniqueID": ["s1000000", "s1000001"],
+        "SampleID": ["E-1", "E-2"],
+        "TPM": [445, 226],
+        "Counts": [445, 226],
+    })
+
+    res = await put_db.put_expression_v2(test_data)
     print(res)
 
 
