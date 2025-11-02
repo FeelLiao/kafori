@@ -3,6 +3,7 @@ from pydantic import Field
 from enum import Enum
 
 from backend.analysis.framework import BaseAnalysis, BaseAnalysisParams, InputData, register_analysis
+from backend.analysis.framework import ParamsType
 from backend.analysis.scripts.deg import deg_code  # 现有 R 脚本
 
 
@@ -16,11 +17,14 @@ class NORMALIZE(str, Enum):
 
 class DEGParams(BaseAnalysisParams):
     normalize_method: NORMALIZE = Field(
-        default=NORMALIZE.TMM, description="Normalization method")
+        default=NORMALIZE.TMM, description="Normalization method",
+        json_schema_extra={"TYPE": ParamsType.enum, "ENUM": [e.value for e in NORMALIZE]})
     fdr_threshold: float = Field(
-        0.05, ge=0, le=1, description="FDR threshold for significance")
+        0.05, ge=0, le=1, description="FDR threshold for significance",
+        json_schema_extra={"TYPE": ParamsType.number})
     log2fc_threshold: float = Field(
-        1.0, ge=1.0, description="Log2 fold change threshold for significance")
+        1.0, ge=1.0, description="Log2 fold change threshold for significance",
+        json_schema_extra={"TYPE": ParamsType.number})
 
 
 @register_analysis("deg")

@@ -19,10 +19,18 @@ class InputData(StrEnum):
     counts = "counts"
 
 
+class ParamsType(StrEnum):
+    number = "number"
+    enum = "enum"
+    string = "string"
+
+
 class BaseAnalysisParams(BaseModel):
     # 所有分析共享的通用绘图参数，可被子类覆写/扩展
-    width: int = Field(800, description="Plot width in px")
-    height: int = Field(600, description="Plot height in px")
+    width: int = Field(800, description="Plot width in px",
+                       json_schema_extra={"TYPE": ParamsType.number})
+    height: int = Field(600, description="Plot height in px",
+                        json_schema_extra={"TYPE": ParamsType.number})
 
 
 class BaseAnalysis(ABC):
@@ -37,6 +45,7 @@ class BaseAnalysis(ABC):
     id: str = "base"
     title: str = "Base Analysis"
     input_type: InputData = InputData.tpm
+    gene_filter: bool = False  # 是否需要基因过滤
     Params: Type[BaseAnalysisParams] = BaseAnalysisParams
 
     def __init__(self, df: pd.DataFrame, params: BaseAnalysisParams, rproc: RProcessorPoolMP):
@@ -72,6 +81,30 @@ class BaseAnalysis(ABC):
         pass
 
 
+def _format_params_schema(model: Type[BaseModel]) -> dict:
+    """
+    Convert pydantic model_json_schema() into a simpler, client-friendly params schema.
+    """
+    try:
+        schema = model.model_json_schema()
+    except Exception:
+        return {}
+
+    props = schema.get("properties", {}) or {}
+
+    properties = {}
+    for name, prop in props.items():
+        properties[name] = {
+            k: v for k, v in prop.items() if k not in {"type", "$ref"}
+        }
+
+    return {
+        "title": schema.get("title"),
+        "type": schema.get("type", "object"),
+        "properties": properties,
+    }
+
+
 # 注册表与装饰器
 _registry: Dict[str, Type[BaseAnalysis]] = {}
 
@@ -97,6 +130,7 @@ def catalog() -> list[dict[str, Any]]:
             "id": cls.id,
             "title": getattr(cls, "title", cls.id),
             "input_type": cls.input_type.value,
-            "params_schema": cls.Params.model_json_schema()
+            "gene_filter": cls.gene_filter,
+            "params_schema": _format_params_schema(cls.Params)
         })
     return items
