@@ -6,7 +6,7 @@ from fastapi import Depends, HTTPException, status, APIRouter
 from fastapi.security import OAuth2PasswordBearer
 from jwt.exceptions import InvalidTokenError
 from passlib.context import CryptContext
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict, Field
 from backend.db.interface import DataBase
 from backend.db.result.Result import Result
 
@@ -33,8 +33,10 @@ class TokenData(BaseModel):
 
 
 class User(BaseModel):
-    username: str
-    disabled: bool | None = None
+    username: str = Field(alias="Username")
+    disabled: bool | None = Field(default=None, alias="Disabled")
+
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class UserInDB(User):
@@ -53,25 +55,6 @@ def verify_password(plain_password, hashed_password):
 
 def get_password_hash(password):
     return pwd_context.hash(password)
-
-
-def get_user(db_obj, username: str):
-    """
-    保留兼容函数（按需可删除）。注意：这个函数期望 db_obj 是 dict-like。
-    """
-    if isinstance(db_obj, dict) and username in db_obj:
-        user_dict = db_obj[username]
-        return UserInDB(**user_dict)
-    return None
-
-
-def authenticate_user(fake_db, username: str, password: str):
-    user = get_user(fake_db, username)
-    if not user:
-        return False
-    if not verify_password(password, user.hashed_password):
-        return False
-    return user
 
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
@@ -121,9 +104,10 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]) -> Use
 
 async def get_current_active_user(
     current_user: Annotated[UserVO, Depends(get_current_user)],
-) -> UserVO:
+) -> User:
     # 可在此处检查 current_user.disabled 等字段
-    return current_user
+    UserInfo = current_user.model_dump(by_alias=True)
+    return User.model_validate(UserInfo)
 
 
 @validation_router.post("/user/login")
