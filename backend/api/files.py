@@ -17,7 +17,7 @@ import zstd
 
 from backend.api.utils import dataframe_t, dataframe_wide2long, deprecated
 from backend.analysis.upstream import UpstreamAnalysis
-
+from backend.db.interface import GetDataBaseInterface as db
 
 logger = logging.getLogger(__name__)
 
@@ -391,7 +391,18 @@ class PutDataBaseWrapper:
             "Experiment class and category extracted for database communication.")
         return exclass
 
-    def db_insert(self, exclass: tuple[list[bool], List[Dict[str, str]]]) -> Tuple[pd.DataFrame]:
+    @staticmethod
+    async def get_existing_exp_from_db() -> pd.DataFrame:
+        """
+        Get existing experiment table from the database.
+        Returns:
+            pd.DataFrame: A DataFrame containing existing experiment table.
+        """
+        data = await db.get_exp_all()
+        logger.info("Existing experiment table fetched from database.")
+        return data
+
+    async def db_insert(self, exclass: tuple[list[bool], List[Dict[str, str]]]) -> Tuple[pd.DataFrame]:
         """
         Parsing exp_sheet and sample_sheet from the sample_sheet_wrapped based on the communicated exclass.
 
@@ -411,12 +422,30 @@ class PutDataBaseWrapper:
                 new_exclass, on="ExperimentCategory", how="left")
             logger.info("Exclass replaced in sample sheet.")
 
-        exp_sheet = self.sample_sheet_wrapped[[
+        exp_db = await PutDataBaseWrapper.get_existing_exp_from_db()
+        exp_db = exp_db.set_index("Experiment")
+        sheet = self.sample_sheet_wrapped.set_index("Experiment")
+
+        # 只对两列做更新
+        matched = sheet.index.intersection(exp_db.index)
+        sheet.loc[matched, ["ExpClass", "UniqueEXID"]] = exp_db.loc[matched, ["ExpClass", "UniqueEXID"]]
+
+        # 新增标记列
+        sheet["updated"] = False
+        sheet.loc[matched, "updated"] = True
+
+        self.sample_sheet_wrapped = sheet.reset_index()
+        logger.info("Experiment sheet updated with existing database records.")
+
+        exp_sheet_wrapped = self.sample_sheet_wrapped.copy()
+        exp_sheet_wrapped = exp_sheet_wrapped[exp_sheet_wrapped["updated"] is False]
+
+        exp_sheet = exp_sheet_wrapped[[
             "ExpClass", "UniqueEXID", "Experiment"]].drop_duplicates()
         logger.info("Experiment sheet extracted from original sample sheet.")
         sample_sheet = self.sample_sheet_wrapped.drop(
             columns=["ExpClass", "ExperimentCategory", "Experiment", "FileName1",
-                     "FileName2", "MD5checksum1", "MD5checksum2"])
+                     "FileName2", "MD5checksum1", "MD5checksum2", "updated"])
         sample_sheet["FileName"] = None
         sample_sheet["Sample"] = None
 
