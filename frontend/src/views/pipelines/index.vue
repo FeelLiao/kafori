@@ -182,7 +182,7 @@
                 :file-list="fileListA3"
                 :on-change="onFileChangeA3"
                 :on-remove="onFileRemoveA3"
-                :limit="10"
+                :limit="100"
                 :show-file-list="true"
                 accept=".fastq,.fastq.gz,.fq,.fq.gz,.bam,.cram,.fast5,.zip,.tar,.gz"
                 class="w-full"
