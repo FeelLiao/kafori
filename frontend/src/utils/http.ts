@@ -30,11 +30,11 @@ instance.interceptors.request.use(
       // 开启进度条
       NProgress.start()
 
-        console.log("进入拦截器")
+        // console.log("进入拦截器")
 
       // 只有登录请求不需要添加token
       if (config.url?.includes('/user/login')) {
-          console.log("用户登录")
+          // console.log("用户登录")
         return config
       }
 
@@ -50,7 +50,7 @@ instance.interceptors.request.use(
         }
         // 添加Bearer前缀
         config.headers.Authorization = token
-          console.log("Authorization: ",config.headers.Authorization)
+          // console.log("Authorization: ",config.headers.Authorization)
       }
 
       // console.log('请求URL:', config.url)

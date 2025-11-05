@@ -182,7 +182,7 @@
                 :file-list="fileListA3"
                 :on-change="onFileChangeA3"
                 :on-remove="onFileRemoveA3"
-                :limit="10"
+                :limit="100"
                 :show-file-list="true"
                 accept=".fastq,.fastq.gz,.fq,.fq.gz,.bam,.cram,.fast5,.zip,.tar,.gz"
                 class="w-full"
@@ -206,9 +206,12 @@
                 {{$t('Pipelines_upload')}}
               </el-button>
               <el-button type="primary" :disabled="!(is_uploadedA3 && check_md5)" @click="raw_processing">{{$t('Pipelines_btn_start_upstream')}}</el-button>
-              <el-button :disabled="!(upstream_loading)" @click="getRawdataStatus">{{$t('Pipelines_btn_upstream_status')}}</el-button>
-              <el-button type="success" :disabled="!(upstream_success)" @click="handle_upstream_result">{{$t('Pipelines_btn_upstream_result')}}</el-button>
-              <el-button type="primary" :disabled="!(upstream_success)" @click="putDatabase">{{$t('Pipelines_btn_put_database')}}</el-button>
+<!--              <el-button :disabled="!(upstream_loading)" @click="getRawdataStatus">{{$t('Pipelines_btn_upstream_status')}}</el-button>-->
+<!--              <el-button type="success" :disabled="!(upstream_success)" @click="handle_upstream_result">{{$t('Pipelines_btn_upstream_result')}}</el-button>-->
+<!--              <el-button type="primary" :disabled="!(upstream_success)" @click="putDatabase">{{$t('Pipelines_btn_put_database')}}</el-button>-->
+              <el-button @click="getRawdataStatus">{{$t('Pipelines_btn_upstream_status')}}</el-button>
+              <el-button type="success" @click="handle_upstream_result">{{$t('Pipelines_btn_upstream_result')}}</el-button>
+              <el-button type="primary" @click="putDatabase">{{$t('Pipelines_btn_put_database')}}</el-button>
             </div>
 
             <el-descriptions :column="1" size="small" class="mt-2">
