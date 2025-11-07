@@ -15,6 +15,8 @@ const messages = {
         nav_Tools: 'Tools',
         nav_Help: 'Help',
         nav_Contact: 'Contact',
+        nav_Login: 'Login',
+        nav_Login_out: 'Login Out',
 
         /*
         home translation
@@ -135,7 +137,7 @@ const messages = {
         Pipelines_btn_put_database: 'Put into Database',
 
         Pipelines_file_size: 'One File Size <= 10GB',
-        Pipelines_file_example: '下载示例文件',
+        Pipelines_file_example: 'Download Example File',
 
 
         Pipelines_analysis_status: 'Analysis Status',
@@ -149,6 +151,9 @@ const messages = {
 
         Pipelines_ready: 'ready',
         Pipelines_not_ready: 'not ready',
+
+        Pipelines_task: 'Task Upload List',
+        Pipelines_no_task: 'There is no upload task',
 
 
         Download_list: 'Download List',
@@ -192,6 +197,8 @@ const messages = {
         nav_Tools: '工具',
         nav_Help: '帮助',
         nav_Contact: '联系我们',
+        nav_Login: '登录',
+        nav_Login_out: '退出',
 
         /*
         首页翻译
@@ -301,7 +308,7 @@ const messages = {
         Pipelines_A1_file_desc: '支持 CSV，TSV，Excel，JSON，需要按照标准格式上传。',
         Pipelines_A1_tip: 'A1 完成后继续',
 
-        Pipelines_btn_start_upstream: '启动下游分析',
+        Pipelines_btn_start_upstream: '启动上游分析',
         Pipelines_btn_upstream_status: '状态查询',
         Pipelines_btn_upstream_result: '获取上游分析结果',
         Pipelines_btn_put_database: '写入数据库',
@@ -320,6 +327,9 @@ const messages = {
 
         Pipelines_ready: '已就绪',
         Pipelines_not_ready: '未就绪',
+
+        Pipelines_task: '任务上床列表',
+        Pipelines_no_task: '暂无上传任务',
 
         Download_list: '下载列表',
         Download_file_category: '种类',

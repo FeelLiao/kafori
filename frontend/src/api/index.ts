@@ -117,22 +117,21 @@ export const getTranscriptType = (): Promise<any[]> => {
 
 
 export const transcript_analysis = (analysis:string,
-                                    width:number,
-                                    height:number,
+                                    params: any,
                                     unique_id: string[],
                                     gene_name: string[] = [],
                                     all_gene: boolean = false):Promise<any> =>
 {
   const request_data = {
     "analysis": analysis,
-    "params": {"width": width, "height": height},
+    "params": params,
     "data_filter": {
       "unique_id": unique_id,
       "gene_name": gene_name,
       "all_gene": all_gene,
     }
   }
-  console.log(request_data)
+  // console.log(request_data)
   return system.transcript_analysis(request_data).then((res):Promise<any> => {
     if (res.code === 0 && res.data) {
       ElNotification({
