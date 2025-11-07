@@ -46,6 +46,11 @@ const router = createRouter({
     },
 
     {
+      path: '/Help',
+      component: () => import('@/views/help/index.vue'),
+    },
+
+    {
       path: '/Contact',
       component: () => import('@/views/contact/index.vue'),
     },

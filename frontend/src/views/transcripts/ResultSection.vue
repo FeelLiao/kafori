@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, ref, watch, reactive } from 'vue';
 import JSZip from 'jszip';
 import RePureTable from '@/components/re-pure-table.vue';
 import { getTranscriptType, transcript_analysis } from "@/api";
+import {AnalysisCatalog, type ParamsSchema} from "@/api/interface.ts"
 import type { UploadInstance, UploadProps } from "element-plus";
+import i18n from "@/i18n";
 
 const props = defineProps<{
   res: any;
@@ -95,7 +97,10 @@ const parsedGenIdList_f = ref<string[]>([]);
 const ParaseGenIdList = ref<string[]>([]);
 const radio = ref<'1' | '2' | '3'>('1');
 const transcript_type = ref<any[]>([]);
-const transcript_type_value = ref('');
+// 定义 id 变量
+const transcript_type_value_id = ref<string | null>(null);
+const transcript_type_value = ref<AnalysisCatalog>(null);
+const schema = reactive({});
 const width = ref(900);
 const height = ref(600);
 
@@ -120,32 +125,53 @@ const handleUpload: UploadProps['onChange'] = (file) => {
   reader.readAsText(rawFile);
 };
 
+// 根据参数 schema 动态构建参数对象
+function generateParamsFromSchema(params_schema: ParamsSchema) {
+  for (const key in params_schema.properties) {
+    const prop = params_schema.properties[key];
+    schema[key] = prop.default ?? '';
+  }
+  console.log('Generated schema:', schema);
+}
+
+// 监听 id 变化，查找并赋值
+watch(transcript_type_value_id, (id) => {
+  transcript_type_value.value = transcript_type.value.find(item => item.id === id) || null;
+}, { immediate: true });
+
+// 监控 transcript_type_value 变化，更新 schema
+watch(transcript_type_value, (value) => {
+  // 清空旧值
+  Object.keys(schema).forEach(k => delete schema[k]);
+  if (value?.params_schema) {
+    generateParamsFromSchema(value.params_schema);
+  }
+  console.log(value)
+}, { immediate: true });
+
 async function submit_transcirpt() {
   let res: any;
   if (radio.value === '1') {
     ParaseGenIdList.value = parse_geneid(GeneId_textarea.value);
     res = await transcript_analysis(
-        transcript_type_value.value,
-        width.value,
-        height.value,
+        transcript_type_value.value.id,
+        schema,
         selectedSampleIds.value,
         ParaseGenIdList.value,
         false
     );
   } else if (radio.value === '2') {
     res = await transcript_analysis(
-        transcript_type_value.value,
-        width.value,
-        height.value,
+        transcript_type_value.value.id,
+        schema,
         selectedSampleIds.value,
         parsedGenIdList_f.value,
         false
     );
   } else {
     res = await transcript_analysis(
-        transcript_type_value.value,
-        width.value,
-        height.value,
+        transcript_type_value.value.id,
+        schema,
         selectedSampleIds.value,
         [],
         true
@@ -181,10 +207,7 @@ async function exportAllImagesZip() {
   URL.revokeObjectURL(url);
 }
 
-// 监听变化并输出
-watch(transcript_type_value, (newVal, oldVal) => {
-  console.log('transcript_type_value 变化:', newVal);
-});
+
 </script>
 
 <template>
@@ -195,42 +218,135 @@ watch(transcript_type_value, (newVal, oldVal) => {
       </div>
 
       <div class="flex flex-row gap-4 mb-4 items-center">
-        <el-select v-model="transcript_type_value" :placeholder="$t('Transcripts_Analysis_Type')" style="width: 180px" class="ml-0">
-          <el-option v-for="item in transcript_type" :key="item.id" :label="item.title" :value="item.id" />
+        <el-select v-model="transcript_type_value_id" :placeholder="$t('Transcripts_Analysis_Type')" style="width: 180px" class="ml-0">
+          <el-option v-for="(item,index) in transcript_type" :key="item.id" :label="item.title" :value="item.id" />
         </el-select>
         <el-button type="success" @click="submit_transcirpt" class="ml-0">{{$t('Transcripts_analysis')}}</el-button>
       </div>
-      <div
-          v-if="transcript_type_value === 'pca'"
-          class="param-box mb-8"
-      >
-        <div class="flex flex-wrap items-center gap-4">
-          <el-input
-              v-model="GeneId_textarea"
-              style="width: 240px;"
-              :autosize="{ minRows: 2, maxRows: 2 }"
-              type="textarea"
-              placeholder="Gene ID / Name"
-              class="ml-0"
-          />
-          <el-upload
-              ref="upload"
-              class="upload-demo ml-0"
-              :limit="1"
-              :on-change="handleUpload"
-              :auto-upload="false"
+
+<!--      分析组件-->
+<!--      <div-->
+<!--          v-if="transcript_type_value === 'pca'"-->
+<!--          class="param-box mb-8"-->
+<!--      >-->
+<!--        <div class="flex flex-wrap items-center gap-4">-->
+<!--          <el-input-->
+<!--              v-model="GeneId_textarea"-->
+<!--              style="width: 240px;"-->
+<!--              :autosize="{ minRows: 2, maxRows: 2 }"-->
+<!--              type="textarea"-->
+<!--              placeholder="Gene ID / Name"-->
+<!--              class="ml-0"-->
+<!--          />-->
+<!--          <el-upload-->
+<!--              ref="upload"-->
+<!--              class="upload-demo ml-0"-->
+<!--              :limit="1"-->
+<!--              :on-change="handleUpload"-->
+<!--              :auto-upload="false"-->
+<!--          >-->
+<!--            <template #trigger>-->
+<!--              <el-button type="primary">{{$t('Transcripts_upload')}}</el-button>-->
+<!--            </template>-->
+<!--          </el-upload>-->
+<!--          <el-radio-group v-model="radio" class="ml-0">-->
+<!--            <el-radio value="1" size="large">{{ $t('Transcripts_option1') }}</el-radio>-->
+<!--            <el-radio value="2" size="large">{{ $t('Transcripts_option2') }}</el-radio>-->
+<!--            <el-radio value="3" size="large">{{ $t('Transcripts_option3') }}</el-radio>-->
+<!--          </el-radio-group>-->
+<!--          <el-input-number v-model="width" :min="1" :max="1000" class="ml-0" />-->
+<!--          <el-input-number v-model="height" :min="1" :max="1000" class="ml-2" />-->
+<!--        </div>-->
+<!--      </div>-->
+
+
+      <div class="flex flex-wrap items-center gap-4">
+        <el-input
+            v-model="GeneId_textarea"
+            style="width: 240px;"
+            :autosize="{ minRows: 2, maxRows: 2 }"
+            type="textarea"
+            placeholder="Gene ID / Name"
+            class="ml-0"
+        />
+        <el-upload
+            ref="upload"
+            class="upload-demo ml-0"
+            :limit="1"
+            :on-change="handleUpload"
+            :auto-upload="false"
+        >
+          <template #trigger>
+            <el-button type="primary">{{$t('Transcripts_upload')}}</el-button>
+          </template>
+        </el-upload>
+        <el-radio-group v-model="radio" class="ml-0">
+          <el-radio value="1" size="large">{{ $t('Transcripts_option1') }}</el-radio>
+          <el-radio value="2" size="large">{{ $t('Transcripts_option2') }}</el-radio>
+          <el-radio value="3" size="large">{{ $t('Transcripts_option3') }}</el-radio>
+        </el-radio-group>
+
+        </div>
+
+      <div class="param-box mb-8 flex flex-row gap-8 mb-2">
+        <!-- enum 列 -->
+        <div class="flex flex-col flex-1">
+          <div
+              v-for="([key, value], idx) in Object.entries(transcript_type_value?.params_schema?.properties || {}).filter(([k, v]) => v.TYPE === 'enum')"
+              :key="key"
+              class="flex items-center gap-4 mb-2"
           >
-            <template #trigger>
-              <el-button type="primary">{{$t('Transcripts_upload')}}</el-button>
-            </template>
-          </el-upload>
-          <el-radio-group v-model="radio" class="ml-0">
-            <el-radio value="1" size="large">{{ $t('Transcripts_option1') }}</el-radio>
-            <el-radio value="2" size="large">{{ $t('Transcripts_option2') }}</el-radio>
-            <el-radio value="3" size="large">{{ $t('Transcripts_option3') }}</el-radio>
-          </el-radio-group>
-          <el-input-number v-model="width" :min="1" :max="1000" class="ml-0" />
-          <el-input-number v-model="height" :min="1" :max="1000" class="ml-2" />
+            <span class="w-32 text-right mr-2">{{ key }}</span>
+            <el-select
+                v-model="schema[key]"
+                :placeholder="key"
+                style="width: 180px"
+                class="ml-0"
+            >
+              <el-option
+                  v-for="option in value.ENUM"
+                  :key="option"
+                  :label="option"
+                  :value="option"
+              />
+            </el-select>
+          </div>
+        </div>
+        <!-- string 列 -->
+        <div class="flex flex-col flex-1">
+          <div
+              v-for="([key, value], idx) in Object.entries(transcript_type_value?.params_schema?.properties || {}).filter(([k, v]) => v.TYPE === 'string')"
+              :key="key"
+              class="flex items-center gap-4 mb-2"
+          >
+            <span class="w-32 text-right mr-2">{{ key }}</span>
+            <el-input
+                v-model="schema[key]"
+                style="width: 240px;"
+                :autosize="{ minRows: 2, maxRows: 2 }"
+                type="textarea"
+                :placeholder="key"
+                class="ml-0"
+            />
+          </div>
+        </div>
+        <!-- number 列 -->
+        <div class="flex flex-col flex-1">
+          <div
+              v-for="([key, value], idx) in Object.entries(transcript_type_value?.params_schema?.properties || {}).filter(([k, v]) => v.TYPE === 'number')"
+              :key="key"
+              class="flex items-center gap-4 mb-2"
+          >
+            <span class="w-32 text-right mr-2">{{ key }}</span>
+            <el-input-number
+                v-model="schema[key]"
+                :placeholder="key"
+                :min="1"
+                :max="1000"
+                class="ml-2"
+                style="width: 180px"
+            />
+          </div>
         </div>
       </div>
 

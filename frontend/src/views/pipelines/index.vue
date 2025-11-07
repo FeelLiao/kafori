@@ -258,17 +258,10 @@
       custom-class="upload-progress-drawer"
   >
     <div class="p-4">
-      <div class="font-bold mb-2">任务上传进度</div>
-<!--      <div v-if="fileListA1.length">-->
-<!--        <div class="text-xs mb-1">A1 样本文件</div>-->
-<!--        <el-progress-->
-<!--            :percentage="fileListA1[0].percentage || 0"-->
-<!--            :status="fileListA1[0].status === 'fail' ? 'exception' : undefined"-->
-<!--            class="mb-2"-->
-<!--        />-->
-<!--      </div>-->
+      <div class="font-bold mb-2">{{ $t('Pipelines_task') }}</div>
+
       <div v-if="fileListA3.length">
-        <div class="text-xs mb-1">A3 Rawdata 文件</div>
+        <div class="text-xs mb-1">A3 Rawdata</div>
         <div v-for="(file, idx) in fileListA3" :key="file.uid" class="mb-2">
           <div class="truncate text-xs">{{ file.name }}</div>
           <div class="flex items-center gap-2">
@@ -305,7 +298,7 @@
         </div>
       </div>
       <div v-if="!fileListA1.length && !fileListA3.length" class="text-gray-400 text-xs">
-        暂无上传任务
+        {{ $t('Pipelines_no_task') }}
       </div>
     </div>
   </el-drawer>
