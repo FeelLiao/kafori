@@ -60,7 +60,7 @@ const openFeedbackDialog = () => {
 <!--          <Icon icon="feather:edit" />&ensp;意见反馈-->
 <!--        </el-dropdown-item>-->
         <el-dropdown-item @click="handleLogout">
-          <Icon icon="pajamas:power" />&ensp;退出
+          <Icon icon="pajamas:power" />&ensp;{{ $t('nav_Login_out') }}
         </el-dropdown-item>
       </el-dropdown-menu>
     </template>
@@ -73,7 +73,7 @@ const openFeedbackDialog = () => {
   >
     <div class="flex items-center gap-1">
       <Icon icon="ic:baseline-person-pin" class="text-white dark:text-black" />
-      <span class="text-white dark:text-black">登录</span>
+      <span class="text-white dark:text-black">{{ $t('nav_Login') }}</span>
     </div>
   </el-button>
   <AuthTabs v-if="showLogin" v-model="showLogin" />

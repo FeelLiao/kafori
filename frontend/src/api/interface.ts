@@ -32,3 +32,47 @@ export interface Sample {
 }
 
 
+// 参数的公共字段
+interface BaseParam {
+  title?: string;
+  description?: string;
+  default?: any;
+}
+
+// number 参数
+export interface NumberParam extends BaseParam {
+  TYPE: 'number';
+  minimum?: number;
+  maximum?: number;
+}
+
+// string 参数（你后端以后加上就行）
+export interface StringParam extends BaseParam {
+  TYPE: 'string';
+}
+
+// enum 参数
+export interface EnumParam extends BaseParam {
+  TYPE: 'enum';
+  ENUM: string[];
+}
+
+export type ParamProperty = NumberParam | StringParam | EnumParam;
+
+export interface ParamsSchema {
+  title: string;
+  type: 'object';
+  properties: Record<string, ParamProperty>;
+}
+
+
+// catalog对应的数据类型
+export interface AnalysisCatalog {
+  id: string;                 // e.g. "pca"
+  title: string;              // e.g. "PCA"
+  input_type: string;         // "tpm" | "counts" | ...
+  gene_filter: boolean;
+  params_schema: ParamsSchema;
+}
+
+
