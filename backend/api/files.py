@@ -438,7 +438,7 @@ class PutDataBaseWrapper:
         logger.info("Experiment sheet updated with existing database records.")
 
         exp_sheet_wrapped = self.sample_sheet_wrapped.copy()
-        exp_sheet_wrapped = exp_sheet_wrapped[exp_sheet_wrapped["updated"] is False]
+        exp_sheet_wrapped = exp_sheet_wrapped[~exp_sheet_wrapped["updated"]]
 
         exp_sheet = exp_sheet_wrapped[[
             "ExpClass", "UniqueEXID", "Experiment"]].drop_duplicates()
