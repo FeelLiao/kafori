@@ -18,7 +18,7 @@ validation_router = APIRouter()
 
 SECRET_KEY = config.secret_key
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_MINUTES = 720  # 12 hours
 
 db = DataBase()
 
