@@ -152,7 +152,8 @@ class UpstreamAnalysis(DataAnalysis):
                     workflow.dag().execute_workflow(executor=executor_mode)
 
                 # Log the output from the buffers
-                logger.info("Snakemake execution output: \n" + std_out_buffer.getvalue())
+                logger.info("Snakemake execution output: \n" +
+                            std_out_buffer.getvalue())
 
         except Exception as e:
             logger.error(f"Upstream analysis failed: {e}", exc_info=True)
@@ -188,6 +189,13 @@ class UpstreamAnalysis(DataAnalysis):
         logger.info("Post-processing upstream analysis results")
         tpm_df = pd.read_csv(tpm)
         counts_df = pd.read_csv(counts)
+        sample_sheet = pd.read_csv(self.sample)
+
+        # change file name to sample id
+        sample_id_map = dict(
+            zip(sample_sheet['sample'], sample_sheet['sample_id']))
+        tpm_df.rename(columns=sample_id_map, inplace=True)
+        counts_df.rename(columns=sample_id_map, inplace=True)
 
         # Process HISAT2 alignment reports
         try:
@@ -221,6 +229,11 @@ class UpstreamAnalysis(DataAnalysis):
             failed_fastp_logs = []
             raise RuntimeError(
                 f"Error processing fastp reports: {e}") from e
+
+        # change file name to sample id for fastp report and alignment report
+        alignment_df["Sample"] = alignment_df["Sample"].map(sample_id_map)
+        fastp_df["Sample"] = fastp_df["Sample"].map(sample_id_map)
+
         # Cleanup directories
         if clean:
             cleanup_directories(self.work_dir)
