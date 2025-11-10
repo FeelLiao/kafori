@@ -152,7 +152,7 @@ async def process_db_upload(user: str, request: Request) -> Tuple[bool, str]:
         logger.info(
             f"Experiment class has put into database successfully for user {user}.")
 
-        exp_sheet, sample_sheet = data_base_wrapper.db_insert(
+        exp_sheet, sample_sheet = await data_base_wrapper.db_insert(
             exp_class_communication_r)
         expression = data_base_wrapper.expression_wrapper_v2(sample_sheet)
 
