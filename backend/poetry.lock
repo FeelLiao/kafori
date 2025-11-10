@@ -14,7 +14,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -38,7 +38,7 @@ sa = ["sqlalchemy (>=1.3,<1.4)"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -62,7 +62,7 @@ docs = ["sphinx (==8.1.3)", "sphinx-mdinclude (==0.6.1)"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -79,7 +79,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -105,7 +105,7 @@ trio = ["trio (>=0.26.1)"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -122,7 +122,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -140,7 +140,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -160,7 +160,7 @@ argon2-cffi-bindings = "*"
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -207,7 +207,7 @@ cffi = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -224,7 +224,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -249,7 +249,7 @@ test = ["dateparser (==1.*)", "pre-commit", "pytest", "pytest-cov", "pytest-mock
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -269,7 +269,7 @@ sniffio = "*"
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -290,7 +290,7 @@ test = ["astroid (>=2,<4)", "pytest", "pytest-cov", "pytest-xdist"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -307,7 +307,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -332,7 +332,7 @@ tests-mypy = ["mypy (>=1.11.1) ; platform_python_implementation == \"CPython\" a
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -352,7 +352,7 @@ dev = ["backports.zoneinfo ; python_version < \"3.9\"", "freezegun (>=1.0,<2.0)"
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -392,7 +392,7 @@ typecheck = ["mypy"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -420,7 +420,7 @@ lxml = ["lxml"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -444,7 +444,7 @@ css = ["tinycss2 (>=1.1.0,<1.5)"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -461,7 +461,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -563,7 +563,7 @@ pycparser = {version = "*", markers = "implementation_name != \"PyPy\""}
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -670,7 +670,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -690,7 +690,7 @@ colorama = {version = "*", markers = "platform_system == \"Windows\""}
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -707,7 +707,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -725,7 +725,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -745,7 +745,7 @@ test = ["pytest"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -765,7 +765,7 @@ pyyaml = ">=6.0,<7.0"
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -786,7 +786,7 @@ yaml = ["PyYAML"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -802,7 +802,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -908,7 +908,7 @@ toml = ["tomli ; python_full_version <= \"3.11.0a6\""]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -1059,7 +1059,7 @@ dev = ["black (==22.3.0)", "hypothesis (==6.60.0)", "numpy", "pytest (>=5.30)", 
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -1093,7 +1093,7 @@ test = ["pandas[test]", "pre-commit", "pytest", "pytest-cov", "pytest-mock", "py
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -1110,7 +1110,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -1151,7 +1151,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -1168,7 +1168,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -1185,7 +1185,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -1219,7 +1219,7 @@ zict = ">=3.0.0"
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -1245,7 +1245,7 @@ wmi = ["wmi (>=1.5.1)"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -1262,7 +1262,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -1279,7 +1279,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -1300,7 +1300,7 @@ idna = ">=2.0.0"
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -1317,7 +1317,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -1337,7 +1337,7 @@ tests = ["asttokens (>=2.1.0)", "coverage", "coverage-enable-subprocess", "ipyth
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -1370,7 +1370,7 @@ standard-no-fastapi-cloud-cli = ["email-validator (>=2.0.0)", "fastapi-cli[stand
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -1397,7 +1397,7 @@ standard-no-fastapi-cloud-cli = ["uvicorn[standard] (>=0.15.0)"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -1426,7 +1426,7 @@ standard = ["uvicorn[standard] (>=0.15.0)"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -1446,7 +1446,7 @@ devel = ["colorama", "json-spec", "jsonschema", "pylint", "pytest", "pytest-benc
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -1512,7 +1512,7 @@ lzo = ["python-lzo"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -1534,7 +1534,7 @@ typing = ["typing-extensions (>=4.12.2) ; python_version < \"3.11\""]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -1551,7 +1551,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -1596,7 +1596,7 @@ tqdm = ["tqdm"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -1616,7 +1616,7 @@ smmap = ">=3.0.1,<6"
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -1640,7 +1640,7 @@ test = ["coverage[toml]", "ddt (>=1.1.1,!=1.4.3)", "mock ; python_version < \"3.
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -1657,7 +1657,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -1684,7 +1684,7 @@ trio = ["trio (>=0.22.0,<1.0)"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -1745,7 +1745,7 @@ test = ["Cython (>=0.29.24)"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -1775,7 +1775,7 @@ zstd = ["zstandard (>=0.18.0)"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -1795,7 +1795,7 @@ pyreadline3 = {version = "*", markers = "sys_platform == \"win32\" and python_ve
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -1815,7 +1815,7 @@ all = ["flake8 (>=7.1.1)", "mypy (>=1.11.2)", "pytest (>=8.3.2)", "ruff (>=0.6.2
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -1882,7 +1882,7 @@ test = ["flake8 (>=5.0,<6.0)", "mypy (>=1.4,<2.0)", "pycodestyle (>=2.9,<3.0)", 
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -1899,7 +1899,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -1938,7 +1938,7 @@ test = ["flaky", "ipyparallel", "pre-commit", "pytest (>=7.0,<9)", "pytest-async
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -1975,7 +1975,7 @@ test-extra = ["curio", "ipykernel", "ipython[test]", "jupyter_ai", "matplotlib (
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -1995,7 +1995,7 @@ pygments = "*"
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -2022,7 +2022,7 @@ test = ["ipykernel", "jsonschema", "pytest (>=3.6.0)", "pytest-cov", "pytz"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -2039,7 +2039,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -2059,7 +2059,7 @@ arrow = ">=0.15.0"
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -2084,7 +2084,7 @@ testing = ["Django", "attrs", "colorama", "docopt", "pytest (<9.0.0)"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -2107,7 +2107,7 @@ i18n = ["Babel (>=2.7)"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -2127,7 +2127,7 @@ dev = ["build (==1.2.2.post1)", "coverage (==7.5.4) ; python_version < \"3.9\"",
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -2144,7 +2144,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -2179,7 +2179,7 @@ format-nongpl = ["fqdn", "idna", "isoduration", "jsonpointer (>1.13)", "rfc3339-
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -2199,7 +2199,7 @@ referencing = ">=0.31.0"
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -2224,7 +2224,7 @@ notebook = "*"
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -2252,7 +2252,7 @@ test = ["coverage", "ipykernel (>=6.14)", "mypy", "paramiko ; sys_platform == \"
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -2282,7 +2282,7 @@ test = ["flaky", "pexpect", "pytest"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -2308,7 +2308,7 @@ test = ["ipykernel", "pre-commit", "pytest (<9)", "pytest-cov", "pytest-timeout"
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -2340,7 +2340,7 @@ test = ["click", "pre-commit", "pytest (>=7.0)", "pytest-asyncio (>=0.19.0)", "p
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -2360,7 +2360,7 @@ jupyter_server = ">=1.1.2"
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -2402,7 +2402,7 @@ test = ["flaky", "ipykernel", "pre-commit", "pytest (>=7.0,<9)", "pytest-console
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -2427,7 +2427,7 @@ test = ["jupyter-server (>=2.0.0)", "pytest (>=7.0)", "pytest-jupyter[server] (>
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -2466,7 +2466,7 @@ upgrade-extension = ["copier (>=9,<10)", "jinja2-time (<0.3)", "pydantic (<3.0)"
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -2483,7 +2483,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -2514,7 +2514,7 @@ test = ["hatch", "ipykernel", "openapi-core (>=0.18.0,<0.19.0)", "openapi-spec-v
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -2531,7 +2531,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -2548,7 +2548,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -2578,7 +2578,7 @@ testing = ["coverage", "pytest", "pytest-cov", "pytest-regressions"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -2654,7 +2654,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -2674,7 +2674,7 @@ traitlets = "*"
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -2691,7 +2691,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -2715,7 +2715,7 @@ urllib3 = "*"
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -2732,7 +2732,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -2770,7 +2770,7 @@ spreadsheet = ["modin-spreadsheet (>=0.1.0)"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -2794,7 +2794,7 @@ test = ["flake8 (>=3.6.0)", "pytest (>=2.8.5)"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -2868,7 +2868,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -2896,7 +2896,7 @@ test = ["flaky", "ipykernel (>=6.19.3)", "ipython", "ipywidgets", "nbconvert (>=
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -2938,7 +2938,7 @@ webpdf = ["playwright"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -2965,7 +2965,7 @@ test = ["pep440", "pre-commit", "pytest", "testpath"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -2982,7 +2982,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -3011,7 +3011,7 @@ test = ["importlib-resources (>=5.0) ; python_version < \"3.10\"", "ipykernel", 
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -3034,7 +3034,7 @@ test = ["pytest", "pytest-console-scripts", "pytest-jupyter", "pytest-tornasync"
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -3100,7 +3100,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -3120,7 +3120,7 @@ et-xmlfile = "*"
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -3137,7 +3137,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -3154,7 +3154,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -3242,7 +3242,7 @@ xml = ["lxml (>=4.9.2)"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -3259,7 +3259,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -3280,7 +3280,7 @@ testing = ["docopt", "pytest"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -3304,7 +3304,7 @@ complete = ["blosc", "numpy (>=1.20.0)", "pandas (>=1.3)", "pyzmq"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -3327,7 +3327,7 @@ totp = ["cryptography"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -3348,7 +3348,7 @@ ptyprocess = ">=0.5"
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -3370,7 +3370,7 @@ type = ["mypy (>=1.14.1)"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -3391,7 +3391,7 @@ testing = ["coverage", "pytest", "pytest-benchmark"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -3440,7 +3440,7 @@ xlsxwriter = ["xlsxwriter"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -3460,7 +3460,7 @@ twisted = ["twisted"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -3480,7 +3480,7 @@ wcwidth = "*"
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -3504,7 +3504,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -3533,7 +3533,7 @@ test = ["pytest", "pytest-xdist", "setuptools"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -3551,7 +3551,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -3572,7 +3572,7 @@ public-py = ["coptpy", "gurobipy", "xpress"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -3592,7 +3592,7 @@ tests = ["pytest"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -3653,7 +3653,7 @@ test = ["cffi", "hypothesis", "pandas", "pytest", "pytz"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -3671,7 +3671,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -3727,7 +3727,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -3755,7 +3755,7 @@ timezone = ["tzdata ; python_version >= \"3.9\" and platform_system == \"Windows
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -3872,7 +3872,7 @@ typing-extensions = ">=4.6.0,<4.7.0 || >4.7.0"
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -3892,7 +3892,7 @@ windows-terminal = ["colorama (>=0.4.6)"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -3915,7 +3915,7 @@ tests = ["coverage[toml] (==5.0.4)", "pytest (>=6.0.0,<7.0.0)"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -3936,7 +3936,7 @@ rsa = ["cryptography"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -3953,7 +3953,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -3974,7 +3974,7 @@ dev = ["build", "flake8", "mypy", "pytest", "twine"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -4001,7 +4001,7 @@ dev = ["argcomplete", "attrs (>=19.2)", "hypothesis (>=3.56)", "mock", "requests
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -4025,7 +4025,7 @@ testing = ["coverage (>=6.2)", "hypothesis (>=5.7.1)"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -4050,7 +4050,7 @@ testing = ["fields", "hunter", "process-tests", "pytest-xdist", "virtualenv"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -4070,7 +4070,7 @@ six = ">=1.5"
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -4090,7 +4090,7 @@ cli = ["click (>=5.0)"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -4110,7 +4110,7 @@ dev = ["backports.zoneinfo ; python_version < \"3.9\"", "black", "build", "freez
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -4127,7 +4127,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -4144,7 +4144,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -4176,7 +4176,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -4199,7 +4199,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -4267,7 +4267,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -4377,7 +4377,7 @@ cffi = {version = "*", markers = "implementation_name == \"pypy\""}
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -4444,7 +4444,7 @@ tune = ["fsspec", "pandas", "pyarrow (>=9.0.0)", "requests", "tensorboardX (>=1.
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -4466,7 +4466,7 @@ ocsp = ["cryptography (>=36.0.1)", "pyopenssl (>=20.0.1)", "requests (>=2.31.0)"
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -4487,7 +4487,7 @@ rpds-py = ">=0.7.0"
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -4514,7 +4514,7 @@ use-chardet-on-py3 = ["chardet (>=3.0.2,<6)"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -4531,7 +4531,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -4551,7 +4551,7 @@ six = "*"
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -4568,7 +4568,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -4592,7 +4592,7 @@ jupyter = ["ipywidgets (>=7.5.1,<9)"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -4614,7 +4614,7 @@ typing-extensions = ">=4.12.2"
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -4748,7 +4748,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -4907,7 +4907,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -4929,7 +4929,7 @@ win32 = ["pywin32 ; sys_platform == \"win32\""]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -4991,7 +4991,7 @@ unleash = ["UnleashClient (>=6.0.1)"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5017,7 +5017,7 @@ type = ["importlib_metadata (>=7.0.2) ; python_version < \"3.10\"", "jaraco.deve
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5034,7 +5034,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5051,7 +5051,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5082,7 +5082,7 @@ zst = ["zstandard"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5099,7 +5099,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5152,7 +5152,7 @@ reports = ["pygments"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5174,7 +5174,7 @@ packaging = ">=24.0,<26.0"
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5196,7 +5196,7 @@ throttler = ">=1.2.2"
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5216,7 +5216,7 @@ snakemake-interface-common = ">=1.17.4"
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5236,7 +5236,7 @@ snakemake-interface-common = ">=1.16.0,<2.0.0"
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5259,7 +5259,7 @@ wrapt = ">=1.15.0"
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5276,7 +5276,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5293,7 +5293,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5310,7 +5310,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5335,7 +5335,7 @@ tests = ["cython", "littleutils", "pygments", "pytest", "typeguard"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5358,7 +5358,7 @@ full = ["httpx (>=0.27.0,<0.29.0)", "itsdangerous", "jinja2", "python-multipart 
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5378,7 +5378,7 @@ widechars = ["wcwidth"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5395,7 +5395,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5422,7 +5422,7 @@ typing = ["mypy (>=1.6,<2.0)", "traitlets (>=5.11.1)"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5442,7 +5442,7 @@ dev = ["aiohttp (>=3.8)", "codecov (>=2.1)", "flake8 (>=4.0)", "pytest (>=7.0)",
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5466,7 +5466,7 @@ test = ["pytest", "ruff"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5483,7 +5483,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5510,7 +5510,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5541,7 +5541,7 @@ psycopg = ["psycopg[binary,pool] (>=3.0.12,<4.0.0)"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5562,7 +5562,7 @@ test = ["argcomplete (>=3.0.3)", "mypy (>=1.7.0)", "pre-commit", "pytest (>=7.0,
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5585,7 +5585,7 @@ typing-extensions = ">=3.7.4.3"
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5602,7 +5602,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5619,7 +5619,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5639,7 +5639,7 @@ typing-extensions = ">=4.12.0"
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5656,7 +5656,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5676,7 +5676,7 @@ dev = ["flake8", "flake8-annotations", "flake8-bandit", "flake8-bugbear", "flake
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5699,7 +5699,7 @@ zstd = ["zstandard (>=0.18.0)"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5730,7 +5730,7 @@ standard = ["colorama (>=0.4) ; sys_platform == \"win32\"", "httptools (>=0.6.3)
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5788,7 +5788,7 @@ test = ["aiohttp (>=3.10.5)", "flake8 (>=5.0,<6.0)", "mypy (>=0.800)", "psutil",
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5912,7 +5912,7 @@ anyio = ">=3.0.0"
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5929,7 +5929,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5946,7 +5946,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5963,7 +5963,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -5985,7 +5985,7 @@ test = ["websockets"]
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -6069,7 +6069,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -6086,7 +6086,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -6180,7 +6180,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -6202,7 +6202,7 @@ pyyaml = ">=6.0,<7.0"
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -6219,7 +6219,7 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [[package]]
@@ -6360,10 +6360,10 @@ files = [
 
 [package.source]
 type = "legacy"
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 reference = "tsinghua"
 
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13,<4.0"
-content-hash = "612767f9f728d9504257a1eab139da4b5e5550b05804f31aafe78caf0f1b3aa0"
+content-hash = "a321a566d85c94b5e8e83aee3f7a9273e0957db314e16b1edf6045b3056544cd"

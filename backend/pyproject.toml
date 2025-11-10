@@ -48,4 +48,4 @@ max-line-length = 120
 
 [[tool.poetry.source]]
 name = "tsinghua"
-url = "https://mirrors.aliyun.com/pypi/simple/"
+url = "https://pypi.org/simple"
