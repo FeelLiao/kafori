@@ -11,7 +11,7 @@ The main functions of this page are to:
 
 ### Experiment
 
-![](/src/assets/png/file-20251101152039781.png)
+![](/png/file-20251101152039781.png)
 
 Users can filter data by experiment category (multiple selections supported).  
 Several related sub-experiments are merged into a single category.
@@ -20,7 +20,7 @@ For instance, the “Dormancy–Activity” category includes experiments such a
 
 ### Experiment List
 
-![](/src/assets/png/file-20251101153336559.png)
+![](/png/file-20251101153336559.png)
 
 After selecting one or more experiment categories, click the **Search** button to display all related experiments.
 
@@ -28,7 +28,7 @@ You can further refine your search by filtering based on **Experiment Name**.
 
 ### Sample
 
-![](/src/assets/png/file-20251101153829508.png)
+![](/png/file-20251101153829508.png)
 
 Once an experiment is selected, click **Search** again to view all samples associated with that experiment.
 
@@ -36,7 +36,7 @@ The sample table supports sorting by multiple attributes, allowing users to effi
 
 ### Analysis
 
-![](/src/assets/png/file-20251101154646494.png)
+![](/png/file-20251101154646494.png)
 
 After selecting samples, users can perform various downstream analyses in this section.
 
@@ -44,7 +44,7 @@ Each analysis tool provides adjustable parameters, which can be fine-tuned accor
 
 ## Pipelines
 
-![](/src/assets/png/file-20251101162818899.png)
+![](/png/file-20251101162818899.png)
 
 This section allows users to upload their own transcriptome datasets.  The sample information template can be download in the `Downloads` page.
 

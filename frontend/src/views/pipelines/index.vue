@@ -1,6 +1,6 @@
 <template>
   <div class="p-6 space-y-6 text-gray-900 dark:text-gray-100">
-
+    <img src="/png/transcipt_anlysis.png" alt="Transcript Analysis" style="max-width:100%;height:auto;display:block;margin:auto;" />
     <!-- A1 样本文件上传 -->
     <el-card class="rounded-xl shadow-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
       <template #header>

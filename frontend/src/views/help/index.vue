@@ -2,6 +2,7 @@
 import { ref, watch } from 'vue'
 import MarkdownIt from 'markdown-it'
 import 'github-markdown-css/github-markdown.css'
+
 import i18n from '@/i18n'
 
 const md = new MarkdownIt()
@@ -9,7 +10,7 @@ const renderedHtml = ref('')
 const isCentered = ref(false)
 
 async function loadMarkdown(lang: string) {
-  const file = lang === 'zh' ? '/src/assets/md/help_zh.md' : '/src/assets/md/help_en.md'
+  const file = lang === 'zh' ? '/md/help_zh.md' : '/md/help_en.md'
   const res = await fetch(file)
   const text = await res.text()
   renderedHtml.value = md.render(text)
