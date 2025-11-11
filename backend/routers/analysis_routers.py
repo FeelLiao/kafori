@@ -10,6 +10,8 @@ from backend.db.result.Result import Result  # 你的统一返回封装
 # 确保在 app 启动时 import 一次插件目录，完成注册
 import backend.analysis.plugins.pca  # noqa: F401
 import backend.analysis.plugins.deg  # noqa: F401
+import backend.analysis.plugins.tpm_download  # noqa: F401
+import backend.analysis.plugins.counts_download  # noqa: F401
 
 analysis_router = APIRouter()
 logger = logging.getLogger(__name__)
