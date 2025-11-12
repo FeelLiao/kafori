@@ -260,7 +260,7 @@ async function exportAllImagesZip() {
 <!--      </div>-->
 
 
-      <div v-if="transcript_type_value?.gene_filter === false" class="flex flex-wrap items-center gap-4">
+      <div v-if="transcript_type_value?.gene_filter === true" class="flex flex-wrap items-center gap-4">
         <el-input
             v-model="GeneId_textarea"
             style="width: 240px;"

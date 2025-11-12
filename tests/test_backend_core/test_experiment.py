@@ -21,3 +21,10 @@ async def test_put_experiment():
 
     data = await put_db.put_experiment(pd.DataFrame(test_data))
     print(data, type(data))
+
+
+@pytest.mark.asyncio
+async def test_get_experiment_all():
+
+    data = await database.get_exp_all()
+    print(data)

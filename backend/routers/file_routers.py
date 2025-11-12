@@ -40,7 +40,7 @@ UPSTREAM_CORES = int(config.upstream.upstream_cores)
 EXECUTOR = ThreadPoolExecutor(max_workers=2)
 
 # redis settings
-Redis_expires = 600  # seconds
+Redis_expires = int(config.redis_timeout)  # seconds
 
 # rawdata upload path
 UPLOAD_RAWDATA_PATH = Path(config.upstream.upload_rawdata_dir).resolve()

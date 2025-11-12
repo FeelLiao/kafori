@@ -61,6 +61,14 @@ class GetDataBaseInterface:
         return pd.DataFrame(data)
 
     @staticmethod
+    async def get_exp_all() -> pd.DataFrame:
+        """
+        Get experiment data.
+        """
+        data = await db.experiment.getExp()
+        return pd.DataFrame(data)
+
+    @staticmethod
     async def get_experiment(exp_class: tuple) -> pd.DataFrame:
         """
         Get experiment data for a specific experimental class.

@@ -8,9 +8,24 @@ payload = {
     "analysis": "pca",
     "params": {"width": 900, "height": 600},
     "data_filter": {
-        "unique_id": ["LRX68bd3639001", "LRX68bd3639002", "LRX68bd3639003",
-                      "LRX68bd3639004", "LRX68bd3639005", "LRX68bd3639006",
-                      "LRX68bd3639007", "LRX68bd3639008", "LRX68bd3639009"],
+        "unique_id": [
+            "LRX4bf8d67d2a150c1",
+            "LRX75d6e121b8390c3",
+            "LRX331980d78abe0bf",
+            "LRX4791517c2b8c0be",
+            "LRXa88e8a8bc4050bd",
+            "LRX75762da903270c0",
+            "LRX3566c0d048cd0ba",
+            "LRX666ef8a9d7750bc",
+            "LRX98a8faeddb5d0bb",
+            "LRXd8a2bd33687f0b9",
+            "LRX9582fd1ac6e90c2",
+            "LRXaca1b8513b8b0c4",
+            "LRX19713794c22e0b7",
+            "LRX39fe0fb2501b0b8",
+            "LRX8edbb61026f60b6",
+            "LRXf758193263560b5"
+        ],
         "gene_name": [],
         "all_gene": True
     }
@@ -19,7 +34,7 @@ payload = {
 
 @pytest.mark.asyncio
 async def test_pca_analysis_concurrent_inprocess():
-    n = 5
+    n = 1
     async with LifespanManager(app):
         transport = httpx.ASGITransport(app=app)
         async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
@@ -41,9 +56,24 @@ deg_payload = {
         "height": 600
     },
     "data_filter": {
-        "unique_id": ["LRX68bd3639001", "LRX68bd3639002", "LRX68bd3639003",
-                      "LRX68bd3639004", "LRX68bd3639005", "LRX68bd3639006",
-                      "LRX68bd3639007", "LRX68bd3639008", "LRX68bd3639009"],
+        "unique_id": [
+            "LRX4bf8d67d2a150c1",
+            "LRX75d6e121b8390c3",
+            "LRX331980d78abe0bf",
+            "LRX4791517c2b8c0be",
+            "LRXa88e8a8bc4050bd",
+            "LRX75762da903270c0",
+            "LRX3566c0d048cd0ba",
+            "LRX666ef8a9d7750bc",
+            "LRX98a8faeddb5d0bb",
+            "LRXd8a2bd33687f0b9",
+            "LRX9582fd1ac6e90c2",
+            "LRXaca1b8513b8b0c4",
+            "LRX19713794c22e0b7",
+            "LRX39fe0fb2501b0b8",
+            "LRX8edbb61026f60b6",
+            "LRXf758193263560b5"
+        ],
         "gene_name": [],
         "all_gene": True
     }

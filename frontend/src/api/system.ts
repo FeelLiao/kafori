@@ -171,9 +171,12 @@ export const getDownloadCatalog = () => {
   return http<Result>('get', `/download/catalog`)
 }
 
-export const downloadFile = (classes:string,filename:string) => {
-  return http<Blob>('post', `/download/${classes}/${filename}`)
-}
+export const downloadFile = (classes: string, filename: string) => {
+  const API_BASE = ((import.meta as any).env?.VITE_APP_BASE_API || '').replace(/\/$/, '')
+  const cls = encodeURIComponent(classes);
+  const fn = encodeURIComponent(filename);
+  return `${API_BASE}/download/${cls}/${fn}`;
+};
 
 
 export const putDatabase = () => {

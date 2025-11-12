@@ -36,4 +36,22 @@ class ExperimentRepositoryImpl(ExperimentRepository):
     async def getExperimentCountsByExClass(self, exp_class: int) -> int:
         counts = await self.model.filter(ExpClass =exp_class).count()
 
+    async def getExp(self, start_page: int | None = None, size: int | None = None) -> list[dict]:
+        conn = Tortoise.get_connection("default")
+        if start_page is None or size is None:
+            sql_all = """
+                SELECT exp_class as ExpClass, unique_ex_id as UniqueEXID, experiment as Experiment
+                FROM experiment
+                FORCE INDEX (`PRIMARY`);
+            """
+            return await conn.execute_query_dict(sql_all)
+        if size <= 0 or start_page < 0:
+            return []
 
+        sql_page = """
+                SELECT exp_class as ExpClass, unique_ex_id as UniqueEXID, experiment as Experiment
+                FROM experiment
+                FORCE INDEX (`PRIMARY`)
+                LIMIT %s, %s;
+            """
+        return await conn.execute_query_dict(sql_page, [start_page, size])

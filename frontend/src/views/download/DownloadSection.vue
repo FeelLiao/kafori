@@ -90,19 +90,19 @@ const sample_columns = computed(() =>[
 ]);
 
 async function editRow(row: any) {
-  let fileData = await downloadFile(row.classes, row.filename);
-  // 如果不是 Blob，假设是 ArrayBuffer，转成 Blob
-  if (!(fileData instanceof Blob)) {
-    fileData = new Blob([fileData]);
-  }
-  const url = URL.createObjectURL(fileData);
+  const href = downloadFile(row.classes, row.filename);
   const a = document.createElement('a');
-  a.href = url;
-  a.download = row.filename;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
+  a.href = href;
+  a.rel = 'noopener';
+  // 同域时可设置 download 属性以保持当前页；跨域通常依赖后端的 Content-Disposition
+  if (href.startsWith(location.origin) || href.startsWith('/')) {
+    a.download = row.filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  } else {
+    window.open(href, '_blank', 'noopener');
+  }
 }
 </script>
 

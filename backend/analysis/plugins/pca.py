@@ -2,12 +2,13 @@ from typing import Any, Dict
 from pydantic import Field
 
 from backend.analysis.framework import BaseAnalysis, BaseAnalysisParams, InputData, register_analysis
+from backend.analysis.framework import ParamsType
 from backend.analysis.scripts.pca import pca_code  # 现有 R 脚本
 
 
 class PCAParams(BaseAnalysisParams):
     ncps: int = Field(
-        5, ge=2, le=20, description="Number of principal components")
+        5, ge=2, le=20, description="Number of principal components", json_schema_extra={"TYPE": ParamsType.number})
 
 
 @register_analysis("pca")
