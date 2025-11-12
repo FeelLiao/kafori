@@ -151,7 +151,7 @@ watch(transcript_type_value, (value) => {
 
 async function submit_transcirpt() {
   let res: any;
-  if (transcript_type_value?.gene_filter && radio?.value === '1') {
+  if (transcript_type_value.value.gene_filter && radio?.value === '1') {
     ParaseGenIdList.value = parse_geneid(GeneId_textarea.value);
     res = await transcript_analysis(
         transcript_type_value.value.id,
@@ -160,7 +160,7 @@ async function submit_transcirpt() {
         ParaseGenIdList.value,
         false
     );
-  } else if (transcript_type_value?.gene_filter && radio?.value === '2') {
+  } else if (transcript_type_value.value.gene_filter && radio?.value === '2') {
     res = await transcript_analysis(
         transcript_type_value.value.id,
         schema,
@@ -260,7 +260,7 @@ async function exportAllImagesZip() {
 <!--      </div>-->
 
 
-      <div v-if="transcript_type_value?.gene_filter === true" class="flex flex-wrap items-center gap-4">
+      <div v-if="transcript_type_value?.gene_filter === false" class="flex flex-wrap items-center gap-4">
         <el-input
             v-model="GeneId_textarea"
             style="width: 240px;"
